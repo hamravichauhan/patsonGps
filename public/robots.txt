@@ -1,0 +1,28 @@
+User-agent: *
+Allow: /
+Disallow: /ps-control-morjim/
+Disallow: /admin/
+Disallow: /order/
+Disallow: /cart
+Disallow: /track-order
+
+# Explicitly permit major AI Search Crawlers
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+Sitemap: https://patsonsfoods.com/sitemap.xml
