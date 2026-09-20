@@ -2,7 +2,7 @@
 FROM node:20 AS assets
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci
+RUN npm install
 COPY . .
 RUN npm run build
 
@@ -26,14 +26,14 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www
 
-# Copy code
+# Copy application files
 COPY . .
 COPY --from=assets /app/public/build ./public/build
 
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Storage permissions
+# Set permissions
 RUN chmod -R 775 storage bootstrap/cache
 
 EXPOSE 10000
