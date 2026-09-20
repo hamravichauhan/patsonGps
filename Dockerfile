@@ -1,4 +1,3 @@
-
 # Stage 1: Build front-end assets
 FROM node:20 AS assets
 WORKDIR /app
@@ -7,7 +6,7 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-# Stage 2: PHP Application Environment (Matching PHP 8.5)
+# Stage 2: PHP Application Environment (PHP 8.5)
 FROM php:8.5-cli
 
 # Install system dependencies
@@ -27,16 +26,14 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www
 
-# Copy application files
+# Copy application files and built assets
 COPY . .
 COPY --from=assets /app/public/build ./public/build
 
-# Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader
+# Ensure required directories exist with write permissions BEFORE composer discovery runs
+RUN mkdir -p bootstrap/cache storage/framework/cache/data \
+    storage/framework/sessions storage/framework/views storage/logs \
+    && chmod -R 777 bootstrap/cache storage
 
-# Set permissions
-RUN chmod -R 775 storage bootstrap/cache
-
-EXPOSE 10000
-
-CMD php artisan serve --host 0.0.0.0 --port 10000
+# Install PHP dependencies with optimized autoloader
+RUN composer install --RUN composer install --RadRUN composer install --RUN comsan RUN composer install --port 10000
