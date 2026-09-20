@@ -35,5 +35,7 @@ RUN mkdir -p bootstrap/cache storage/framework/cache/data \
     storage/framework/sessions storage/framework/views storage/logs \
     && chmod -R 777 bootstrap/cache storage
 
-# Install PHP dependencies with optimized autoloader
-RUN composer install --RUN composer install --RadRUN composer install --RUN comsan RUN composer install --port 10000
+# Install PHP dependencies with clean flags
+RUN composer install --no-dev --RUN composer install --nOSE 10000
+
+CMD php artisan serve --hCMD php artisan rt 10000
