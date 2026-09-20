@@ -1,3 +1,4 @@
+
 # Stage 1: Build front-end assets
 FROM node:20 AS assets
 WORKDIR /app
@@ -35,7 +36,9 @@ RUN mkdir -p bootstrap/cache storage/framework/cache/data \
     storage/framework/sessions storage/framework/views storage/logs \
     && chmod -R 777 bootstrap/cache storage
 
-# Install PHP dependencies with clean flags
-RUN composer install --no-dev --RUN composer install --nOSE 10000
+# Install PHP dependencies
+RUN composer install --no-dev --optimize-autoloader
 
-CMD php artisan serve --hCMD php artisan rt 10000
+EXPOSE 10000
+
+CMD php artisan serve --host 0.0.0.0 --port 10000
