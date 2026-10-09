@@ -17,9 +17,9 @@
                 class="relative overflow-hidden rounded-3xl shadow-xl border border-stone-200 bg-stone-900 min-h-[380px] sm:min-h-[460px] lg:min-h-[520px] flex items-center justify-start">
 
                 <!-- Full High-Res Brand Banner Background -->
-                <img src="{{ file_exists(public_path('images/products/default-product.webp')) ? asset('images/products/default-product.webp') : (file_exists(public_path('images/default-product.webp')) ? asset('images/default-product.webp') : (file_exists(public_path('images/products/default-product.jpg')) ? asset('images/products/default-product.jpg') : asset('images/default-product.jpg'))) }}"
+                <img src="{{ file_exists(public_path('images/banner.webp')) ? asset('images/banner.webp') : (file_exists(public_path('banner.webp')) ? asset('banner.webp') : asset('images/products/default-product.webp')) }}"
                     alt="PatSons Foods Goa"
-                    class="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none z-0">
+                    class="absolute inset-0 w-full h-full object-cover object-center scale-110 transition-transform duration-700 pointer-events-none select-none z-0">
 
                 <!-- Subtle Dark Tint for Text Readability -->
                 <div class="absolute inset-0 bg-gradient-to-r from-black/85 via-black/50 to-transparent z-1"></div>
@@ -129,44 +129,26 @@
                     @php $primary = $variants->first(); @endphp
                     <div class="bg-white rounded-3xl border border-gray-200 hover:border-green-300 shadow-xs hover:shadow-xl transition-all duration-300 p-5 flex flex-col justify-between"
                         x-data="{
-                                    selectedId: {{ $primary->id }},
-                                    selectedPrice: {{ (float) $primary->price }},
-                                    selectedUnitsPerBox: {{ (int) ($primary->units_per_box ?? 12) }},
-                                    selectedSize: '{{ $primary->size }}',
-                                    selectedImage: '{{ $primary->image ?? 'default-product.webp' }}',
-                                    variants: {{ $variants->toJson() }},
-                                    get boxPrice() {
-                                        return Number(this.selectedPrice) * Number(this.selectedUnitsPerBox || 12);
-                                    },
-                                    updateVariant(e) {
-                                        let found = this.variants.find(v => v.id == e.target.value);
-                                        if (found) {
-                                            this.selectedId = found.id;
-                                            this.selectedPrice = Number(found.price);
-                                            this.selectedUnitsPerBox = Number(found.units_per_box || 12);
-                                            this.selectedSize = found.size;
-                                            if (found.image) this.selectedImage = found.image;
-                                        }
-                                    },
-                                    triggerAddToCart() {
-                                        const finalBoxPrice = this.boxPrice;
-                                        const label = this.selectedSize + ' (Box of ' + this.selectedUnitsPerBox + ')';
-                                        if (typeof addToCart === 'function') {
-                                            addToCart(this.selectedId, '{{ addslashes($primary->product_name) }}', finalBoxPrice, label);
-                                        } else {
-                                            window.dispatchEvent(new CustomEvent('add-to-cart', {
-                                                detail: {
-                                                    id: this.selectedId,
-                                                    name: '{{ addslashes($primary->product_name) }}',
-                                                    price: finalBoxPrice,
-                                                    size: label,
-                                                    units_per_box: this.selectedUnitsPerBox,
-                                                    image: this.selectedImage
-                                                }
-                                            }));
-                                        }
-                                    }
-                                }">
+                                                                                    selectedId: {{ $primary->id }},
+                                                                                    selectedPrice: {{ (float) $primary->price }},
+                                                                                    selectedUnitsPerBox: {{ (int) ($primary->units_per_box ?? 12) }},
+                                                                                    selectedSize: '{{ $primary->size }}',
+                                                                                    selectedImage: '{{ $primary->image ?? 'default-product.webp' }}',
+                                                                                    variants: {{ $variants->toJson() }},
+                                                                                    get boxPrice() {
+                                                                                        return Number(this.selectedPrice) * Number(this.selectedUnitsPerBox || 12);
+                                                                                    },
+                                                                                    updateVariant(e) {
+                                                                                        let found = this.variants.find(v => v.id == e.target.value);
+                                                                                        if (found) {
+                                                                                            this.selectedId = found.id;
+                                                                                            this.selectedPrice = Number(found.price);
+                                                                                            this.selectedUnitsPerBox = Number(found.units_per_box || 12);
+                                                                                            this.selectedSize = found.size;
+                                                                                            if (found.image) this.selectedImage = found.image;
+                                                                                        }
+                                                                                    }
+                                                                                }">
                         <div>
                             <a href="{{ route('catalog.show', $primary->slug) }}" class="block">
                                 <div
@@ -214,18 +196,11 @@
                             </div>
                         </div>
 
-                        <!-- Wholesale Box Price & Add -->
-                        <div class="mt-4 pt-3.5 border-t border-gray-100 flex items-center justify-between">
-                            <div>
-                                <span class="text-[9px] text-gray-400 font-bold uppercase block">Per Box (<span
-                                        x-text="selectedUnitsPerBox"></span> pcs)</span>
-                                <span class="text-xl font-black text-green-900">₹<span
-                                        x-text="boxPrice.toFixed(2)"></span></span>
-                            </div>
-                            <button @click="triggerAddToCart()"
-                                class="bg-green-900 hover:bg-green-800 active:scale-95 text-white text-xs font-black px-3.5 py-2.5 rounded-xl shadow-xs transition flex items-center gap-1.5 cursor-pointer">
-                                <span>+ Add Box</span>
-                            </button>
+                        <!-- Wholesale Box Price (Add Box button removed while cart is disabled) -->
+                        <div class="mt-4 pt-3.5 border-t border-gray-100">
+                            <span class="text-[9px] text-gray-400 font-bold uppercase block">Per Box (<span
+                                    x-text="selectedUnitsPerBox"></span> pcs)</span>
+                            <span class="text-xl font-black text-green-900">₹<span x-text="boxPrice.toFixed(2)"></span></span>
                         </div>
                     </div>
                 @endforeach
@@ -234,49 +209,49 @@
 
 
         <!-- ==================== 4. HOW ORDERING WORKS ==================== -->
-        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="bg-stone-100/70 border border-stone-200 rounded-3xl p-6 sm:p-10">
-                <div class="text-center max-w-xl mx-auto mb-8">
-                    <h2 class="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">
-                        Simple Wholesale Ordering
-                    </h2>
-                    <p class="text-xs text-gray-500 mt-1">Get sealed factory cartons direct from our Morjim facility in 3
-                        steps.</p>
-                </div>
+        <!-- <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                                <div class="bg-stone-100/70 border border-stone-200 rounded-3xl p-6 sm:p-10">
+                                    <div class="text-center max-w-xl mx-auto mb-8">
+                                        <h2 class="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">
+                                            Simple Wholesale Ordering
+                                        </h2>
+                                        <p class="text-xs text-gray-500 mt-1">Get sealed factory cartons direct from our Morjim facility in 3
+                                            steps.</p>
+                                    </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-                    <div class="space-y-2 p-4 bg-white rounded-2xl border border-stone-200/60 shadow-xs">
-                        <div
-                            class="w-10 h-10 bg-green-900 text-white font-black rounded-xl flex items-center justify-center mx-auto text-sm">
-                            1
-                        </div>
-                        <h3 class="font-bold text-sm text-gray-900">Choose Carton Packs</h3>
-                        <p class="text-xs text-gray-500">Select box sizes and carton quantities in your quotation cart.</p>
-                    </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                                        <div class="space-y-2 p-4 bg-white rounded-2xl border border-stone-200/60 shadow-xs">
+                                            <div
+                                                class="w-10 h-10 bg-green-900 text-white font-black rounded-xl flex items-center justify-center mx-auto text-sm">
+                                                1
+                                            </div>
+                                            <h3 class="font-bold text-sm text-gray-900">Choose Carton Packs</h3>
+                                            <p class="text-xs text-gray-500">Select box sizes and carton quantities in your quotation cart.</p>
+                                        </div>
 
-                    <div class="space-y-2 p-4 bg-white rounded-2xl border border-stone-200/60 shadow-xs">
-                        <div
-                            class="w-10 h-10 bg-green-900 text-white font-black rounded-xl flex items-center justify-center mx-auto text-sm">
-                            2
-                        </div>
-                        <h3 class="font-bold text-sm text-gray-900">Verify via WhatsApp</h3>
-                        <p class="text-xs text-gray-500">Enter your business WhatsApp number to receive an instant
-                            verification code.
-                        </p>
-                    </div>
+                                        <div class="space-y-2 p-4 bg-white rounded-2xl border border-stone-200/60 shadow-xs">
+                                            <div
+                                                class="w-10 h-10 bg-green-900 text-white font-black rounded-xl flex items-center justify-center mx-auto text-sm">
+                                                2
+                                            </div>
+                                            <h3 class="font-bold text-sm text-gray-900">Verify via WhatsApp</h3>
+                                            <p class="text-xs text-gray-500">Enter your business WhatsApp number to receive an instant
+                                                verification code.
+                                            </p>
+                                        </div>
 
-                    <div class="space-y-2 p-4 bg-white rounded-2xl border border-stone-200/60 shadow-xs">
-                        <div
-                            class="w-10 h-10 bg-green-900 text-white font-black rounded-xl flex items-center justify-center mx-auto text-sm">
-                            3
-                        </div>
-                        <h3 class="font-bold text-sm text-gray-900">Direct Dispatch</h3>
-                        <p class="text-xs text-gray-500">Factory confirms batch availability, commercial invoice, and
-                            transport dispatch.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
+                                        <div class="space-y-2 p-4 bg-white rounded-2xl border border-stone-200/60 shadow-xs">
+                                            <div
+                                                class="w-10 h-10 bg-green-900 text-white font-black rounded-xl flex items-center justify-center mx-auto text-sm">
+                                                3
+                                            </div>
+                                            <h3 class="font-bold text-sm text-gray-900">Direct Dispatch</h3>
+                                            <p class="text-xs text-gray-500">Factory confirms batch availability, commercial invoice, and
+                                                transport dispatch.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section> -->
 
 
         <!-- ==================== 5. BULK INQUIRIES ==================== -->

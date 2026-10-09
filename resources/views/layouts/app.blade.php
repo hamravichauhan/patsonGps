@@ -12,10 +12,10 @@
         $pageDescription = trim($__env->yieldContent('meta_description')) ?: 'Authentic Goan Kokum Agal, handcrafted Cashew Fruit Jams, herbal digestifs, cocktail cordials, and refreshing squashes direct from Dev Can Fruit Products, Morjim, Pernem - Goa.';
         $pageKeywords = trim($__env->yieldContent('meta_keywords')) ?: 'PatSons Foods Goa, Dev Can Fruit Products, Goan Kokum Agal, Cashew Jam Goa, Kokum Syrup, Pachak Appetizer, Bar Syrups Goa, Fruit Crushes Goa, Morjim Factory';
         $adminPhone = \App\Models\Setting::get('whatsapp_admin_number', config('services.whatsapp.admin_number', '917758943614'));
-        $logoUrl = file_exists(public_path('images/LOGO.webp'))
-            ? asset('images/LOGO.webp')
-            : (file_exists(public_path('images/products/LOGO.webp'))
-                ? asset('images/products/LOGO.webp')
+        $logoUrl = file_exists(public_path('images/logo1.webp'))
+            ? asset('images/logo1.webp')
+            : (file_exists(public_path('images/products/logo1.webp'))
+                ? asset('images/products/logo1.webp')
                 : asset('images/default-product.webp'));
         $ogImage = trim($__env->yieldContent('og_image')) ?: $logoUrl;
         $searchRoute = \Illuminate\Support\Facades\Route::has('api.products.search') ? route('api.products.search') : url('/shop');
@@ -196,32 +196,30 @@
 
     <!-- Main Navbar -->
     <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-xs"
-        x-data="{ mobileMenuOpen: false, searchOpen: false, searchQuery: '', searchResults: [] }">
+        x-data="{ mobileMenuOpen: false }">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20 sm:h-24">
+            <div class="relative flex items-center justify-between h-20 sm:h-24">
 
-                <!-- Brand Logo -->
+                <!-- Brand Logo (Left-aligned) -->
                 <div class="flex items-center shrink-0">
-                    <a href="{{ route('home') }}" class="flex items-center py-1 group"
+                    <a href="{{ route('home') }}"
+                        class="relative flex items-center h-18 sm:h-20 w-48 sm:w-72 group z-30"
                         aria-label="PatSons Foods Goa Home">
                         <img src="{{ $logoUrl }}" alt="PatSons Goa Official Logo"
-                            class="h-14 sm:h-20 w-auto max-w-[220px] sm:max-w-[320px] object-contain transition-transform duration-300 group-hover:scale-105 drop-shadow-md">
+                            class="absolute left-0 top-1/2 -translate-y-1/2 h-28 sm:h-36 w-auto max-w-none object-contain transition-transform duration-300 group-hover:scale-105 drop-shadow-lg pointer-events-auto">
                     </a>
                 </div>
 
-                <!-- Desktop Navigation Links -->
-                <nav class="hidden md:flex items-center gap-7 text-xs font-black uppercase tracking-wider">
+                <!-- Desktop Navigation Links (Centered) -->
+                <nav
+                    class="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-7 text-xs font-black uppercase tracking-wider">
                     <a href="{{ route('home') }}"
                         class="transition py-1 {{ request()->routeIs('home') ? 'text-green-900 border-b-2 border-green-900' : 'text-gray-600 hover:text-green-900' }}">
                         Home
                     </a>
                     <a href="{{ route('shop') }}"
                         class="transition py-1 {{ request()->routeIs('shop') || request()->routeIs('catalog.*') ? 'text-green-900 border-b-2 border-green-900' : 'text-gray-600 hover:text-green-900' }}">
-                        Catalog & Shop
-                    </a>
-                    <a href="{{ route('customer.account') }}"
-                        class="transition py-1 {{ request()->routeIs('customer.account') ? 'text-green-900 border-b-2 border-green-900' : 'text-gray-600 hover:text-green-900' }}">
-                        Track Order
+                        Catalog
                     </a>
                     <a href="{{ route('about') }}"
                         class="transition py-1 {{ request()->routeIs('about') ? 'text-green-900 border-b-2 border-green-900' : 'text-gray-600 hover:text-green-900' }}">
@@ -233,26 +231,8 @@
                     </a>
                 </nav>
 
-                <!-- Actions -->
-                <div class="flex items-center gap-3">
-                    <button type="button" x-on:click="searchOpen = !searchOpen"
-                        class="hidden lg:flex p-2.5 rounded-2xl bg-gray-100 hover:bg-gray-200 text-gray-700 transition cursor-pointer"
-                        aria-label="Search products">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                    </button>
-
-                    <button type="button" x-on:click="cartOpen = true"
-                        class="relative bg-green-950 hover:bg-green-900 text-white font-black text-xs px-4 sm:px-5 py-2.5 rounded-2xl transition shadow-xs flex items-center gap-2.5 cursor-pointer"
-                        aria-label="Open quotation cart">
-                        <span class="text-lg leading-none">🛍️</span>
-                        <span class="hidden sm:inline">Quotation Cart</span>
-                        <span class="bg-amber-400 text-gray-950 text-[10px] font-black px-2 py-0.5 rounded-full"
-                            x-text="cartTotalCount">0</span>
-                    </button>
-
+                <!-- Actions (Mobile Toggle Only) -->
+                <div class="flex items-center">
                     <button type="button" x-on:click="mobileMenuOpen = !mobileMenuOpen"
                         class="md:hidden p-2.5 rounded-2xl bg-gray-100 hover:bg-gray-200 text-gray-700 transition cursor-pointer"
                         aria-label="Toggle navigation menu">
@@ -266,55 +246,11 @@
                 </div>
 
             </div>
-
-            <!-- Desktop Search Field -->
-            <div x-show="searchOpen" x-cloak class="hidden lg:block pb-4" x-transition>
-                <div class="relative">
-                    <input type="search" placeholder="Search for products..." x-model="searchQuery"
-                        x-on:input.debounce.500ms="searchProducts"
-                        x-on:keydown.escape="searchOpen = false; searchResults = []"
-                        class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-800">
-                    <div x-show="searchResults.length > 0"
-                        class="absolute top-full mt-2 w-full bg-white shadow-2xl rounded-2xl border border-gray-100 max-h-96 overflow-y-auto z-50">
-                        <template x-for="product in searchResults" :key="product.id">
-                            <a :href="'/product/' + product.slug"
-                                class="flex items-center gap-3 p-3 hover:bg-gray-50 transition border-b border-gray-50 last:border-0">
-                                <img :src="product.image" :alt="product.name" class="w-12 h-12 object-cover rounded-lg"
-                                    onerror="this.src='{{ asset('images/default-product.webp') }}'">
-                                <div>
-                                    <p class="text-xs font-bold text-gray-900" x-text="product.name"></p>
-                                    <p class="text-[10px] text-gray-500" x-text="'₹' + product.price"></p>
-                                </div>
-                            </a>
-                        </template>
-                    </div>
-                </div>
-            </div>
         </div>
 
         <!-- Mobile Dropdown Menu -->
         <div x-show="mobileMenuOpen" x-cloak
             class="md:hidden bg-white border-b border-gray-200 px-5 py-4 space-y-3 shadow-lg">
-            <div class="relative mb-3">
-                <input type="search" placeholder="Search products..." x-model="searchQuery"
-                    x-on:input.debounce.500ms="searchProducts"
-                    class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-green-800">
-                <div x-show="searchResults.length > 0"
-                    class="absolute top-full mt-1 w-full bg-white shadow-2xl rounded-xl border border-gray-100 max-h-60 overflow-y-auto z-50">
-                    <template x-for="product in searchResults" :key="product.id">
-                        <a :href="'/product/' + product.slug" x-on:click="mobileMenuOpen = false; searchResults = []"
-                            class="flex items-center gap-2 p-2.5 hover:bg-gray-50 transition border-b border-gray-50 last:border-0">
-                            <img :src="product.image" :alt="product.name" class="w-10 h-10 object-cover rounded-lg"
-                                onerror="this.src='{{ asset('images/default-product.webp') }}'">
-                            <div>
-                                <p class="text-xs font-bold text-gray-900" x-text="product.name"></p>
-                                <p class="text-[10px] text-gray-500" x-text="'₹' + product.price"></p>
-                            </div>
-                        </a>
-                    </template>
-                </div>
-            </div>
-
             <a href="{{ route('home') }}" x-on:click="mobileMenuOpen = false"
                 class="flex items-center justify-between py-2.5 text-xs font-black uppercase text-gray-800 border-b border-gray-100">
                 <span>🏡 Home</span><span>→</span>
@@ -322,10 +258,6 @@
             <a href="{{ route('shop') }}" x-on:click="mobileMenuOpen = false"
                 class="flex items-center justify-between py-2.5 text-xs font-black uppercase text-green-900 border-b border-gray-100">
                 <span>🛒 Product Catalog</span><span>→</span>
-            </a>
-            <a href="{{ route('customer.account') }}" x-on:click="mobileMenuOpen = false"
-                class="flex items-center justify-between py-2.5 text-xs font-black uppercase text-gray-800 border-b border-gray-100">
-                <span>📦 Track Quotation / Order</span><span>→</span>
             </a>
             <a href="{{ route('about') }}" x-on:click="mobileMenuOpen = false"
                 class="flex items-center justify-between py-2.5 text-xs font-black uppercase text-gray-800 border-b border-gray-100">
@@ -337,7 +269,6 @@
             </a>
         </div>
     </header>
-
     <!-- Main Content -->
     <main class="flex-1" id="main-content">
         @yield('content')
@@ -362,6 +293,9 @@
             <span class="text-lg">💬</span>
             <span>WhatsApp</span>
         </a>
+
+        {{-- Step 1: Mobile Bottom Bar Cart Button - hidden until cart is re-enabled --}}
+        {{--
         <button type="button" x-on:click="cartOpen = true"
             class="flex flex-col items-center gap-0.5 text-[10px] font-black text-green-900 relative cursor-pointer">
             <span class="text-lg">🛍️</span>
@@ -370,8 +304,11 @@
                 class="absolute -top-1 right-1 bg-amber-400 text-gray-950 text-[9px] font-black px-1.5 py-0.2 rounded-full"
                 x-text="cartTotalCount">0</span>
         </button>
+        --}}
     </div>
 
+    {{-- Step 2: Quotation Cart Slide-Over Drawer - hidden until cart is re-enabled --}}
+    {{--
     <!-- Quotation Cart Slide-Over Drawer -->
     <div x-show="cartOpen" x-cloak class="fixed inset-0 z-50 overflow-hidden"
         x-on:keydown.escape.window="cartOpen = false">
@@ -510,6 +447,7 @@
             </div>
         </div>
     </div>
+    --}}
 
     <!-- Order Placed Success Modal -->
     <div x-show="orderSuccessModal" x-cloak
@@ -584,174 +522,4 @@
                 </h4>
                 <p>Phone: +{{ $adminPhone }}</p>
                 <p>Location: Morjim, Goa 403512</p>
-                <a href="{{ route('admin.dashboard') }}" class="text-green-400 hover:underline block pt-2">Admin Portal
-                    ↗</a>
-            </div>
-        </div>
-        <div class="border-t border-green-900 py-4 text-center text-[10px] text-green-400">
-            <p>&copy; {{ date('Y') }} Dev Can Fruit Products (PatSons Foods Goa). All Rights Reserved.</p>
-        </div>
-    </footer>
-
-    <!-- Global Cart Script -->
-    <script>
-        function cartManager() {
-            return {
-                cartOpen: false,
-                orderSuccessModal: false,
-                placedOrderNumber: '',
-                placedRedirectUrl: '{{ route('customer.account') }}',
-                isSubmitting: false,
-                step: 'phone',
-                customerPhone: '{{ session('customer_phone', '') }}',
-                otpCode: '',
-                customerName: '',
-                deliveryAddress: '',
-                cartItems: JSON.parse(localStorage.getItem('patsons_cart') || '[]'),
-
-                get cartTotalCount() {
-                    return this.cartItems.reduce((sum, item) => sum + (item.quantity || 1), 0);
-                },
-                get cartTotalAmount() {
-                    return this.cartItems.reduce((sum, item) => sum + ((item.price || 0) * (item.quantity || 1)), 0);
-                },
-                saveCart() {
-                    localStorage.setItem('patsons_cart', JSON.stringify(this.cartItems));
-                },
-                addToCart(id, name, price, size, image) {
-                    let existing = this.cartItems.find(i => i.id === id);
-                    if (existing) {
-                        existing.quantity = (existing.quantity || 1) + 1;
-                    } else {
-                        this.cartItems.push({ id, name, price, size, image, quantity: 1 });
-                    }
-                    this.saveCart();
-                    this.cartOpen = true;
-                },
-                incrementQty(idx) {
-                    this.cartItems[idx].quantity++;
-                    this.saveCart();
-                },
-                decrementQty(idx) {
-                    if (this.cartItems[idx].quantity > 1) {
-                        this.cartItems[idx].quantity--;
-                    } else {
-                        this.removeItem(idx);
-                    }
-                    this.saveCart();
-                },
-                removeItem(idx) {
-                    this.cartItems.splice(idx, 1);
-                    this.saveCart();
-                },
-                async requestOtp() {
-                    if (!this.customerPhone || this.customerPhone.trim().length < 10) {
-                        alert('Please enter a valid 10-digit WhatsApp number.');
-                        return;
-                    }
-                    this.isSubmitting = true;
-                    try {
-                        let res = await fetch('{{ route('order.sendOtp') }}', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-                            body: JSON.stringify({ phone: this.customerPhone })
-                        });
-                        let data = await res.json();
-                        if (data.status === 'success') {
-                            if (data.existing_name) this.customerName = data.existing_name;
-                            if (data.existing_address) this.deliveryAddress = data.existing_address;
-                            this.step = 'otp';
-                        } else {
-                            alert(data.message || 'Failed to send OTP.');
-                        }
-                    } catch (e) {
-                        alert('Error sending OTP: ' + e.message);
-                    } finally {
-                        this.isSubmitting = false;
-                    }
-                },
-                async verifyOtpCode() {
-                    if (!this.otpCode || this.otpCode.trim().length !== 4) {
-                        alert('Please enter the 4-digit code sent to your WhatsApp.');
-                        return;
-                    }
-                    this.isSubmitting = true;
-                    try {
-                        let res = await fetch('{{ route('order.verifyOtp') }}', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-                            body: JSON.stringify({ phone: this.customerPhone, otp: this.otpCode })
-                        });
-                        let data = await res.json();
-                        if (data.status === 'success') {
-                            this.step = 'details';
-                        } else {
-                            alert(data.message || 'Invalid OTP code.');
-                        }
-                    } catch (e) {
-                        alert('Verification failed: ' + e.message);
-                    } finally {
-                        this.isSubmitting = false;
-                    }
-                },
-                async submitFinalOrder() {
-                    if (!this.customerName.trim()) {
-                        alert('Please enter your name.');
-                        return;
-                    }
-                    if (!this.deliveryAddress.trim()) {
-                        alert('Please provide your delivery address or location.');
-                        return;
-                    }
-                    this.isSubmitting = true;
-                    try {
-                        let res = await fetch('{{ route('order.store') }}', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-                            body: JSON.stringify({
-                                customer_phone: this.customerPhone,
-                                customer_name: this.customerName,
-                                delivery_address: this.deliveryAddress,
-                                cart_items: this.cartItems
-                            })
-                        });
-                        let data = await res.json();
-                        if (data.status === 'success') {
-                            this.cartItems = [];
-                            this.saveCart();
-                            this.cartOpen = false;
-                            this.step = 'phone';
-                            this.otpCode = '';
-                            this.placedOrderNumber = data.order_number || '';
-                            if (data.redirect_url) this.placedRedirectUrl = data.redirect_url;
-                            this.orderSuccessModal = true;
-                        } else {
-                            alert(data.message || 'Failed to place order.');
-                        }
-                    } catch (e) {
-                        alert('Error submitting order: ' + e.message);
-                    } finally {
-                        this.isSubmitting = false;
-                    }
-                },
-                async searchProducts() {
-                    if (!this.searchQuery || this.searchQuery.trim().length < 2) {
-                        this.searchResults = [];
-                        return;
-                    }
-                    try {
-                        let res = await fetch(`{{ $searchRoute }}?q=${encodeURIComponent(this.searchQuery)}`);
-                        let data = await res.json();
-                        this.searchResults = data.products || [];
-                    } catch (e) {
-                        this.searchResults = [];
-                    }
-                }
-            };
-        }
-    </script>
-
-    @stack('scripts')
-</body>
-
-</html>
+                <a href

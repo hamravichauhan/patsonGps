@@ -3,7 +3,7 @@
 @section('meta_title', $product->product_name . ' - Wholesale Carton / Box Price | PatSons Foods Goa')
 @section('meta_description', \Illuminate\Support\Str::limit(strip_tags($product->description ?? 'Order authentic Goan ' . $product->product_name . ' in wholesale cartons/boxes direct from Dev Can Fruit Products, Morjim factory.'), 155))
 @section('meta_keywords', $product->product_name . ', ' . $product->category . ', Goan wholesale boxes, PatSons Foods Morjim, wholesale Goa syrups cartons')
-@section('og_image', (!empty($product->image) && $product->image !== 'default-product.webp') ? asset('images/products/' . $product->image) : asset('images/LOGO.webp'))
+@section('og_image', (!empty($product->image) && $product->image !== 'default-product.webp') ? asset('images/products/' . $product->image) : asset('images/logo1.webp'))
 @section('og_type', 'product')
 
 @push('schema')
@@ -53,7 +53,7 @@
                     "@id" => url()->current() . "#product",
                     "name" => $product->product_name,
                     "image" => [
-                        (!empty($product->image) && $product->image !== 'default-product.webp') ? asset('images/products/' . $product->image) : asset('images/LOGO.webp')
+                        (!empty($product->image) && $product->image !== 'default-product.webp') ? asset('images/products/' . $product->image) : asset('images/logo1.webp')
                     ],
                     "description" => strip_tags($product->description ?? $product->product_name),
                     "brand" => [
@@ -82,8 +82,8 @@
         ];
     @endphp
     <script type="application/ld+json">
-                {!! json_encode($schemaData, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) !!}
-            </script>
+                                    {!! json_encode($schemaData, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) !!}
+                                </script>
 @endpush
 
 @section('content')
@@ -186,10 +186,13 @@
                         </div>
                     </template>
 
+                    {{-- Added-to-cart toast: disabled until cart is re-enabled --}}
+                    {{--
                     <div x-show="addedToast" x-cloak x-transition
                         class="absolute inset-0 bg-green-900/90 backdrop-blur-xs flex items-center justify-center text-white font-bold text-sm z-30 rounded-3xl">
                         ✓ Added Wholesale Box to Quotation Cart!
                     </div>
+                    --}}
                 </div>
 
                 <!-- Thumbnails Strip -->
@@ -283,49 +286,61 @@
 
                 <!-- Call to Actions -->
                 <div class="pt-4 border-t border-gray-100 flex flex-col sm:flex-row gap-3">
-                    <button type="button" x-on:click="triggerAdd()"
+                    {{-- Add to Cart: temporarily disabled - will be re-enabled in future --}}
+                    {{-- <button type="button" x-on:click="triggerAdd()"
                         class="flex-1 bg-green-800 hover:bg-green-900 active:scale-98 text-white font-extrabold py-3.5 px-6 rounded-2xl text-xs sm:text-sm shadow-md transition flex items-center justify-center gap-2 cursor-pointer">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                         </svg>
                         <span>+ Add Box to Quotation Cart</span>
-                    </button>
+                    </button> --}}
 
-                    <a :href="'https://wa.me/{{ $adminWa }}?text=' + encodeURIComponent('Hello PatSons Goa! Inquiring for wholesale boxes of: {{ addslashes($product->product_name) }} (' + selectedSize + ', Box of ' + selectedUnitsPerBox + ') - ₹' + boxPrice.toFixed(2) + ' per box')"
-                        target="_blank" rel="noopener noreferrer"
-                        class="bg-amber-400 hover:bg-amber-300 active:scale-98 text-gray-950 font-black py-3.5 px-6 rounded-2xl text-xs sm:text-sm shadow transition flex items-center justify-center gap-1.5 text-center cursor-pointer">
-                        <span>💬 Instant WhatsApp Quote</span>
-                    </a>
+                    <!-- <a :href="'https://wa.me/{{ $adminWa }}?text=' + encodeURIComponent('Hello PatSons Goa! Inquiring for wholesale boxes of: {{ addslashes($product->product_name) }} (' + selectedSize + ', Box of ' + selectedUnitsPerBox + ') - ₹' + boxPrice.toFixed(2) + ' per box')"
+                                    target="_blank" rel="noopener noreferrer"
+                                    class="flex-1 bg-amber-400 hover:bg-amber-300 active:scale-98 text-gray-950 font-black py-3.5 px-6 rounded-2xl text-xs sm:text-sm shadow transition flex items-center justify-center gap-1.5 text-center cursor-pointer">
+                                    <span>💬 Instant WhatsApp Quote</span>
+                                </a> -->
                 </div>
             </div>
         </div>
 
         <!-- Factory Quality & Manufacturer Highlights -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs">
-            <div class="bg-white p-5 rounded-3xl border border-stone-200/70 shadow-2xs">
-                <span class="text-xl block mb-1.5">🏭</span>
-                <h3 class="font-extrabold text-stone-900">Direct From Morjim Factory</h3>
-                <p class="text-stone-500 mt-1 leading-relaxed">
-                    Manufactured by <strong>Dev Can Fruit Products</strong>, Morjim, Pernem, Goa[cite: 2]. Direct wholesale
-                    carton distribution across Goa and India[cite: 1, 2].
-                </p>
+            <!-- Card 1: Heritage & Origin -->
+            <div class="bg-white p-5 rounded-3xl border border-stone-200/70 shadow-2xs flex flex-col justify-between">
+                <div>
+                    <span class="text-xl block mb-1.5">🏭</span>
+                    <h3 class="font-extrabold text-stone-900 text-sm">Direct From Morjim, Goa</h3>
+                    <p class="text-stone-500 mt-1 leading-relaxed">
+                        Manufactured by <strong>Dev Can Fruit Products</strong> at Morjim, Pernem, Goa. Crafted using
+                        authentic Goan heritage recipes and quality natural produce.
+                    </p>
+                </div>
             </div>
-            <div class="bg-white p-5 rounded-3xl border border-stone-200/70 shadow-2xs">
-                <span class="text-xl block mb-1.5">📜</span>
-                <h3 class="font-extrabold text-stone-900">FSSAI & GST Compliant</h3>
-                <p class="text-stone-500 mt-1 leading-relaxed">
-                    FSSAI Central Lic. <strong>10613001000730</strong>[cite: 2] & GSTIN
-                    <strong>30BAGPP8577A1ZS</strong>[cite: 2]. Verified pure ingredients with 36 years experience[cite: 2].
-                </p>
+
+            <!-- Card 2: Standards & Compliance -->
+            <div class="bg-white p-5 rounded-3xl border border-stone-200/70 shadow-2xs flex flex-col justify-between">
+                <div>
+                    <span class="text-xl block mb-1.5">📜</span>
+                    <h3 class="font-extrabold text-stone-900 text-sm">FSSAI Certified Quality</h3>
+                    <p class="text-stone-500 mt-1 leading-relaxed">
+                        FSSAI Central Lic. No. <strong>10613001000730</strong>. Hygienically processed and standard-tested
+                        fruit products with zero compromise on taste and purity.
+                    </p>
+                </div>
             </div>
-            <div class="bg-white p-5 rounded-3xl border border-stone-200/70 shadow-2xs">
-                <span class="text-xl block mb-1.5">📦</span>
-                <h3 class="font-extrabold text-stone-900">Heavy Corrugated Box Packing</h3>
-                <p class="text-stone-500 mt-1 leading-relaxed">
-                    Hygienically packaged in factory-sealed cartons for safe HoReCa, catering, distributor, and retail
-                    transit[cite: 1, 2].
-                </p>
+
+            <!-- Card 3: Supply & Inquiry -->
+            <div class="bg-white p-5 rounded-3xl border border-stone-200/70 shadow-2xs flex flex-col justify-between">
+                <div>
+                    <span class="text-xl block mb-1.5">📦</span>
+                    <h3 class="font-extrabold text-stone-900 text-sm">Retail & Bulk Inquiries</h3>
+                    <p class="text-stone-500 mt-1 leading-relaxed">
+                        Securely packed in durable cartons suitable for retail, distribution, and HoReCa partners across Goa
+                        and beyond.
+                    </p>
+                </div>
             </div>
         </div>
 
@@ -377,7 +392,7 @@
                 variants: @json($variants),
                 gallery: @json($galleryImages ?? []),
                 activeImageIndex: 0,
-                addedToast: false,
+                // addedToast: false, // disabled until cart is re-enabled
                 lightboxOpen: false,
 
                 get boxPrice() {
@@ -412,29 +427,30 @@
                     this.selectedPrice = Number(v.price);
                     this.selectedUnitsPerBox = Number(v.units_per_box || 12);
                     this.selectedSize = v.size;
-                },
-
-                triggerAdd() {
-                    const calculatedBoxPrice = this.boxPrice;
-                    const packLabel = this.selectedSize + ' (Box of ' + this.selectedUnitsPerBox + ')';
-
-                    if (typeof addToCart === 'function') {
-                        addToCart(this.selectedId, @json($product->product_name), calculatedBoxPrice, packLabel);
-                    } else {
-                        window.dispatchEvent(new CustomEvent('add-to-cart', {
-                            detail: {
-                                id: this.selectedId,
-                                name: @json($product->product_name),
-                                price: calculatedBoxPrice,
-                                size: packLabel,
-                                units_per_box: this.selectedUnitsPerBox,
-                                image: this.currentImage
-                            }
-                        }));
-                    }
-                    this.addedToast = true;
-                    setTimeout(() => this.addedToast = false, 1800);
                 }
+
+                // Add to Cart: temporarily disabled - will be re-enabled in future
+                // triggerAdd() {
+                //     const calculatedBoxPrice = this.boxPrice;
+                //     const packLabel = this.selectedSize + ' (Box of ' + this.selectedUnitsPerBox + ')';
+                //
+                //     if (typeof addToCart === 'function') {
+                //         addToCart(this.selectedId, @json($product->product_name), calculatedBoxPrice, packLabel);
+                //     } else {
+                //         window.dispatchEvent(new CustomEvent('add-to-cart', {
+                //             detail: {
+                //                 id: this.selectedId,
+                //                 name: @json($product->product_name),
+                //                 price: calculatedBoxPrice,
+                //                 size: packLabel,
+                //                 units_per_box: this.selectedUnitsPerBox,
+                //                 image: this.currentImage
+                //             }
+                //         }));
+                //     }
+                //     this.addedToast = true;
+                //     setTimeout(() => this.addedToast = false, 1800);
+                // }
             };
         }
     </script>

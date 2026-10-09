@@ -80,32 +80,24 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 sm:gap-6">
                 @foreach($products as $slug => $variants)
                     @php 
-                                                    $primary = $variants->first();
+                                                                    $primary = $variants->first();
                         $gallery = isset($variants->galleryImages) && !empty($variants->galleryImages) ? $variants->galleryImages : [$primary->image ?? 'default-product.webp'];
                     @endphp
 
                     <div class="group bg-white rounded-3xl border border-gray-200 hover:border-emerald-300 shadow-2xs hover:shadow-xl transition-all duration-300 p-4 sm:p-5 flex flex-col justify-between"
                         x-data="{
-                                                 selectedId: {{ $primary->id }},
-                                                 selectedPrice: {{ $primary->price }},
-                                                 selectedSize: '{{ $primary->size }}',
-                                                 selectedImage: '{{ $primary->image ?? 'default-product.webp' }}',
-                                                 variants: {{ $variants->toJson() }},
-                                                 addedToast: false,
-                                                 setVariant(v) {
-                                                     this.selectedId = v.id;
-                                                     this.selectedPrice = v.price;
-                                                     this.selectedSize = v.size;
-                                                     if (v.image) this.selectedImage = v.image;
-                                                 },
-                                                 triggerAdd() {
-                                                     if (typeof addToCart === 'function') {
-                                                         addToCart(this.selectedId, '{{ addslashes($primary->product_name) }}', Number(this.selectedPrice), this.selectedSize);
-                                                     }
-                                                     this.addedToast = true;
-                                                     setTimeout(() => this.addedToast = false, 1500);
-                                                 }
-                                             }">
+                                                             selectedId: {{ $primary->id }},
+                                                             selectedPrice: {{ $primary->price }},
+                                                             selectedSize: '{{ $primary->size }}',
+                                                             selectedImage: '{{ $primary->image ?? 'default-product.webp' }}',
+                                                             variants: {{ $variants->toJson() }},
+                                                             setVariant(v) {
+                                                                 this.selectedId = v.id;
+                                                                 this.selectedPrice = v.price;
+                                                                 this.selectedSize = v.size;
+                                                                 if (v.image) this.selectedImage = v.image;
+                                                             }
+                                                         }">
 
                         <div>
                             <!-- Large Image Showcase Frame with Multi-Angle Indicator -->
@@ -134,12 +126,6 @@
                                             {{ count($gallery) }} Photos 📸
                                         </span>
                                     @endif
-
-                                    <!-- Quick Cart Added Toast Overlay -->
-                                    <div x-show="addedToast" x-cloak x-transition
-                                        class="absolute inset-0 bg-green-900/90 backdrop-blur-xs flex items-center justify-center text-white font-black text-xs z-20 rounded-2xl">
-                                        ✓ Added to Cart!
-                                    </div>
                                 </div>
                             </a>
 
@@ -172,8 +158,8 @@
                             </div>
                         </div>
 
-                        <!-- Price & Action CTA Buttons -->
-                        <div class="mt-4 pt-3 border-t border-gray-100 space-y-2">
+                        <!-- Price Row (No CTA buttons while cart + quote are disabled) -->
+                        <div class="mt-4 pt-3 border-t border-gray-100">
                             <div class="flex items-baseline justify-between">
                                 <div>
                                     <span class="text-[9px] text-gray-400 font-bold uppercase block leading-none">Price per
@@ -184,21 +170,6 @@
                                 <span class="text-[10px] text-emerald-700 font-black bg-emerald-50 px-2 py-0.5 rounded-md">
                                     ● In Stock
                                 </span>
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-2 pt-1">
-                                <!-- Quick Add to Cart -->
-                                <button type="button" @click="triggerAdd()"
-                                    class="bg-green-900 hover:bg-green-800 active:scale-95 text-white text-xs font-black py-2.5 px-3 rounded-xl shadow-xs transition flex items-center justify-center gap-1">
-                                    <span>+</span> <span>Add</span>
-                                </button>
-
-                                <!-- Direct WhatsApp Quote -->
-                                <a :href="'https://wa.me/{{ $adminWa }}?text=' + encodeURIComponent('Hello PatSons Goa! Inquiring about: {{ addslashes($primary->product_name) }} (' + selectedSize + ') - ₹' + Number(selectedPrice).toFixed(2))"
-                                    target="_blank"
-                                    class="bg-amber-400 hover:bg-amber-300 active:scale-95 text-gray-950 text-xs font-black py-2.5 px-2 rounded-xl shadow-xs transition flex items-center justify-center gap-1 text-center">
-                                    <span>💬 Quote</span>
-                                </a>
                             </div>
                         </div>
 
