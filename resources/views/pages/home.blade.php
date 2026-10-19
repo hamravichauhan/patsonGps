@@ -1,8 +1,54 @@
 @extends('layouts.app')
 
-@section('meta_title', 'PatSons Foods Goa - Wholesale Factory Box Packing | Authentic Kokum, Jams & Syrups')
-@section('meta_description', 'Wholesale cartons and boxes of pure Goan Kokum Agal, Cashew Fruit Jams, bar cordials, and fruit squashes direct from Dev Can Fruit Products, Morjim, Goa.')
-@section('meta_keywords', 'PatSons Foods Goa, Goan Kokum Agal wholesale, Cashew Jam cartons, Kokum Syrup box pack, Morjim factory wholesale')
+@section('meta_title', 'PatSons Foods Goa | Wholesale Goan Kokum, Cashew Jams & Fruit Syrups')
+@section('meta_description', 'Authentic Goan Kokum Agal, handcrafted Cashew Fruit Jams, herbal digestifs, and fruit squashes direct from Dev Can Fruit Products factory, Morjim, Pernem - Goa. Sealed wholesale box packs.')
+@section('meta_keywords', 'PatSons Foods Goa, Dev Can Fruit Products, Goan Kokum Agal wholesale, Cashew Jam cartons, Kokum Syrup box pack, Morjim factory wholesale, Sol Kadhi extract Goa, bar syrups Goa')
+
+@push('schema')
+@php
+    $faqSchema = [
+        "@context" => "https://schema.org",
+        "@type" => "FAQPage",
+        "mainEntity" => [
+            [
+                "@type" => "Question",
+                "name" => "What authentic Goan food products does PatSons Foods manufacture?",
+                "acceptedAnswer" => [
+                    "@type" => "Answer",
+                    "text" => "PatSons Foods (Dev Can Fruit Products) manufactures authentic Goan Kokum Agal (pure Sol Kadhi extract), Cashew Fruit Jams (Cashew Mango, Cashew Pineapple, Cashew Strawberry), Kokum Squash, Pachak Appetizer Crush, and a premium line of bar syrups including Blue Curacao, Grenadine, and Lime Ginger."
+                ]
+            ],
+            [
+                "@type" => "Question",
+                "name" => "Where is PatSons Foods located in Goa?",
+                "acceptedAnswer" => [
+                    "@type" => "Answer",
+                    "text" => "Our family-run manufacturing unit is based in Morjim, Pernem, Goa — 403512, operating under FSSAI license 10613001000730 since 1990."
+                ]
+            ],
+            [
+                "@type" => "Question",
+                "name" => "Do you supply wholesale cartons to hotels, restaurants, and supermarkets in Goa?",
+                "acceptedAnswer" => [
+                    "@type" => "Answer",
+                    "text" => "Yes! We supply sealed wholesale box cartons and commercial food service packaging to hotels, restaurants, cafes (HoReCa), supermarkets, and retail distributors across Goa and pan-India."
+                ]
+            ],
+            [
+                "@type" => "Question",
+                "name" => "How can I place a wholesale order or request trade pricing?",
+                "acceptedAnswer" => [
+                    "@type" => "Answer",
+                    "text" => "You can browse our wholesale catalog on this website or chat directly with our Morjim factory sales team via WhatsApp for instant carton and drum rate inquiries."
+                ]
+            ]
+        ]
+    ];
+@endphp
+<script type="application/ld+json">
+{!! json_encode($faqSchema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) !!}
+</script>
+@endpush
 
 @section('content')
     @php
@@ -17,8 +63,11 @@
                 class="relative overflow-hidden rounded-3xl shadow-xl border border-stone-200 bg-stone-900 min-h-[380px] sm:min-h-[460px] lg:min-h-[520px] flex items-center justify-start">
 
                 <!-- Full High-Res Brand Banner Background -->
-                <img src="{{ file_exists(public_path('images/banner.webp')) ? asset('images/banner.webp') : (file_exists(public_path('banner.webp')) ? asset('banner.webp') : asset('images/products/default-product.webp')) }}"
-                    alt="PatSons Foods Goa"
+                <img src="{{ file_exists(public_path('images/banner.webp')) ? asset('images/banner.webp') : (file_exists(public_path('images/Products/banner.webp')) ? asset('images/Products/banner.webp') : asset('images/products/default-product.webp')) }}"
+                    alt="PatSons Foods Goa - Authentic Goan Kokum Agal, Cashew Jams and Fruit Syrups"
+                    width="1600" height="700"
+                    fetchpriority="high"
+                    decoding="async"
                     class="absolute inset-0 w-full h-full object-cover object-center scale-110 transition-transform duration-700 pointer-events-none select-none z-0">
 
                 <!-- Subtle Dark Tint for Text Readability -->
@@ -155,6 +204,7 @@
                                     class="relative w-full h-52 bg-stone-50 rounded-2xl overflow-hidden mb-4 flex items-center justify-center p-4 border border-stone-200/50">
                                     <img :src="'/images/products/' + selectedImage" alt="{{ $primary->product_name }}"
                                         onerror="this.src='/images/products/default-product.webp'"
+                                        width="400" height="400"
                                         class="max-h-44 max-w-full object-contain filter drop-shadow-sm transition-transform duration-300 hover:scale-105"
                                         loading="lazy">
                                     <span
@@ -196,11 +246,35 @@
                             </div>
                         </div>
 
-                        <!-- Wholesale Box Price (Add Box button removed while cart is disabled) -->
+                        <!-- Wholesale Box Price & Action Buttons -->
                         <div class="mt-4 pt-3.5 border-t border-gray-100">
-                            <span class="text-[9px] text-gray-400 font-bold uppercase block">Per Box (<span
-                                    x-text="selectedUnitsPerBox"></span> pcs)</span>
-                            <span class="text-xl font-black text-green-900">₹<span x-text="boxPrice.toFixed(2)"></span></span>
+                            <div class="flex items-baseline justify-between mb-3">
+                                <div>
+                                    <span class="text-[9px] text-gray-400 font-bold uppercase block">Per Box (<span
+                                            x-text="selectedUnitsPerBox"></span> pcs)</span>
+                                    <span class="text-xl font-black text-green-900">₹<span x-text="boxPrice.toFixed(2)"></span></span>
+                                </div>
+                                <span class="text-[10px] text-emerald-700 font-black bg-emerald-50 px-2 py-0.5 rounded-md">
+                                    ● Factory Direct
+                                </span>
+                            </div>
+
+                            <div class="flex items-center gap-2">
+                                <button type="button"
+                                    @click="$dispatch('add-to-cart', { id: selectedId, name: '{{ addslashes($primary->product_name) }}', price: boxPrice, size: selectedSize + ' (Box of ' + selectedUnitsPerBox + ')', image: selectedImage })"
+                                    class="flex-1 bg-green-900 hover:bg-green-800 text-white font-black text-xs py-2.5 px-3 rounded-xl shadow-xs transition active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer">
+                                    <span>🛍️</span>
+                                    <span>+ Add Box</span>
+                                </button>
+                                <a :href="'https://wa.me/{{ $adminWa }}?text=' + encodeURIComponent('Hello PatSons! I want to inquire about wholesale box of: {{ addslashes($primary->product_name) }} (' + selectedSize + ', Box of ' + selectedUnitsPerBox + ') - ₹' + boxPrice.toFixed(2))"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-800 font-black text-xs py-2.5 px-3 rounded-xl transition active:scale-95 flex items-center justify-center gap-1 cursor-pointer"
+                                    title="WhatsApp Quote">
+                                    <span>💬</span>
+                                    <span class="hidden sm:inline">Quote</span>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 @endforeach
@@ -208,50 +282,88 @@
         </section>
 
 
-        <!-- ==================== 4. HOW ORDERING WORKS ==================== -->
-        <!-- <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                                <div class="bg-stone-100/70 border border-stone-200 rounded-3xl p-6 sm:p-10">
-                                    <div class="text-center max-w-xl mx-auto mb-8">
-                                        <h2 class="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">
-                                            Simple Wholesale Ordering
-                                        </h2>
-                                        <p class="text-xs text-gray-500 mt-1">Get sealed factory cartons direct from our Morjim facility in 3
-                                            steps.</p>
-                                    </div>
+        <!-- ==================== 4. SEO CONTENT BLOCK ==================== -->
+        <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="space-y-4 text-xs sm:text-sm text-gray-600 leading-relaxed">
+                <h2 class="text-xl sm:text-2xl font-black text-gray-900">Authentic Goan Wholesale Food Products</h2>
+                <p>
+                    PatSons Foods is the retail and wholesale brand of <strong>Dev Can Fruit Products</strong>, a family-run
+                    fruit processing unit based in <strong>Morjim, Pernem — Goa</strong>. Since 1990, we've been making
+                    small-batch jams, syrups, crushes, and traditional Goan favourites using real fruit and time-tested
+                    recipes.
+                </p>
+                <p>
+                    Our most-loved products include <strong>Kokum Agal</strong> (pure extract for authentic Sol Kadhi),
+                    <strong>Cashew Fruit Jams</strong> in mango, pineapple, and strawberry, <strong>Kokum Squash</strong>,
+                    and our range of cocktail syrups like <strong>Blue Curacao</strong>, <strong>Lime Ginger</strong>, and
+                    <strong>Rose Falooda</strong>. Everything we sell is supplied in sealed wholesale cartons, direct from
+                    our Morjim factory.
+                </p>
+                <p>
+                    We supply hotels, restaurants, caterers, supermarkets, and distributors across Goa and India. Whether
+                    you're stocking a single shelf or ordering master cartons for HoReCa use, you'll get the same product
+                    that leaves our factory every morning — the same way it's been made here for over three decades.
+                </p>
+            </div>
+        </section>
 
-                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-                                        <div class="space-y-2 p-4 bg-white rounded-2xl border border-stone-200/60 shadow-xs">
-                                            <div
-                                                class="w-10 h-10 bg-green-900 text-white font-black rounded-xl flex items-center justify-center mx-auto text-sm">
-                                                1
-                                            </div>
-                                            <h3 class="font-bold text-sm text-gray-900">Choose Carton Packs</h3>
-                                            <p class="text-xs text-gray-500">Select box sizes and carton quantities in your quotation cart.</p>
-                                        </div>
+        <!-- ==================== 4.5 FREQUENTLY ASKED QUESTIONS (SEO ACCORDION) ==================== -->
+        <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4" x-data="{ openFaq: null }">
+            <div class="text-center mb-6">
+                <span class="text-[10px] font-extrabold text-green-900 uppercase tracking-widest bg-green-50 px-3 py-1 rounded-full">
+                    Frequently Asked Questions
+                </span>
+                <h2 class="text-xl sm:text-2xl font-black text-gray-900 tracking-tight mt-2">
+                    Everything You Need to Know About PatSons Foods
+                </h2>
+            </div>
 
-                                        <div class="space-y-2 p-4 bg-white rounded-2xl border border-stone-200/60 shadow-xs">
-                                            <div
-                                                class="w-10 h-10 bg-green-900 text-white font-black rounded-xl flex items-center justify-center mx-auto text-sm">
-                                                2
-                                            </div>
-                                            <h3 class="font-bold text-sm text-gray-900">Verify via WhatsApp</h3>
-                                            <p class="text-xs text-gray-500">Enter your business WhatsApp number to receive an instant
-                                                verification code.
-                                            </p>
-                                        </div>
+            <div class="space-y-3">
+                <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-2xs">
+                    <button type="button" @click="openFaq = openFaq === 1 ? null : 1"
+                        class="w-full px-5 py-4 text-left font-bold text-xs sm:text-sm text-gray-900 flex justify-between items-center transition hover:text-green-800">
+                        <span>What authentic Goan food products does PatSons Foods manufacture?</span>
+                        <span class="text-base text-gray-400 font-bold" x-text="openFaq === 1 ? '−' : '+'">+</span>
+                    </button>
+                    <div x-show="openFaq === 1" x-cloak class="px-5 pb-4 text-xs sm:text-sm text-gray-600 leading-relaxed border-t border-gray-100 pt-3">
+                        PatSons Foods (Dev Can Fruit Products) manufactures authentic Goan Kokum Agal (pure extract for authentic Sol Kadhi), Cashew Fruit Jams (Cashew Mango, Cashew Pineapple, Cashew Strawberry), Kokum Squash, Pachak Appetizer Crush, and a premium line of bar syrups including Blue Curacao, Grenadine, and Lime Ginger.
+                    </div>
+                </div>
 
-                                        <div class="space-y-2 p-4 bg-white rounded-2xl border border-stone-200/60 shadow-xs">
-                                            <div
-                                                class="w-10 h-10 bg-green-900 text-white font-black rounded-xl flex items-center justify-center mx-auto text-sm">
-                                                3
-                                            </div>
-                                            <h3 class="font-bold text-sm text-gray-900">Direct Dispatch</h3>
-                                            <p class="text-xs text-gray-500">Factory confirms batch availability, commercial invoice, and
-                                                transport dispatch.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </section> -->
+                <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-2xs">
+                    <button type="button" @click="openFaq = openFaq === 2 ? null : 2"
+                        class="w-full px-5 py-4 text-left font-bold text-xs sm:text-sm text-gray-900 flex justify-between items-center transition hover:text-green-800">
+                        <span>Where is PatSons Foods located in Goa?</span>
+                        <span class="text-base text-gray-400 font-bold" x-text="openFaq === 2 ? '−' : '+'">+</span>
+                    </button>
+                    <div x-show="openFaq === 2" x-cloak class="px-5 pb-4 text-xs sm:text-sm text-gray-600 leading-relaxed border-t border-gray-100 pt-3">
+                        Our family-run manufacturing unit is based in Morjim, Pernem, Goa — 403512, operating under FSSAI license 10613001000730 since 1990.
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-2xs">
+                    <button type="button" @click="openFaq = openFaq === 3 ? null : 3"
+                        class="w-full px-5 py-4 text-left font-bold text-xs sm:text-sm text-gray-900 flex justify-between items-center transition hover:text-green-800">
+                        <span>Do you supply wholesale cartons to hotels, restaurants, and supermarkets in Goa?</span>
+                        <span class="text-base text-gray-400 font-bold" x-text="openFaq === 3 ? '−' : '+'">+</span>
+                    </button>
+                    <div x-show="openFaq === 3" x-cloak class="px-5 pb-4 text-xs sm:text-sm text-gray-600 leading-relaxed border-t border-gray-100 pt-3">
+                        Yes! We supply sealed wholesale box cartons and commercial food service packaging to hotels, restaurants, cafes (HoReCa), supermarkets, and retail distributors across Goa and pan-India.
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-2xs">
+                    <button type="button" @click="openFaq = openFaq === 4 ? null : 4"
+                        class="w-full px-5 py-4 text-left font-bold text-xs sm:text-sm text-gray-900 flex justify-between items-center transition hover:text-green-800">
+                        <span>How can I place a wholesale order or request trade pricing?</span>
+                        <span class="text-base text-gray-400 font-bold" x-text="openFaq === 4 ? '−' : '+'">+</span>
+                    </button>
+                    <div x-show="openFaq === 4" x-cloak class="px-5 pb-4 text-xs sm:text-sm text-gray-600 leading-relaxed border-t border-gray-100 pt-3">
+                        You can browse our wholesale catalog on this website or chat directly with our Morjim factory sales team via WhatsApp for instant carton and drum rate inquiries.
+                    </div>
+                </div>
+            </div>
+        </section>
 
 
         <!-- ==================== 5. BULK INQUIRIES ==================== -->

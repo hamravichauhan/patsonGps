@@ -7,6 +7,7 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\CustomerAccountController;
+use App\Http\Controllers\SitemapController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,7 +27,10 @@ Route::get('/product/{slug}', [CatalogController::class, 'show'])->name('catalog
 Route::get('/about', [PageController::class, 'about'])->name('about');
 Route::get('/contact', [PageController::class, 'contact'])->name('contact');
 
-// 4. Multi-Language Switcher (EN, Konkani, Marathi, Hindi)
+// 4. SEO - XML Sitemap
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+
+// 5. Multi-Language Switcher (EN, Konkani, Marathi, Hindi)
 Route::get('/lang/{locale}', function ($locale) {
     if (in_array($locale, ['en', 'gom', 'mr', 'hi'])) {
         session(['locale' => $locale]);
@@ -45,7 +49,7 @@ Route::get('/track-order', [CustomerAccountController::class, 'index'])->name('c
 Route::get('/my-account', [CustomerAccountController::class, 'index']);
 
 // WhatsApp OTP Authentication for Tracking
-Route::post('/track-order/send-otp', [CustomerAccountController::class, 'sendOtp'])->name('customer.otp.send');
+Route::post('/track-order/send-otp', [CustomerAccountController::class, 'sendOtp'])->middleware('throttle:6,1')->name('customer.otp.send');
 Route::post('/track-order/verify-otp', [CustomerAccountController::class, 'verifyOtp'])->name('customer.otp.verify');
 
 // Fallback direct login & logout
@@ -63,7 +67,7 @@ Route::get('/api/reorder/{orderNumber}', [CustomerAccountController::class, 'loa
 */
 
 // OTP Verification Flow during Cart Drawer Checkout
-Route::post('/order/send-otp', [OrderController::class, 'sendOtp'])->name('order.sendOtp');
+Route::post('/order/send-otp', [OrderController::class, 'sendOtp'])->middleware('throttle:6,1')->name('order.sendOtp');
 Route::post('/order/verify-otp', [OrderController::class, 'verifyOtp'])->name('order.verifyOtp');
 
 // Order Submission Endpoints
@@ -93,16 +97,23 @@ Route::middleware(['auth', 'admin'])->prefix($adminPrefix)->name('admin.')->grou
     Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
     Route::get('/orders', [AdminController::class, 'orders'])->name('orders');
     Route::patch('/orders/{id}/status', [AdminController::class, 'updateOrderStatus'])->name('orders.status');
+    Route::get('/orders/{id}/invoice', [AdminController::class, 'printInvoice'])->name('orders.invoice');
 
     // Product Catalog CRUD & Store Visibility
     Route::get('/products', [AdminController::class, 'products'])->name('products');
+    Route::get('/products/export', [AdminController::class, 'exportCatalog'])->name('products.export');
+    Route::post('/products/bulk-action', [AdminController::class, 'bulkAction'])->name('products.bulkAction');
     Route::get('/products/create', [AdminController::class, 'createProduct'])->name('products.create');
     Route::post('/products', [AdminController::class, 'storeProduct'])->name('products.store');
+    Route::post('/products/{id}/duplicate', [AdminController::class, 'duplicateProduct'])->name('products.duplicate');
     Route::get('/products/{id}/edit', [AdminController::class, 'editProduct'])->name('products.edit');
     Route::put('/products/{id}', [AdminController::class, 'updateProduct'])->name('products.update');
     Route::delete('/products/{id}', [AdminController::class, 'deleteProduct'])->name('products.delete');
     Route::delete('/products/{id}/delete-image', [AdminController::class, 'deleteProductImage'])->name('products.deleteImage');
     Route::patch('/products/{id}/toggle-status', [AdminController::class, 'toggleProductStatus'])->name('products.toggleStatus');
+    Route::patch('/products/{id}/toggle-stock', [AdminController::class, 'toggleProductStock'])->name('products.toggleStock');
+    Route::patch('/products/{id}/toggle-featured', [AdminController::class, 'toggleProductFeatured'])->name('products.toggleFeatured');
+    Route::patch('/products/{id}/quick-update', [AdminController::class, 'quickUpdateVariant'])->name('products.quickUpdate');
 
     // Manual Image Status Tag Update Route
     Route::patch('/products/{id}/update-image-tag', [AdminController::class, 'updateImageTag'])->name('products.updateImageTag');
@@ -127,5 +138,3 @@ if ($adminPrefix !== 'admin') {
 }
 
 Route::get('/whatsapp/qr', [App\Http\Controllers\AdminController::class, 'getWhatsAppQr'])->name('admin.whatsapp.qr');
-
-Route::get('/sitemap.xml', [App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');

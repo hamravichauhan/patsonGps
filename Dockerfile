@@ -10,17 +10,21 @@ RUN npm run build
 # Stage 2: PHP Application Environment (PHP 8.5)
 FROM php:8.5-cli
 
-# Install system dependencies
+# Install system dependencies & PHP extensions (including GD with WebP support)
 RUN apt-get update && apt-get install -y \
     git \
     curl \
     unzip \
     libpng-dev \
+    libjpeg-dev \
+    libwebp-dev \
+    libfreetype6-dev \
     libonig-dev \
     libxml2-dev \
     zip \
     ca-certificates \
-    && docker-php-ext-install pdo_mysql mbstring bcmath
+    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
+    && docker-php-ext-install pdo_mysql mbstring bcmath gd
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer

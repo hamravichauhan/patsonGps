@@ -64,10 +64,15 @@
                                         {{ $o->status }}
                                     </span>
                                 </td>
-                                <td class="py-3.5 text-right">
+                                <td class="py-3.5 text-right whitespace-nowrap">
+                                    <a href="{{ route('admin.orders.invoice', $o->id) }}"
+                                        target="_blank"
+                                        class="inline-block bg-gray-900 hover:bg-black text-white px-2.5 py-1 rounded-xl text-[10px] font-bold mr-1">
+                                        🖨️ Challan
+                                    </a>
                                     <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $o->customer_phone) }}?text=Hello%20{{ urlencode($o->customer_name) }},%20this%20is%20PatSons%20Foods%20Goa%20regarding%20Order%20%23{{ $o->order_number }}."
                                         target="_blank"
-                                        class="inline-block bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded-xl text-[10px] font-bold">
+                                        class="inline-block bg-emerald-600 hover:bg-emerald-500 text-white px-2.5 py-1 rounded-xl text-[10px] font-bold">
                                         💬 WhatsApp
                                     </a>
                                 </td>

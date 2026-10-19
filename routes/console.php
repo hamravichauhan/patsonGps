@@ -1,6 +1,8 @@
 <?php
-use App\Http\Controllers\CatalogController;
-use Illuminate\Support\Facades\Route;
 
-Route::get('/', [CatalogController::class, 'index'])->name('catalog.index');
-Route::post('/send-order', [CatalogController::class, 'sendWhatsAppOrder'])->name('order.send');
+use Illuminate\Foundation\Inspiring;
+use Illuminate\Support\Facades\Artisan;
+
+Artisan::command('inspire', function () {
+    $this->comment(Inspiring::quote());
+})->purpose('Display an inspiring quote');

@@ -37,10 +37,17 @@
                 </div>
             </div>
 
-            <div>
-                <label class="block uppercase text-gray-400 mb-1">Price (₹)</label>
-                <input type="number" step="0.01" name="price" required placeholder="120.00"
-                    class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-800 outline-none focus:ring-2 focus:ring-green-800">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block uppercase text-gray-400 mb-1">Price per Unit (₹)</label>
+                    <input type="number" step="0.01" name="price" required placeholder="120.00"
+                        class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-800 outline-none focus:ring-2 focus:ring-green-800">
+                </div>
+                <div>
+                    <label class="block uppercase text-gray-400 mb-1">Units per Box / Case</label>
+                    <input type="number" name="units_per_box" required value="12" min="1" placeholder="12"
+                        class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-800 outline-none focus:ring-2 focus:ring-green-800">
+                </div>
             </div>
 
             <div>
@@ -49,9 +56,15 @@
                     class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-800 outline-none focus:ring-2 focus:ring-green-800"></textarea>
             </div>
 
-            <div>
-                <label class="block uppercase text-gray-400 mb-1">Product Photo</label>
-                <input type="file" name="image_file" accept="image/*" class="w-full text-xs text-gray-500">
+            <div class="bg-emerald-50/60 border border-emerald-200 rounded-2xl p-4 space-y-2">
+                <div class="flex items-center justify-between">
+                    <label class="block uppercase text-emerald-900 font-black text-[11px]">Product Photo</label>
+                    <span class="text-[10px] font-black uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">
+                        ✨ Auto WebP + Transparent BG
+                    </span>
+                </div>
+                <input type="file" name="primary_image" accept="image/*" class="w-full text-xs text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-emerald-700 file:text-white hover:file:bg-emerald-800 cursor-pointer">
+                <p class="text-[10px] text-gray-500 font-medium">Any format (PNG, JPEG, WebP) will automatically convert to WebP and have solid studio backgrounds removed.</p>
             </div>
 
             <div class="flex items-center gap-6 pt-2">

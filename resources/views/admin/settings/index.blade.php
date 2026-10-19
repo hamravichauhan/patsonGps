@@ -222,35 +222,57 @@
             modal.classList.remove('hidden');
             container.innerHTML = '<div class="flex flex-col items-center gap-2"><span class="w-6 h-6 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin"></span><span class="text-xs text-stone-500 font-medium">Fetching live session status...</span></div>';
 
-            try {
-                const res = await fetch("{{ route('admin.whatsapp.qr') }}");
-                const data = await res.json();
+            let attempts = 0;
+            async function fetchQR() {
+                try {
+                    const res = await fetch("{{ route('admin.whatsapp.qr') }}");
+                    const data = await res.json();
 
-                if (data.qrcode) {
-                    badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span><span>Scan QR Code</span>';
-                    badge.className = "inline-flex items-center gap-1.5 px-3 py-1 bg-white border border-amber-200 rounded-full text-[11px] font-bold text-amber-800 shadow-2xs";
-                    container.innerHTML = `<img src="${data.qrcode}" class="w-60 h-60 bg-white p-2.5 rounded-2xl shadow-md border border-stone-200 mx-auto" alt="WhatsApp Link QR">`;
-                } else if (data.state === 'CONNECTED' || data.state === 'inChat' || data.state === 'isLogged') {
-                    badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500"></span><span>Device Connected & Ready</span>';
-                    badge.className = "inline-flex items-center gap-1.5 px-3 py-1 bg-white border border-emerald-200 rounded-full text-[11px] font-bold text-emerald-800 shadow-2xs";
+                    if (data.connected || ['CONNECTED', 'inChat', 'isLogged', 'chatsAvailable', 'qrReadSuccess'].includes(data.state)) {
+                        badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500"></span><span>Device Connected & Ready</span>';
+                        badge.className = "inline-flex items-center gap-1.5 px-3 py-1 bg-white border border-emerald-200 rounded-full text-[11px] font-bold text-emerald-800 shadow-2xs";
+                        container.innerHTML = `
+                            <div class="bg-white p-5 rounded-2xl border border-emerald-200 shadow-xs max-w-sm mx-auto text-center space-y-2">
+                                <div class="text-4xl">✅</div>
+                                <h4 class="text-xs font-black text-emerald-900 uppercase">WhatsApp Gateway is Active</h4>
+                                <p class="text-[11px] text-stone-500">Your device is linked and synced. Quotation alerts and dispatch notifications are live!</p>
+                            </div>`;
+                    } else if (data.qrcode) {
+                        badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span><span>Ready to Scan</span>';
+                        badge.className = "inline-flex items-center gap-1.5 px-3 py-1 bg-white border border-amber-200 rounded-full text-[11px] font-bold text-amber-800 shadow-2xs";
+                        container.innerHTML = `
+                            <div class="space-y-3">
+                                <img src="${data.qrcode}" class="w-64 h-64 bg-white p-2.5 rounded-2xl shadow-lg border border-stone-200 mx-auto" alt="WhatsApp Link QR">
+                                <span class="text-[11px] text-gray-500 font-bold block animate-pulse">Point your WhatsApp camera at this QR code</span>
+                            </div>`;
+                        // Poll to detect pairing completion
+                        setTimeout(fetchQR, 3000);
+                    } else if (attempts < 10) {
+                        attempts++;
+                        container.innerHTML = `
+                            <div class="flex flex-col items-center gap-2 py-4">
+                                <span class="w-6 h-6 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin"></span>
+                                <span class="text-xs text-stone-600 font-bold">Launching WhatsApp engine & generating QR code (attempt ${attempts}/10)...</span>
+                            </div>`;
+                        setTimeout(fetchQR, 2000);
+                    } else {
+                        container.innerHTML = `
+                            <div class="bg-amber-50 p-4 rounded-xl border border-amber-200 text-xs text-amber-800 space-y-2">
+                                <p><strong>Status:</strong> ${data.state || 'Initializing'}. The gateway is starting up.</p>
+                                <button type="button" onclick="loadWhatsAppQR()" class="px-4 py-1.5 bg-amber-400 hover:bg-amber-300 font-black rounded-xl text-black cursor-pointer">↻ Try Again</button>
+                            </div>`;
+                    }
+                } catch (err) {
                     container.innerHTML = `
-                        <div class="bg-white p-5 rounded-2xl border border-emerald-200 shadow-xs max-w-sm mx-auto text-center space-y-1.5">
-                            <div class="text-3xl">✅</div>
-                            <h4 class="text-xs font-black text-emerald-900 uppercase">WhatsApp Gateway is Active</h4>
-                            <p class="text-[11px] text-stone-500">Your device is linked. Background OTPs and notifications are delivering normally.</p>
-                        </div>`;
-                } else {
-                    container.innerHTML = `
-                        <div class="bg-amber-50 p-4 rounded-xl border border-amber-200 text-xs text-amber-800">
-                            Status: <strong>${data.state || 'Initializing'}</strong>. Please verify that your gateway is running on port 21465.
+                        <div class="bg-red-50 p-4 rounded-xl border border-red-200 text-xs text-red-700 space-y-2">
+                            <p class="font-bold">⚠️ Gateway port 21465 is offline</p>
+                            <p>To start your free gateway, run: <code>cd patsons-wa-gateway && npm start</code></p>
+                            <button type="button" onclick="loadWhatsAppQR()" class="px-3 py-1 bg-gray-200 hover:bg-gray-300 font-bold rounded-lg text-black cursor-pointer">Retry Connection</button>
                         </div>`;
                 }
-            } catch (err) {
-                container.innerHTML = `
-                    <div class="bg-red-50 p-4 rounded-xl border border-red-200 text-xs text-red-700">
-                        Failed to reach WhatsApp Gateway. Ensure <code>npm start</code> is running in <code>patsons-wa-gateway</code>.
-                    </div>`;
             }
+
+            fetchQR();
         }
     </script>
 @endsection

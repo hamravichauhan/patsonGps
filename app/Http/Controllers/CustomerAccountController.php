@@ -110,7 +110,7 @@ class CustomerAccountController extends Controller
             . "Your 4-digit verification code is: *{$otp}*\n\n"
             . "Use this code to view your orders and quotation history. Valid for 10 minutes.";
 
-        $waService->sendMessage($cleanPhone, $msg);
+        $waService->queueMessage($cleanPhone, $msg);
 
         return response()->json([
             'status' => 'success',

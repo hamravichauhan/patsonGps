@@ -1,4 +1,12 @@
 {
+  "Home": "Home",
+  "Catalog": "Catalog",
+  "Heritage & Unit": "Heritage & Unit",
+  "Contact Us": "Contact Us",
+  "Track Order": "Track Order",
+  "Shop": "Shop",
+  "WhatsApp": "WhatsApp",
+  "Direct Order": "Direct Order",
   "Authentic Goan Foods": "Authentic Goan Foods",
   "Subtitle": "Pure Kokum Agal, Cashew Fruit Jams, Squashes, and authentic coastal specialties.",
   "Quick Reorder": "Quick Reorder",
@@ -8,10 +16,15 @@
   "All Products": "All Products",
   "Available Sizes": "Available Sizes:",
   "Price": "Price",
+  "Price per unit": "Price per unit",
+  "Per Box": "Per Box",
   "Add": "Add",
+  "Add Box to Cart": "Add Box to Cart",
+  "Instant WhatsApp Quote": "Instant WhatsApp Quote",
   "Popular": "Popular",
   "Quotation Cart": "Quotation Cart",
   "Cart Empty": "Your quotation cart is currently empty.",
+  "Browse Products": "Browse Products →",
   "Estimated Total": "Estimated Total:",
   "Proceed to WhatsApp": "Proceed to WhatsApp Quote →",
   "Full Name": "Full Name",
@@ -21,5 +34,7 @@
   "Weekly Standing Schedule": "Weekly Standing Schedule (Recurring)",
   "Delivery Address": "Delivery Address / Notes",
   "Cancel": "Cancel",
-  "Send to WhatsApp": "Send to WhatsApp →"
+  "Send to WhatsApp": "Send to WhatsApp →",
+  "In Stock": "In Stock",
+  "Wholesale Carton Only": "Wholesale Carton Only"
 }

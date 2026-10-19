@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\ProductCatalog;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
 class CatalogController extends Controller
 {
+    private static ?array $cachedDiskFiles = null;
+
     /**
      * Helper to find all available angle images for any product image string
      */
@@ -27,8 +30,8 @@ class CatalogController extends Controller
         $imagePath = public_path('images/products');
 
         if (File::isDirectory($imagePath)) {
-            $files = File::files($imagePath);
-            foreach ($files as $file) {
+            self::$cachedDiskFiles ??= File::files($imagePath);
+            foreach (self::$cachedDiskFiles as $file) {
                 $filename = $file->getFilename();
                 if (Str::startsWith($filename, $cleanPrefix) || Str::startsWith($filename, $baseName)) {
                     if (in_array(strtolower($file->getExtension()), ['webp', 'png', 'jpg', 'jpeg'])) {
@@ -81,9 +84,12 @@ class CatalogController extends Controller
             ->pluck('category')
             ->filter();
 
+        $adminPhone = Setting::get('whatsapp_admin_number', config('services.whatsapp.admin_number', '917758943614'));
+
         return view('catalog.index', [
             'products' => $productsWithGalleries,
-            'categories' => $categories
+            'categories' => $categories,
+            'adminPhone' => $adminPhone,
         ]);
     }
 
@@ -112,10 +118,14 @@ class CatalogController extends Controller
             $gallery = ['default-product.webp'];
         }
 
+        $adminPhone = Setting::get('whatsapp_admin_number', config('services.whatsapp.admin_number', '917758943614'));
+
         return view('catalog.show', [
             'product' => $product,
             'variants' => $variants,
             'galleryImages' => array_values($gallery),
+            'adminPhone' => $adminPhone,
+            'adminWa' => $adminPhone,
         ]);
     }
 }

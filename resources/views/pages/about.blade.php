@@ -2,6 +2,39 @@
 
 @section('meta_title', 'Our Heritage & Morjim Unit - Dev Can Fruit Products | PatSons Foods')
 @section('meta_description', 'The story behind PatSons Foods and Dev Can Fruit Products in Morjim, Goa — three decades of making real Goan jams, syrups and kokum the slow way.')
+@section('meta_keywords', 'Dev Can Fruit Products, PatSons Foods story, Vivek Laxman Patki, Morjim fruit processing, authentic Goan food heritage, Morjim factory Goa')
+
+@push('schema')
+@php
+    $aboutSchema = [
+        "@context" => "https://schema.org",
+        "@type" => "AboutPage",
+        "name" => "Our Heritage & Morjim Unit - Dev Can Fruit Products | PatSons Foods",
+        "description" => "The story behind PatSons Foods and Dev Can Fruit Products in Morjim, Goa — three decades of making real Goan jams, syrups and kokum.",
+        "url" => route('about'),
+        "mainEntity" => [
+            "@type" => "Organization",
+            "name" => "Dev Can Fruit Products (PatSons Foods)",
+            "foundingDate" => "1990",
+            "founder" => [
+                "@type" => "Person",
+                "name" => "Vivek Laxman Patki"
+            ],
+            "address" => [
+                "@type" => "PostalAddress",
+                "streetAddress" => "Dev Can Fruit Products, Morjim",
+                "addressLocality" => "Pernem",
+                "addressRegion" => "Goa",
+                "postalCode" => "403512",
+                "addressCountry" => "IN"
+            ]
+        ]
+    ];
+@endphp
+<script type="application/ld+json">
+{!! json_encode($aboutSchema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) !!}
+</script>
+@endpush
 
 @section('content')
     <div class="max-w-4xl mx-auto px-4 sm:px-6 py-12 space-y-10">
@@ -21,7 +54,7 @@
 
             <div
                 class="relative w-32 h-32 sm:w-40 sm:h-40 shrink-0 rounded-full overflow-hidden ring-4 ring-green-100 shadow-md bg-stone-200">
-                <img src="{{ asset('images/Products/founders.webp') }}" alt="Vivek Laxman Patki & family"
+                <img src="{{ asset('images/products/founders.webp') }}" alt="Vivek Laxman Patki & family"
                     class="w-full h-full object-cover object-center">
             </div>
 

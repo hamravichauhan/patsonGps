@@ -37,6 +37,8 @@ return [
     // WhatsApp Order & Inquiry Routing for PatSons Foods
     'whatsapp' => [
         'admin_number' => env('ADMIN_WHATSAPP_NUMBER', env('WHATSAPP_ADMIN_NUMBER', '917758943614')),
+        'api_url' => env('WHATSAPP_API_URL', 'http://127.0.0.1:21465/api/patsons-session'),
+        'secret_token' => env('WHATSAPP_SECRET_TOKEN', 'THISISMYSECURETOKEN'),
     ],
 
 ];

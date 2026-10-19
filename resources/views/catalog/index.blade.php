@@ -1,10 +1,51 @@
 @extends('layouts.app')
+@php
+    $catTitle = request('category') ? request('category') . ' - Wholesale Goan Box Packs | PatSons Foods Goa' : 'Wholesale Goan Kokum, Jams, Syrups & Crushes Catalog | PatSons Foods';
+    $catDesc = request('category') 
+        ? 'Browse wholesale carton packs and boxes of ' . request('category') . ' direct from Dev Can Fruit Products factory in Morjim, Pernem - Goa.'
+        : 'Browse our complete catalog of authentic Goan Kokum Agal, Cashew Fruit Jams, bar cordials, squashes, and appetizer crushes direct from Morjim factory.';
+@endphp
 
-@section('meta_title', 'Shop Goan Food Products, Syrups & Crushes | PatSons Foods Goa')
-@section('meta_description', 'Browse the full catalog of Goan syrups, fruit crushes, cocktail mixers, and confectionery. Factory direct pricing with WhatsApp quotation ordering.')
-@section('meta_keywords', 'buy Kokum Goa, Goan syrups catalog, cocktail mixers Goa, PatSons product price list')
+@section('meta_title', $catTitle)
+@section('meta_description', $catDesc)
+@section('meta_keywords', 'PatSons Foods catalog, wholesale Goan Kokum Agal, Cashew Jam wholesale, bar cordials Goa, Dev Can Fruit Products Morjim')
+@section('title', $catTitle)
 
-@section('title', 'Shop Authentic Goan Products - PatSons Goa')
+@push('schema')
+@php
+    $collectionSchema = [
+        "@context" => "https://schema.org",
+        "@graph" => [
+            [
+                "@type" => "BreadcrumbList",
+                "itemListElement" => [
+                    [
+                        "@type" => "ListItem",
+                        "position" => 1,
+                        "name" => "Home",
+                        "item" => route('home')
+                    ],
+                    [
+                        "@type" => "ListItem",
+                        "position" => 2,
+                        "name" => "Catalog",
+                        "item" => route('shop')
+                    ]
+                ]
+            ],
+            [
+                "@type" => "CollectionPage",
+                "name" => $catTitle,
+                "description" => $catDesc,
+                "url" => url()->current()
+            ]
+        ]
+    ];
+@endphp
+<script type="application/ld+json">
+{!! json_encode($collectionSchema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) !!}
+</script>
+@endpush
 
 @section('content')
     @php
@@ -25,7 +66,7 @@
             <div class="relative z-10 max-w-2xl space-y-3 sm:space-y-4">
                 <span
                     class="inline-block bg-amber-400 text-gray-950 text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full shadow-xs">
-                    Direct From Morji, Goa Factory
+                    Direct From Morjim, Goa Factory
                 </span>
                 <h1 class="text-3xl sm:text-5xl font-black tracking-tight text-white leading-tight">
                     Authentic Goan Food Catalog
@@ -105,8 +146,10 @@
                                 <div
                                     class="relative w-full h-56 sm:h-64 bg-gradient-to-b from-stone-50 via-amber-50/20 to-stone-100/90 rounded-2xl overflow-hidden mb-3 flex items-center justify-center p-4 border border-stone-200/60">
 
-                                    <img :src="'/images/products/' + selectedImage" alt="{{ $primary->product_name }}"
+                                    <img :src="'/images/products/' + selectedImage"
+                                        alt="{{ $primary->product_name }} - Wholesale Goan Product"
                                         onerror="this.src='/images/products/default-product.webp'"
+                                        width="400" height="400"
                                         class="max-h-48 sm:max-h-56 max-w-full object-contain filter drop-shadow-[0_12px_14px_rgba(0,0,0,0.14)] transition-transform duration-500 group-hover:scale-105"
                                         loading="lazy">
 
@@ -158,18 +201,35 @@
                             </div>
                         </div>
 
-                        <!-- Price Row (No CTA buttons while cart + quote are disabled) -->
+                        <!-- Price Row -->
                         <div class="mt-4 pt-3 border-t border-gray-100">
-                            <div class="flex items-baseline justify-between">
+                            <div class="flex items-baseline justify-between mb-3">
                                 <div>
-                                    <span class="text-[9px] text-gray-400 font-bold uppercase block leading-none">Price per
-                                        unit</span>
+                                    <span class="text-[9px] text-gray-400 font-bold uppercase block leading-none">Price per unit</span>
                                     <span class="text-xl font-black text-green-950">₹<span
                                             x-text="Number(selectedPrice).toFixed(2)"></span></span>
                                 </div>
                                 <span class="text-[10px] text-emerald-700 font-black bg-emerald-50 px-2 py-0.5 rounded-md">
                                     ● In Stock
                                 </span>
+                            </div>
+
+                            <!-- CTA Buttons: Add to Cart & WhatsApp Quote -->
+                            <div class="flex items-center gap-2">
+                                <button type="button"
+                                    @click="$dispatch('add-to-cart', { id: selectedId, name: '{{ addslashes($primary->product_name) }}', price: selectedPrice, size: selectedSize, image: selectedImage })"
+                                    class="flex-1 bg-green-900 hover:bg-green-800 text-white font-black text-xs py-2.5 px-3 rounded-xl shadow-xs transition active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer">
+                                    <span>🛍️</span>
+                                    <span>+ Add to Cart</span>
+                                </button>
+                                <a :href="'https://wa.me/{{ $adminPhone }}?text=' + encodeURIComponent('Hello PatSons! I want to inquire about: {{ addslashes($primary->product_name) }} (' + selectedSize + ') - ₹' + Number(selectedPrice).toFixed(2) + ' per unit.')"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-800 font-black text-xs py-2.5 px-3 rounded-xl transition active:scale-95 flex items-center justify-center gap-1 cursor-pointer"
+                                    title="WhatsApp Quote">
+                                    <span>💬</span>
+                                    <span class="hidden sm:inline">Quote</span>
+                                </a>
                             </div>
                         </div>
 

@@ -8,73 +8,90 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     @php
-        $pageTitle = trim($__env->yieldContent('meta_title')) ?: (trim($__env->yieldContent('title')) ?: 'PatSons Foods Goa - Authentic Goan Kokum, Cashew Jams, Syrups & Fruit Crushes');
-        $pageDescription = trim($__env->yieldContent('meta_description')) ?: 'Authentic Goan Kokum Agal, handcrafted Cashew Fruit Jams, herbal digestifs, cocktail cordials, and refreshing squashes direct from Dev Can Fruit Products, Morjim, Pernem - Goa.';
-        $pageKeywords = trim($__env->yieldContent('meta_keywords')) ?: 'PatSons Foods Goa, Dev Can Fruit Products, Goan Kokum Agal, Cashew Jam Goa, Kokum Syrup, Pachak Appetizer, Bar Syrups Goa, Fruit Crushes Goa, Morjim Factory';
-        $adminPhone = \App\Models\Setting::get('whatsapp_admin_number', config('services.whatsapp.admin_number', '917758943614'));
-        $logoUrl = file_exists(public_path('images/logo1.webp'))
-            ? asset('images/logo1.webp')
-            : (file_exists(public_path('images/products/logo1.webp'))
-                ? asset('images/products/logo1.webp')
-                : asset('images/default-product.webp'));
-        $ogImage = trim($__env->yieldContent('og_image')) ?: $logoUrl;
-        $searchRoute = \Illuminate\Support\Facades\Route::has('api.products.search') ? route('api.products.search') : url('/shop');
+    $pageTitle = html_entity_decode(trim($__env->yieldContent('meta_title')) ?: (trim($__env->yieldContent('title')) ?: 'Wholesale Goan Kokum, Jams & Syrups | PatSons Goa'), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+    $pageDescription = html_entity_decode(trim($__env->yieldContent('meta_description')) ?: 'Authentic Goan Kokum Agal, handcrafted Cashew Fruit Jams, herbal digestifs, cocktail cordials, and refreshing squashes direct from Dev Can Fruit Products, Morjim, Pernem - Goa.', ENT_QUOTES | ENT_HTML5, 'UTF-8');
+    $pageKeywords = html_entity_decode(trim($__env->yieldContent('meta_keywords')) ?: 'PatSons Foods Goa, Dev Can Fruit Products, Goan Kokum Agal, Cashew Jam Goa, Kokum Syrup, Pachak Appetizer, Bar Syrups Goa, Fruit Crushes Goa, Morjim Factory', ENT_QUOTES | ENT_HTML5, 'UTF-8');
+    $adminPhone = \App\Models\Setting::get('whatsapp_admin_number', config('services.whatsapp.admin_number', '917758943614'));
 
-        $globalSchema = [
-            "@context" => "https://schema.org",
-            "@graph" => [
-                [
-                    "@type" => "LocalBusiness",
-                    "@id" => url('/') . "/#organization",
-                    "name" => "PatSons Foods (Dev Can Fruit Products)",
-                    "alternateName" => "PatSons Goa",
-                    "url" => url('/'),
-                    "logo" => [
-                        "@type" => "ImageObject",
-                        "url" => $logoUrl
-                    ],
-                    "image" => $logoUrl,
-                    "description" => "Manufacturer and supplier of authentic Goan Kokum Agal, Cashew Fruit Jams, Fruit Crushes, and Cordials in Morjim, Pernem - Goa.",
-                    "telephone" => "+" . $adminPhone,
-                    "priceRange" => "₹₹",
-                    "address" => [
-                        "@type" => "PostalAddress",
-                        "streetAddress" => "Dev Can Fruit Products, Morjim",
-                        "addressLocality" => "Pernem",
-                        "addressRegion" => "Goa",
-                        "postalCode" => "403512",
-                        "addressCountry" => "IN"
-                    ],
-                    "geo" => [
-                        "@type" => "GeoCoordinates",
-                        "latitude" => "15.6322",
-                        "longitude" => "73.7438"
-                    ],
-                    "contactPoint" => [
-                        "@type" => "ContactPoint",
-                        "telephone" => "+" . $adminPhone,
-                        "contactType" => "Customer Service and Wholesale Orders",
-                        "areaServed" => "IN",
-                        "availableLanguage" => ["English", "Hindi", "Konkani", "Marathi"]
-                    ]
+    // Check candidate logo paths across both standard Laravel public path and cPanel public_html
+    $logoCandidates = [
+        'images/logo1.webp',
+        'images/products/logo1.webp',
+        'images/logo.png',
+        'images/logo.webp',
+    ];
+
+    $resolvedLogoPath = 'images/logo1.webp';
+    foreach ($logoCandidates as $candidate) {
+        if (
+            file_exists(public_path($candidate)) ||
+            file_exists(base_path('../../public_html/' . $candidate)) ||
+            (isset($_SERVER['DOCUMENT_ROOT']) && file_exists(rtrim($_SERVER['DOCUMENT_ROOT'], '/') . '/' . ltrim($candidate, '/')))
+        ) {
+            $resolvedLogoPath = $candidate;
+            break;
+        }
+    }
+    $logoUrl = asset($resolvedLogoPath);
+
+    $ogImage = trim($__env->yieldContent('og_image')) ?: $logoUrl;
+    $searchRoute = \Illuminate\Support\Facades\Route::has('api.products.search') ? route('api.products.search') : url('/shop');
+
+    $globalSchema = [
+        "@context" => "https://schema.org",
+        "@graph" => [
+            [
+                "@type" => "LocalBusiness",
+                "@id" => url('/') . "/#organization",
+                "name" => "PatSons Foods (Dev Can Fruit Products)",
+                "alternateName" => "PatSons Goa",
+                "url" => url('/'),
+                "logo" => [
+                    "@type" => "ImageObject",
+                    "url" => $logoUrl
                 ],
-                [
-                    "@type" => "WebSite",
-                    "@id" => url('/') . "/#website",
-                    "url" => url('/'),
-                    "name" => "PatSons Foods Goa",
-                    "publisher" => [
-                        "@id" => url('/') . "/#organization"
-                    ],
-                    "potentialAction" => [
-                        "@type" => "SearchAction",
-                        "target" => route('shop') . "?search={search_term_string}",
-                        "query-input" => "required name=search_term_string"
-                    ]
+                "image" => $logoUrl,
+                "description" => "Manufacturer and supplier of authentic Goan Kokum Agal, Cashew Fruit Jams, Fruit Crushes, and Cordials in Morjim, Pernem - Goa.",
+                "telephone" => "+" . $adminPhone,
+                "priceRange" => "₹₹",
+                "address" => [
+                    "@type" => "PostalAddress",
+                    "streetAddress" => "Dev Can Fruit Products, Morjim",
+                    "addressLocality" => "Pernem",
+                    "addressRegion" => "Goa",
+                    "postalCode" => "403512",
+                    "addressCountry" => "IN"
+                ],
+                "geo" => [
+                    "@type" => "GeoCoordinates",
+                    "latitude" => "15.6322",
+                    "longitude" => "73.7438"
+                ],
+                "contactPoint" => [
+                    "@type" => "ContactPoint",
+                    "telephone" => "+" . $adminPhone,
+                    "contactType" => "Customer Service and Wholesale Orders",
+                    "areaServed" => "IN",
+                    "availableLanguage" => ["English", "Hindi", "Konkani", "Marathi"]
+                ]
+            ],
+            [
+                "@type" => "WebSite",
+                "@id" => url('/') . "/#website",
+                "url" => url('/'),
+                "name" => "PatSons Foods Goa",
+                "publisher" => [
+                    "@id" => url('/') . "/#organization"
+                ],
+                "potentialAction" => [
+                    "@type" => "SearchAction",
+                    "target" => (\Illuminate\Support\Facades\Route::has('shop') ? route('shop') : url('/shop')) . "?search={search_term_string}",
+                    "query-input" => "required name=search_term_string"
                 ]
             ]
-        ];
-    @endphp
+        ]
+    ];
+@endphp
 
     <!-- Primary SEO Meta Tags -->
     <title>{{ $pageTitle }}</title>
@@ -85,6 +102,15 @@
     <meta name="author" content="Dev Can Fruit Products (PatSons Foods Goa)">
     <link rel="canonical" href="{{ url()->current() }}">
 
+    <!-- Geo & Local SEO Meta -->
+    <meta name="geo.region" content="IN-GA">
+    <meta name="geo.placename" content="Morjim, Pernem, Goa">
+    <meta name="geo.position" content="15.6322;73.7438">
+    <meta name="ICBM" content="15.6322, 73.7438">
+    <meta name="theme-color" content="#052e16">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="PatSons Goa">
+
     <!-- Open Graph / Social Meta -->
     <meta property="og:type" content="@yield('og_type', 'website')">
     <meta property="og:site_name" content="PatSons Foods Goa">
@@ -92,6 +118,7 @@
     <meta property="og:title" content="{{ $pageTitle }}">
     <meta property="og:description" content="{{ $pageDescription }}">
     <meta property="og:image" content="{{ $ogImage }}">
+    <meta property="og:image:alt" content="{{ $pageTitle }}">
     <meta property="og:locale" content="en_IN">
 
     <!-- Twitter Card Meta -->
@@ -100,14 +127,16 @@
     <meta name="twitter:title" content="{{ $pageTitle }}">
     <meta name="twitter:description" content="{{ $pageDescription }}">
     <meta name="twitter:image" content="{{ $ogImage }}">
+    <meta name="twitter:image:alt" content="{{ $pageTitle }}">
 
     <!-- Favicon -->
     <link rel="icon" type="image/webp" href="{{ $logoUrl }}">
     <link rel="apple-touch-icon" href="{{ $logoUrl }}">
 
     <!-- Preconnect CDNs -->
-    <link rel="preconnect" href="https://cdn.tailwindcss.com">
-    <link rel="preconnect" href="https://unpkg.com">
+    <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
+    <link rel="preconnect" href="https://unpkg.com" crossorigin>
+    <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -167,6 +196,15 @@
     {!! json_encode($globalSchema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) !!}
     </script>
 
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FBCQW44FK2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FBCQW44FK2');
+    </script>
+
     @stack('schema')
 </head>
 
@@ -174,22 +212,32 @@
     x-data="cartManager()"
     x-on:add-to-cart.window="addToCart($event.detail.id, $event.detail.name, $event.detail.price, $event.detail.size, $event.detail.image)">
 
-    <!-- Top Utility Bar -->
+    <!-- Top Utility Bar with Multi-Language Switcher -->
     <div class="bg-green-950 text-white text-[11px] py-2 px-4 border-b border-green-900">
-        <div class="max-w-7xl mx-auto flex items-center justify-between">
+        <div class="max-w-7xl mx-auto flex items-center justify-between gap-2">
             <div class="flex items-center gap-2">
                 <span class="inline-block w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
                 <span class="font-bold text-amber-200">🌴 Dev Can Fruit Products • Morjim, Pernem - Goa</span>
             </div>
 
-            <div class="hidden sm:flex items-center gap-4 font-bold text-green-200">
+            <div class="flex items-center gap-3 font-bold text-green-200">
+                <!-- Multi-Language Switcher (EN, Konkani, Marathi, Hindi) -->
+                <div class="flex items-center gap-1.5 text-[10px] bg-green-900/80 px-2.5 py-1 rounded-full border border-green-800">
+                    <span class="text-amber-300">🌐</span>
+                    <a href="{{ route('lang.switch', 'en') }}" class="{{ app()->getLocale() === 'en' ? 'text-amber-300 font-black underline' : 'text-green-200 hover:text-white' }}" title="English">EN</a>
+                    <span class="text-green-700">|</span>
+                    <a href="{{ route('lang.switch', 'gom') }}" class="{{ app()->getLocale() === 'gom' ? 'text-amber-300 font-black underline' : 'text-green-200 hover:text-white' }}" title="Konkani">कोंकणी</a>
+                    <span class="text-green-700">|</span>
+                    <a href="{{ route('lang.switch', 'mr') }}" class="{{ app()->getLocale() === 'mr' ? 'text-amber-300 font-black underline' : 'text-green-200 hover:text-white' }}" title="Marathi">मराठी</a>
+                    <span class="text-green-700">|</span>
+                    <a href="{{ route('lang.switch', 'hi') }}" class="{{ app()->getLocale() === 'hi' ? 'text-amber-300 font-black underline' : 'text-green-200 hover:text-white' }}" title="Hindi">हिंदी</a>
+                </div>
+
                 <a href="https://wa.me/{{ $adminPhone }}" target="_blank" rel="noopener noreferrer"
-                    class="hover:text-white transition flex items-center gap-1">
-                    <span>💬 Direct Order:</span>
+                    class="hidden sm:flex hover:text-white transition items-center gap-1">
+                    <span>💬 {{ __('Direct Order') }}:</span>
                     <span class="text-white font-mono">+{{ $adminPhone }}</span>
                 </a>
-
-
             </div>
         </div>
     </div>
@@ -215,24 +263,32 @@
                     class="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-7 text-xs font-black uppercase tracking-wider">
                     <a href="{{ route('home') }}"
                         class="transition py-1 {{ request()->routeIs('home') ? 'text-green-900 border-b-2 border-green-900' : 'text-gray-600 hover:text-green-900' }}">
-                        Home
+                        {{ __('Home') }}
                     </a>
                     <a href="{{ route('shop') }}"
                         class="transition py-1 {{ request()->routeIs('shop') || request()->routeIs('catalog.*') ? 'text-green-900 border-b-2 border-green-900' : 'text-gray-600 hover:text-green-900' }}">
-                        Catalog
+                        {{ __('Catalog') }}
                     </a>
                     <a href="{{ route('about') }}"
                         class="transition py-1 {{ request()->routeIs('about') ? 'text-green-900 border-b-2 border-green-900' : 'text-gray-600 hover:text-green-900' }}">
-                        Heritage & Unit
+                        {{ __('Heritage & Unit') }}
                     </a>
                     <a href="{{ route('contact') }}"
                         class="transition py-1 {{ request()->routeIs('contact') ? 'text-green-900 border-b-2 border-green-900' : 'text-gray-600 hover:text-green-900' }}">
-                        Contact Us
+                        {{ __('Contact Us') }}
                     </a>
                 </nav>
 
-                <!-- Actions (Mobile Toggle Only) -->
-                <div class="flex items-center">
+                <!-- Actions: Desktop Cart Button & Mobile Toggle -->
+                <div class="flex items-center gap-3">
+                    <button type="button" x-on:click="cartOpen = true"
+                        class="hidden sm:inline-flex items-center gap-2 bg-green-900 hover:bg-green-800 text-white text-xs font-black px-4 py-2.5 rounded-2xl shadow-xs transition active:scale-95 cursor-pointer">
+                        <span>🛍️</span>
+                        <span>{{ __('Quotation Cart') }}</span>
+                        <span class="bg-amber-400 text-gray-950 text-[10px] font-black px-1.5 py-0.2 rounded-full"
+                            x-text="cartTotalCount">0</span>
+                    </button>
+
                     <button type="button" x-on:click="mobileMenuOpen = !mobileMenuOpen"
                         class="md:hidden p-2.5 rounded-2xl bg-gray-100 hover:bg-gray-200 text-gray-700 transition cursor-pointer"
                         aria-label="Toggle navigation menu">
@@ -294,21 +350,16 @@
             <span>WhatsApp</span>
         </a>
 
-        {{-- Step 1: Mobile Bottom Bar Cart Button - hidden until cart is re-enabled --}}
-        {{--
         <button type="button" x-on:click="cartOpen = true"
             class="flex flex-col items-center gap-0.5 text-[10px] font-black text-green-900 relative cursor-pointer">
             <span class="text-lg">🛍️</span>
-            <span>Cart</span>
+            <span>{{ __('Cart') }}</span>
             <span
                 class="absolute -top-1 right-1 bg-amber-400 text-gray-950 text-[9px] font-black px-1.5 py-0.2 rounded-full"
                 x-text="cartTotalCount">0</span>
         </button>
-        --}}
     </div>
 
-    {{-- Step 2: Quotation Cart Slide-Over Drawer - hidden until cart is re-enabled --}}
-    {{--
     <!-- Quotation Cart Slide-Over Drawer -->
     <div x-show="cartOpen" x-cloak class="fixed inset-0 z-50 overflow-hidden"
         x-on:keydown.escape.window="cartOpen = false">
@@ -324,120 +375,152 @@
                 x-transition:leave="transform transition ease-in-out duration-300"
                 x-transition:leave-start="translate-x-0" x-transition:leave-end="translate-x-full">
 
-                <div class="p-5 border-b border-gray-100 flex items-center justify-between bg-green-950 text-white">
-                    <div class="flex items-center gap-2">
+                <!-- Drawer Header -->
+                <div class="p-4 sm:p-5 border-b border-gray-100 flex items-center justify-between bg-green-950 text-white">
+                    <div class="flex items-center gap-2.5">
                         <img src="{{ $logoUrl }}" alt="Logo" class="h-8 w-auto object-contain brightness-0 invert">
-                        <h2 class="text-xs font-black uppercase tracking-wider">Quotation Cart</h2>
+                        <div>
+                            <h2 class="text-xs font-black uppercase tracking-wider">{{ __('Quotation Cart') }}</h2>
+                            <span class="text-[10px] text-green-300 font-bold" x-text="cartTotalCount + ' item(s) selected'"></span>
+                        </div>
                     </div>
-                    <button type="button" x-on:click="cartOpen = false"
-                        class="text-white hover:text-amber-300 font-black text-xl p-1 cursor-pointer">&times;</button>
+                    <div class="flex items-center gap-2">
+                        <button type="button" x-show="cartItems.length > 0" x-on:click="clearCart()"
+                            class="text-[10px] text-red-300 hover:text-red-100 font-bold underline px-2 py-1 cursor-pointer">
+                            {{ __('Clear') }}
+                        </button>
+                        <button type="button" x-on:click="cartOpen = false"
+                            class="text-white hover:text-amber-300 font-black text-2xl p-1 leading-none cursor-pointer">&times;</button>
+                    </div>
                 </div>
 
-                <div class="flex-1 overflow-y-auto p-5 space-y-4">
+                <!-- Drawer Items List -->
+                <div class="flex-1 overflow-y-auto p-4 sm:p-5 space-y-3">
                     <template x-if="cartItems.length === 0">
-                        <div class="py-12 text-center space-y-3">
-                            <span class="text-4xl block">🍃</span>
-                            <p class="text-xs font-bold text-gray-400">Your quotation cart is currently empty.</p>
+                        <div class="py-16 text-center space-y-3">
+                            <span class="text-5xl block animate-bounce">🍃</span>
+                            <h3 class="text-sm font-black text-gray-800">{{ __('Your quotation cart is empty') }}</h3>
+                            <p class="text-xs font-bold text-gray-400 max-w-xs mx-auto">Add wholesale boxes of authentic Goan Kokum Agal, Cashew Jam, or Syrups.</p>
                             <a href="{{ route('shop') }}" x-on:click="cartOpen = false"
-                                class="inline-block bg-green-900 text-white text-xs font-black px-5 py-2.5 rounded-xl shadow-xs cursor-pointer">
-                                Browse Products →
+                                class="inline-block bg-green-900 hover:bg-green-800 text-white text-xs font-black px-6 py-3 rounded-xl shadow-xs cursor-pointer transition">
+                                {{ __('Browse Products') }} →
                             </a>
                         </div>
                     </template>
 
                     <template x-for="(item, idx) in cartItems" :key="idx">
-                        <div
-                            class="flex items-center justify-between p-3.5 bg-gray-50 border border-gray-200 rounded-2xl">
-                            <div class="space-y-0.5">
-                                <h4 class="text-xs font-black text-gray-900" x-text="item.name"></h4>
-                                <span class="text-[10px] text-gray-500 font-bold" x-text="item.size"></span>
+                        <div class="flex items-center justify-between p-3.5 bg-gray-50 border border-gray-200 rounded-2xl gap-3">
+                            <div class="space-y-0.5 flex-1 min-w-0">
+                                <h4 class="text-xs font-black text-gray-900 truncate" x-text="item.name"></h4>
+                                <div class="flex items-center gap-2 text-[10px] text-gray-500 font-bold">
+                                    <span class="bg-gray-200 text-gray-700 px-1.5 py-0.5 rounded" x-text="item.size || 'Pack'"></span>
+                                    <span>₹<span x-text="Number(item.price || 0).toFixed(2)"></span> / unit</span>
+                                </div>
                                 <div class="text-xs font-black text-green-900">
-                                    ₹<span x-text="(item.price * item.quantity).toFixed(2)"></span>
+                                    Total: ₹<span x-text="(Number(item.price || 0) * (item.quantity || 1)).toFixed(2)"></span>
                                 </div>
                             </div>
-                            <div class="flex items-center gap-2">
+                            <div class="flex items-center gap-1.5 shrink-0">
                                 <button type="button" x-on:click="decrementQty(idx)"
-                                    class="w-7 h-7 rounded-lg bg-white border border-gray-200 font-black text-xs cursor-pointer">-</button>
-                                <span class="text-xs font-black w-5 text-center" x-text="item.quantity"></span>
+                                    class="w-7 h-7 rounded-lg bg-white border border-gray-200 hover:bg-gray-100 font-black text-xs cursor-pointer flex items-center justify-center">-</button>
+                                <span class="text-xs font-black w-6 text-center" x-text="item.quantity"></span>
                                 <button type="button" x-on:click="incrementQty(idx)"
-                                    class="w-7 h-7 rounded-lg bg-white border border-gray-200 font-black text-xs cursor-pointer">+</button>
+                                    class="w-7 h-7 rounded-lg bg-white border border-gray-200 hover:bg-gray-100 font-black text-xs cursor-pointer flex items-center justify-center">+</button>
                                 <button type="button" x-on:click="removeItem(idx)"
-                                    class="text-red-500 hover:text-red-700 font-black text-xs p-1 ml-1 cursor-pointer">&times;</button>
+                                    class="text-red-500 hover:text-red-700 font-black text-base p-1 ml-1 cursor-pointer" title="Remove">&times;</button>
                             </div>
                         </div>
                     </template>
                 </div>
 
-                <div class="p-5 border-t border-gray-100 bg-gray-50 space-y-3" x-show="cartItems.length > 0">
-                    <div class="flex items-baseline justify-between">
-                        <span class="text-xs font-bold text-gray-500">Estimated Total:</span>
-                        <span class="text-2xl font-black text-gray-900">₹<span
-                                x-text="cartTotalAmount.toFixed(2)"></span></span>
+                <!-- Drawer Footer Actions -->
+                <div class="p-4 sm:p-5 border-t border-gray-100 bg-gray-50 space-y-3" x-show="cartItems.length > 0">
+                    <div class="flex items-baseline justify-between bg-white p-3 rounded-xl border border-gray-200">
+                        <div>
+                            <span class="text-[10px] uppercase tracking-wider font-black text-gray-500 block">{{ __('Estimated Total') }}</span>
+                            <span class="text-[10px] text-gray-400 font-bold">Ex-factory Morjim • GST extra</span>
+                        </div>
+                        <span class="text-2xl font-black text-green-950">₹<span x-text="cartTotalAmount.toFixed(2)"></span></span>
                     </div>
 
+                    <!-- 1-Click WhatsApp Direct Quote Button -->
+                    <button type="button" x-on:click="openWhatsAppQuotation()"
+                        class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs py-3.5 px-4 rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer active:scale-95">
+                        <span class="text-base">💬</span>
+                        <span>{{ __('Instant 1-Click WhatsApp Quote') }}</span>
+                    </button>
+
+                    <!-- Divider -->
+                    <div class="relative flex py-1 items-center">
+                        <div class="flex-grow border-t border-gray-200"></div>
+                        <span class="flex-shrink mx-2 text-[10px] font-black uppercase text-gray-400 tracking-wider">or place tracked order</span>
+                        <div class="flex-grow border-t border-gray-200"></div>
+                    </div>
+
+                    <!-- Step 1: Customer Phone -->
                     <template x-if="step === 'phone'">
-                        <div class="space-y-2.5">
+                        <div class="space-y-2">
                             <div>
-                                <label class="block text-[10px] font-black text-gray-600 uppercase">Your WhatsApp Phone
-                                    *</label>
-                                <input type="tel" x-model="customerPhone" placeholder="10-digit WhatsApp number"
-                                    class="w-full bg-white border border-gray-300 rounded-xl px-3.5 py-2.5 text-xs font-bold outline-none focus:ring-2 focus:ring-green-800">
+                                <label class="block text-[10px] font-black text-gray-600 uppercase mb-1">Your WhatsApp Number *</label>
+                                <div class="flex">
+                                    <span class="inline-flex items-center px-3 rounded-l-xl border border-r-0 border-gray-300 bg-gray-100 text-gray-700 text-xs font-black">+91</span>
+                                    <input type="tel" x-model="customerPhone" maxlength="10" placeholder="10-digit number"
+                                        x-on:input="customerPhone = customerPhone.replace(/[^0-9]/g, '')"
+                                        class="w-full bg-white border border-gray-300 rounded-r-xl px-3 py-2 text-xs font-bold outline-none focus:ring-2 focus:ring-green-800">
+                                </div>
                             </div>
                             <button type="button" x-on:click="requestOtp()" :disabled="isSubmitting"
-                                class="w-full bg-amber-400 hover:bg-amber-300 text-gray-950 font-black text-xs py-3 px-4 rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50">
-                                <span x-show="!isSubmitting">📲 Send 4-Digit Verification Code</span>
-                                <span x-show="isSubmitting" x-cloak>Sending OTP...</span>
+                                class="w-full bg-green-900 hover:bg-green-800 text-white font-black text-xs py-2.5 px-4 rounded-xl shadow-xs transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50">
+                                <span x-show="!isSubmitting">📲 Send Verification Code</span>
+                                <span x-show="isSubmitting" x-cloak>Sending Code...</span>
                             </button>
                         </div>
                     </template>
 
+                    <!-- Step 2: OTP Verification -->
                     <template x-if="step === 'otp'">
-                        <div class="space-y-2.5">
-                            <div class="bg-green-50 border border-green-200 p-2.5 rounded-xl text-center">
-                                <span class="text-[11px] text-green-900 font-bold block">Code sent to +91 <span
-                                        x-text="customerPhone"></span></span>
+                        <div class="space-y-2">
+                            <div class="bg-green-50 border border-green-200 p-2 rounded-xl text-center">
+                                <span class="text-[11px] text-green-900 font-bold block">Code sent to +91 <span x-text="customerPhone"></span></span>
                             </div>
                             <div>
-                                <label class="block text-[10px] font-black text-gray-600 uppercase">Enter 4-Digit Code
-                                    *</label>
+                                <label class="block text-[10px] font-black text-gray-600 uppercase mb-1">Enter 4-Digit Code *</label>
                                 <input type="text" maxlength="4" x-model="otpCode" placeholder="• • • •"
                                     x-on:input="otpCode = otpCode.replace(/[^0-9]/g, '')"
-                                    class="w-full bg-white border border-gray-300 rounded-xl px-3.5 py-2.5 text-center text-lg font-black tracking-widest outline-none focus:ring-2 focus:ring-green-800">
+                                    class="w-full bg-white border border-gray-300 rounded-xl px-3 py-2 text-center text-lg font-black tracking-widest outline-none focus:ring-2 focus:ring-green-800">
                             </div>
                             <button type="button" x-on:click="verifyOtpCode()" :disabled="isSubmitting"
-                                class="w-full bg-green-900 hover:bg-green-800 text-white font-black text-xs py-3 px-4 rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50">
-                                <span x-show="!isSubmitting">✓ Verify Code & Proceed</span>
+                                class="w-full bg-green-900 hover:bg-green-800 text-white font-black text-xs py-2.5 px-4 rounded-xl shadow-xs transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50">
+                                <span x-show="!isSubmitting">✓ Verify & Continue</span>
                                 <span x-show="isSubmitting" x-cloak>Verifying...</span>
                             </button>
                             <button type="button" x-on:click="step = 'phone'; otpCode = ''"
-                                class="text-[11px] text-gray-500 font-bold hover:underline block mx-auto cursor-pointer">
+                                class="text-[10px] text-gray-500 font-bold hover:underline block mx-auto cursor-pointer">
                                 ← Change Phone Number
                             </button>
                         </div>
                     </template>
 
+                    <!-- Step 3: Name & Delivery Address -->
                     <template x-if="step === 'details'">
-                        <div class="space-y-2.5">
-                            <div class="bg-blue-50 border border-blue-200 p-2.5 rounded-xl text-center">
-                                <span class="text-[11px] text-blue-900 font-bold">✓ Phone Verified: +91 <span
-                                        x-text="customerPhone"></span></span>
+                        <div class="space-y-2">
+                            <div class="bg-blue-50 border border-blue-200 p-2 rounded-xl text-center">
+                                <span class="text-[11px] text-blue-900 font-bold">✓ Verified: +91 <span x-text="customerPhone"></span></span>
                             </div>
                             <div>
-                                <label class="block text-[10px] font-black text-gray-600 uppercase">Your Full Name
-                                    *</label>
-                                <input type="text" x-model="customerName" placeholder="e.g. Rahul Naik"
-                                    class="w-full bg-white border border-gray-300 rounded-xl px-3.5 py-2 text-xs font-bold outline-none focus:ring-2 focus:ring-green-800">
+                                <label class="block text-[10px] font-black text-gray-600 uppercase mb-1">Full Name *</label>
+                                <input type="text" x-model="customerName" placeholder="e.g. Ramesh Naik"
+                                    class="w-full bg-white border border-gray-300 rounded-xl px-3 py-1.5 text-xs font-bold outline-none focus:ring-2 focus:ring-green-800">
                             </div>
                             <div>
-                                <label class="block text-[10px] font-black text-gray-600 uppercase">Delivery Address /
-                                    Notes *</label>
+                                <label class="block text-[10px] font-black text-gray-600 uppercase mb-1">Delivery Address / Notes *</label>
                                 <textarea rows="2" x-model="deliveryAddress"
-                                    placeholder="Enter house/shop address, landmark, town..."
-                                    class="w-full bg-white border border-gray-300 rounded-xl px-3.5 py-2 text-xs font-bold outline-none focus:ring-2 focus:ring-green-800"></textarea>
+                                    placeholder="Shop/Hotel name, village/city, landmark..."
+                                    class="w-full bg-white border border-gray-300 rounded-xl px-3 py-1.5 text-xs font-bold outline-none focus:ring-2 focus:ring-green-800"></textarea>
                             </div>
                             <button type="button" x-on:click="submitFinalOrder()" :disabled="isSubmitting"
-                                class="w-full bg-amber-400 hover:bg-amber-300 text-gray-950 font-black text-xs py-3.5 px-4 rounded-2xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50">
-                                <span x-show="!isSubmitting">🚀 Place Final Quotation Order →</span>
+                                class="w-full bg-amber-400 hover:bg-amber-300 text-gray-950 font-black text-xs py-3 px-4 rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50">
+                                <span x-show="!isSubmitting">🚀 Place Factory Order →</span>
                                 <span x-show="isSubmitting" x-cloak>Placing Order...</span>
                             </button>
                         </div>
@@ -447,7 +530,6 @@
             </div>
         </div>
     </div>
-    --}}
 
     <!-- Order Placed Success Modal -->
     <div x-show="orderSuccessModal" x-cloak
@@ -522,4 +604,212 @@
                 </h4>
                 <p>Phone: +{{ $adminPhone }}</p>
                 <p>Location: Morjim, Goa 403512</p>
-                <a href
+                <a href="{{ route('login') }}" class="text-green-400 hover:underline block pt-2">Admin Portal ↗</a>
+            </div>
+        </div>
+        <div class="border-t border-green-900 py-4 text-center text-[10px] text-green-400">
+            <p>&copy; {{ date('Y') }} Dev Can Fruit Products (PatSons Foods Goa). All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Global Cart & State Script -->
+    <script>
+        function cartManager() {
+            return {
+                cartOpen: false,
+                cartItems: JSON.parse(localStorage.getItem('patsons_cart') || '[]'),
+                step: 'phone',
+                customerPhone: '',
+                otpCode: '',
+                customerName: '',
+                deliveryAddress: '',
+                isSubmitting: false,
+                orderSuccessModal: false,
+                placedOrderNumber: '',
+                placedRedirectUrl: '{{ route('customer.account') }}',
+
+                saveCart() {
+                    localStorage.setItem('patsons_cart', JSON.stringify(this.cartItems));
+                },
+                get cartTotalCount() {
+                    return this.cartItems.reduce((sum, item) => sum + (item.quantity || 1), 0);
+                },
+                get cartTotalAmount() {
+                    return this.cartItems.reduce((sum, item) => sum + ((item.price || 0) * (item.quantity || 1)), 0);
+                },
+                addToCart(id, name, price, size, image) {
+                    let existing = this.cartItems.find(i => i.id === id && i.size === size);
+                    if (existing) {
+                        existing.quantity = (existing.quantity || 1) + 1;
+                    } else {
+                        this.cartItems.push({ id, name, price, size, image, quantity: 1 });
+                    }
+                    this.saveCart();
+                    this.cartOpen = true;
+                },
+                incrementQty(idx) {
+                    if (this.cartItems[idx]) {
+                        this.cartItems[idx].quantity = (this.cartItems[idx].quantity || 1) + 1;
+                        this.saveCart();
+                    }
+                },
+                decrementQty(idx) {
+                    if (this.cartItems[idx]) {
+                        if (this.cartItems[idx].quantity > 1) {
+                            this.cartItems[idx].quantity -= 1;
+                        } else {
+                            this.cartItems.splice(idx, 1);
+                        }
+                        this.saveCart();
+                    }
+                },
+                removeItem(idx) {
+                    this.cartItems.splice(idx, 1);
+                    this.saveCart();
+                },
+                clearCart() {
+                    if (confirm('Are you sure you want to clear your cart?')) {
+                        this.cartItems = [];
+                        this.saveCart();
+                    }
+                },
+                openWhatsAppQuotation() {
+                    if (this.cartItems.length === 0) {
+                        alert('Your quotation cart is currently empty.');
+                        return;
+                    }
+                    let lines = [
+                        "🌴 *QUOTATION INQUIRY - PATSONS FOODS GOA*",
+                        "Dev Can Fruit Products, Morjim, Goa",
+                        "━━━━━━━━━━━━━━━━━━━━"
+                    ];
+                    this.cartItems.forEach(item => {
+                        let qty = item.quantity || 1;
+                        let pr = Number(item.price || 0);
+                        let sub = qty * pr;
+                        lines.push(`• *${item.name}* (${item.size || 'Pack'})`);
+                        lines.push(`  Qty: ${qty} | Unit: ₹${pr.toFixed(2)} | Subtotal: ₹${sub.toFixed(2)}`);
+                    });
+                    lines.push("━━━━━━━━━━━━━━━━━━━━");
+                    lines.push(`💰 *Total Est. Amount:* ₹${this.cartTotalAmount.toFixed(2)}`);
+                    lines.push("");
+                    lines.push("Please provide the wholesale/trade quote and delivery availability.");
+
+                    let encoded = encodeURIComponent(lines.join("\n"));
+                    window.open(`https://wa.me/{{ $adminPhone }}?text=${encoded}`, '_blank');
+                },
+                async requestOtp() {
+                    let clean = (this.customerPhone || '').replace(/[^0-9]/g, '');
+                    if (clean.length < 10) {
+                        alert('Please enter a valid 10-digit WhatsApp number.');
+                        return;
+                    }
+                    this.customerPhone = clean.slice(-10);
+                    this.isSubmitting = true;
+                    try {
+                        let token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+                        let res = await fetch('{{ route('order.sendOtp') }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                'X-CSRF-TOKEN': token
+                            },
+                            body: JSON.stringify({ phone: this.customerPhone })
+                        });
+                        let data = await res.json();
+                        if (res.ok && data.status === 'success') {
+                            if (data.existing_name) this.customerName = data.existing_name;
+                            if (data.existing_address) this.deliveryAddress = data.existing_address;
+                            this.step = 'otp';
+                        } else {
+                            alert(data.message || 'Failed to send OTP code. Please try again.');
+                        }
+                    } catch (e) {
+                        alert('Network error while requesting verification code.');
+                    } finally {
+                        this.isSubmitting = false;
+                    }
+                },
+                async verifyOtpCode() {
+                    if (!this.otpCode || this.otpCode.length !== 4) {
+                        alert('Please enter the 4-digit verification code.');
+                        return;
+                    }
+                    this.isSubmitting = true;
+                    try {
+                        let token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+                        let res = await fetch('{{ route('order.verifyOtp') }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                'X-CSRF-TOKEN': token
+                            },
+                            body: JSON.stringify({ phone: this.customerPhone, otp: this.otpCode })
+                        });
+                        let data = await res.json();
+                        if (res.ok && data.status === 'success') {
+                            this.step = 'details';
+                        } else {
+                            alert(data.message || 'Invalid or expired OTP code.');
+                        }
+                    } catch (e) {
+                        alert('Verification error. Please try again.');
+                    } finally {
+                        this.isSubmitting = false;
+                    }
+                },
+                async submitFinalOrder() {
+                    if (!this.customerName.trim()) {
+                        alert('Please provide your name.');
+                        return;
+                    }
+                    if (!this.deliveryAddress.trim()) {
+                        alert('Please provide your delivery address or town in Goa.');
+                        return;
+                    }
+                    this.isSubmitting = true;
+                    try {
+                        let token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+                        let res = await fetch('{{ route('order.store') }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                'X-CSRF-TOKEN': token
+                            },
+                            body: JSON.stringify({
+                                customer_phone: this.customerPhone,
+                                customer_name: this.customerName,
+                                delivery_address: this.deliveryAddress,
+                                cart_items: this.cartItems
+                            })
+                        });
+                        let data = await res.json();
+                        if (res.ok && data.status === 'success') {
+                            this.placedOrderNumber = data.order_number;
+                            this.placedRedirectUrl = data.redirect_url || '{{ route('customer.account') }}';
+                            this.cartItems = [];
+                            this.saveCart();
+                            this.cartOpen = false;
+                            this.orderSuccessModal = true;
+                            this.step = 'phone';
+                            this.otpCode = '';
+                        } else {
+                            alert(data.message || 'Unable to place order. Please try again.');
+                        }
+                    } catch (e) {
+                        alert('Failed to submit order. Please check your connection or contact WhatsApp.');
+                    } finally {
+                        this.isSubmitting = false;
+                    }
+                }
+            };
+        }
+    </script>
+
+    @stack('scripts')
+</body>
+
+</html>

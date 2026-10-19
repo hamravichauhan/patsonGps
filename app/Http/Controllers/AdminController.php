@@ -6,6 +6,8 @@ use App\Models\Order;
 use App\Models\ProductCatalog;
 use App\Models\Setting;
 use App\Models\User;
+use App\Services\ImageService;
+use App\Services\WhatsAppService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
@@ -41,20 +43,59 @@ class AdminController extends Controller
         return view('admin.orders.index', compact('orders'));
     }
 
-    public function updateOrderStatus(Request $request, $id)
+    public function updateOrderStatus(Request $request, $id, WhatsAppService $waService)
     {
         $request->validate([
             'status' => 'required|in:pending,approved,dispatched,delivered,rejected',
             'admin_notes' => 'nullable|string'
         ]);
 
-        $order = Order::findOrFail($id);
+        $order = Order::with('items')->findOrFail($id);
+        $oldStatus = $order->status;
         $order->update([
             'status' => $request->status,
             'admin_notes' => $request->admin_notes
         ]);
 
-        return back()->with('success', "Order #{$order->order_number} status updated to " . strtoupper($request->status));
+        // Background WhatsApp automated notification when status changes
+        if ($oldStatus !== $request->status) {
+            $statusEmoji = [
+                'approved' => '✅',
+                'dispatched' => '🚚',
+                'delivered' => '🎉',
+                'rejected' => '❌',
+                'pending' => '⏳'
+            ][$request->status] ?? '📋';
+
+            $statusText = [
+                'approved' => 'Approved & Preparing for Dispatch',
+                'dispatched' => 'Dispatched from Morjim Factory',
+                'delivered' => 'Successfully Delivered',
+                'rejected' => 'Order Declined / Cancelled',
+                'pending' => 'Pending Verification'
+            ][$request->status] ?? ucfirst($request->status);
+
+            $msg = "🌿 *PatSons Foods Goa - Order Update*\n"
+                . "━━━━━━━━━━━━━━━━━━━━\n"
+                . "Hello *{$order->customer_name}*,\n\n"
+                . "Your Order *#{$order->order_number}* status has been updated to:\n"
+                . "{$statusEmoji} *{$statusText}*\n\n"
+                . "📍 *Delivery Location:* {$order->delivery_address}\n"
+                . "💰 *Total Value:* ₹" . number_format($order->total_amount, 2) . "\n"
+                . ($request->admin_notes ? "📝 *Factory Note:* {$request->admin_notes}\n" : "")
+                . "━━━━━━━━━━━━━━━━━━━━\n"
+                . "Thank you for partnering with Dev Can Fruit Products, Morjim - Goa.";
+
+            $waService->queueMessage($order->customer_phone, $msg);
+        }
+
+        return back()->with('success', "Order #{$order->order_number} status updated to " . strtoupper($request->status) . " (WhatsApp alert queued).");
+    }
+
+    public function printInvoice($id)
+    {
+        $order = Order::with('items')->findOrFail($id);
+        return view('admin.orders.invoice', compact('order'));
     }
 
     // 3. Product Catalog Grouped by Base Product
@@ -111,15 +152,25 @@ class AdminController extends Controller
 
         $categories = ProductCatalog::distinct()->pluck('category')->filter();
         $totalCount = ProductCatalog::distinct('slug')->count('slug');
+        $totalSkus = ProductCatalog::count();
         $liveCount = ProductCatalog::where('is_active', 1)->distinct('slug')->count('slug');
         $hiddenCount = ProductCatalog::where('is_active', 0)->distinct('slug')->count('slug');
+        $inStockCount = ProductCatalog::where(function ($q) {
+            $q->whereNull('in_stock')->orWhere('in_stock', 1);
+        })->distinct('slug')->count('slug');
+        $outOfStockCount = ProductCatalog::where('in_stock', 0)->distinct('slug')->count('slug');
+        $featuredCount = ProductCatalog::where('is_featured', 1)->distinct('slug')->count('slug');
 
         return view('admin.products.index', compact(
             'groupedProducts',
             'categories',
             'totalCount',
+            'totalSkus',
             'liveCount',
             'hiddenCount',
+            'inStockCount',
+            'outOfStockCount',
+            'featuredCount',
             'search',
             'category',
             'statusFilter'
@@ -154,13 +205,14 @@ class AdminController extends Controller
         $primaryImage = 'default-product.webp';
         $galleryImages = [];
 
-        if ($request->hasFile('primary_image')) {
-            $primaryImage = basename($request->file('primary_image')->store('products', 'public'));
+        $primaryFile = $request->file('primary_image') ?: $request->file('image_file');
+        if ($primaryFile) {
+            $primaryImage = ImageService::uploadAsWebp($primaryFile, 'products', 82, $slug . '-primary', true);
         }
 
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $file) {
-                $galleryImages[] = basename($file->store('products', 'public'));
+                $galleryImages[] = ImageService::uploadAsWebp($file, 'products', 82, $slug . '-gallery', true);
             }
         }
 
@@ -255,25 +307,27 @@ class AdminController extends Controller
             'variants.*.size' => 'required|string|max:100',
             'variants.*.price' => 'required|numeric|min:0',
             'variants.*.units_per_box' => 'required|integer|min:1',
-            'primary_image' => 'nullable|file|mimes:jpeg,png,jpg,webp,avif|max:20480',
+            'primary_image' => 'nullable|file|mimes:jpeg,png,jpg,webp,avif,gif,bmp,heic|max:20480',
             'images' => 'nullable|array',
-            'images.*' => 'nullable|file|mimes:jpeg,png,jpg,webp,avif|max:20480',
+            'images.*' => 'nullable|file|mimes:jpeg,png,jpg,webp,avif,gif,bmp,heic|max:20480',
             'visible_images' => 'nullable|array',
             'primary_choice' => 'nullable|string',
         ]);
+
+        $newSlug = Str::slug($request->product_name);
 
         // Gallery and cover image processing
         $selectedGallery = $request->input('visible_images', []);
 
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $file) {
-                $selectedGallery[] = basename($file->store('products', 'public'));
+                $selectedGallery[] = ImageService::uploadAsWebp($file, 'products', 82, $newSlug . '-gallery', true);
             }
         }
 
         $primaryImage = null;
         if ($request->hasFile('primary_image')) {
-            $primaryImage = basename($request->file('primary_image')->store('products', 'public'));
+            $primaryImage = ImageService::uploadAsWebp($request->file('primary_image'), 'products', 82, $newSlug . '-primary', true);
         } elseif ($request->filled('primary_choice')) {
             $primaryImage = basename($request->primary_choice);
         }
@@ -347,7 +401,215 @@ class AdminController extends Controller
         ]);
 
         $statusLabel = $newStatus ? 'Visible in Store' : 'Hidden from Store';
+
+        if (request()->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'is_active' => (bool) $newStatus,
+                'message' => "Product '{$product->product_name}' is now {$statusLabel}."
+            ]);
+        }
+
         return back()->with('success', "Product {$product->product_name} is now {$statusLabel}.");
+    }
+
+    public function toggleProductStock($id)
+    {
+        $product = ProductCatalog::findOrFail($id);
+        $newStock = !($product->in_stock ?? true);
+
+        ProductCatalog::where('slug', $product->slug)->update([
+            'in_stock' => $newStock
+        ]);
+
+        $label = $newStock ? 'Marked In Stock' : 'Marked Out of Stock';
+
+        if (request()->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'in_stock' => (bool) $newStock,
+                'message' => "Product '{$product->product_name}' {$label}."
+            ]);
+        }
+
+        return back()->with('success', "{$product->product_name} {$label}.");
+    }
+
+    public function toggleProductFeatured($id)
+    {
+        $product = ProductCatalog::findOrFail($id);
+        $newFeatured = !$product->is_featured;
+
+        ProductCatalog::where('slug', $product->slug)->update([
+            'is_featured' => $newFeatured
+        ]);
+
+        $label = $newFeatured ? 'Marked as Featured / Best Seller' : 'Removed from Featured';
+
+        if (request()->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'is_featured' => (bool) $newFeatured,
+                'message' => "Product '{$product->product_name}' {$label}."
+            ]);
+        }
+
+        return back()->with('success', "{$product->product_name} {$label}.");
+    }
+
+    public function quickUpdateVariant(Request $request, $id)
+    {
+        $variant = ProductCatalog::findOrFail($id);
+        $request->validate([
+            'price' => 'nullable|numeric|min:0',
+            'units_per_box' => 'nullable|integer|min:1',
+        ]);
+
+        if ($request->filled('price')) {
+            $variant->price = (float) $request->price;
+        }
+        if ($request->filled('units_per_box')) {
+            $variant->units_per_box = (int) $request->units_per_box;
+        }
+        $variant->save();
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'price' => number_format($variant->price, 2),
+                'units_per_box' => $variant->units_per_box,
+                'box_price' => number_format($variant->box_price, 2),
+                'message' => "Updated {$variant->size} variant (₹{$variant->price}) successfully."
+            ]);
+        }
+
+        return back()->with('success', "Updated {$variant->size} variant successfully.");
+    }
+
+    public function duplicateProduct($id)
+    {
+        $product = ProductCatalog::findOrFail($id);
+        $baseName = preg_replace('/\s*\(Copy.*?\)$/', '', $product->product_name);
+        $newName = $baseName . ' (Copy)';
+        $newSlug = Str::slug($newName . '-' . Str::random(4));
+
+        $newProduct = $product->replicate();
+        $newProduct->product_name = $newName;
+        $newProduct->slug = $newSlug;
+        $newProduct->is_active = false; // Start draft
+        $newProduct->save();
+
+        return redirect()->route('admin.products.edit', $newProduct->id)
+            ->with('success', "Duplicated '{$product->product_name}' to '{$newName}'. Customize pricing and details below.");
+    }
+
+    public function bulkAction(Request $request)
+    {
+        $request->validate([
+            'action' => 'required|string|in:activate,deactivate,mark_in_stock,mark_out_of_stock,feature,unfeature,delete',
+            'slugs' => 'required|array|min:1',
+            'slugs.*' => 'string'
+        ]);
+
+        $slugs = $request->input('slugs');
+        $action = $request->input('action');
+        $count = count($slugs);
+
+        switch ($action) {
+            case 'activate':
+                ProductCatalog::whereIn('slug', $slugs)->update(['is_active' => true]);
+                $msg = "{$count} products activated and live in shop.";
+                break;
+            case 'deactivate':
+                ProductCatalog::whereIn('slug', $slugs)->update(['is_active' => false]);
+                $msg = "{$count} products hidden from shop.";
+                break;
+            case 'mark_in_stock':
+                ProductCatalog::whereIn('slug', $slugs)->update(['in_stock' => true]);
+                $msg = "{$count} products marked In Stock.";
+                break;
+            case 'mark_out_of_stock':
+                ProductCatalog::whereIn('slug', $slugs)->update(['in_stock' => false]);
+                $msg = "{$count} products marked Out of Stock.";
+                break;
+            case 'feature':
+                ProductCatalog::whereIn('slug', $slugs)->update(['is_featured' => true]);
+                $msg = "{$count} products marked as Featured / Best Seller.";
+                break;
+            case 'unfeature':
+                ProductCatalog::whereIn('slug', $slugs)->update(['is_featured' => false]);
+                $msg = "{$count} products removed from Featured.";
+                break;
+            case 'delete':
+                ProductCatalog::whereIn('slug', $slugs)->delete();
+                $msg = "{$count} products removed from catalog.";
+                break;
+            default:
+                $msg = "Bulk action completed.";
+        }
+
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true, 'message' => $msg]);
+        }
+
+        return back()->with('success', $msg);
+    }
+
+    public function exportCatalog()
+    {
+        $products = ProductCatalog::orderBy('category')->orderBy('product_name')->orderBy('price')->get();
+
+        $headers = [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="patsons-catalog-' . date('Y-m-d') . '.csv"',
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
+        ];
+
+        $callback = function () use ($products) {
+            $file = fopen('php://output', 'w');
+            // Add UTF-8 BOM for Microsoft Excel compatibility
+            fputs($file, "\xEF\xBB\xBF");
+
+            fputcsv($file, [
+                'SKU ID',
+                'Product Name',
+                'Category',
+                'Pack Size',
+                'Unit Price (INR)',
+                'Units Per Box',
+                'Box Price (INR)',
+                'Live In Store',
+                'Stock Status',
+                'Featured Best Seller',
+                'Vyapar Item ID',
+                'Image File',
+                'Storefront URL'
+            ], ',', '"', '\\');
+
+            foreach ($products as $p) {
+                fputcsv($file, [
+                    $p->id,
+                    $p->product_name,
+                    $p->category,
+                    $p->size,
+                    number_format($p->price, 2, '.', ''),
+                    $p->units_per_box ?: 12,
+                    number_format($p->box_price, 2, '.', ''),
+                    $p->is_active ? 'LIVE' : 'HIDDEN',
+                    ($p->in_stock ?? true) ? 'IN_STOCK' : 'OUT_OF_STOCK',
+                    $p->is_featured ? 'YES' : 'NO',
+                    $p->vyapar_item_id ?? '',
+                    $p->image ?? '',
+                    url('/products/' . $p->slug),
+                ], ',', '"', '\\');
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 
     public function deleteProductImage(Request $request, $id)
@@ -372,6 +634,39 @@ class AdminController extends Controller
         }
 
         return back()->with('success', 'Image removed from gallery.');
+    }
+
+    public function quickUpdateImage(Request $request, $id)
+    {
+        $product = ProductCatalog::findOrFail($id);
+        $request->validate([
+            'image' => 'required|file|mimes:jpeg,png,jpg,webp,avif,gif,bmp,heic|max:20480'
+        ]);
+
+        $webpName = ImageService::uploadAsWebp($request->file('image'), 'products', 82, $product->slug . '-quick', true);
+        $product->image = $webpName;
+        $product->save();
+
+        ProductCatalog::where('slug', $product->slug)->update(['image' => $webpName]);
+
+        return back()->with('success', 'Product image updated to ' . $webpName);
+    }
+
+    public function resetToDefaultImage($id)
+    {
+        $product = ProductCatalog::findOrFail($id);
+        ProductCatalog::where('slug', $product->slug)->update(['image' => 'default-product.webp']);
+        return back()->with('success', 'Product image reset to default.');
+    }
+
+    public function updateImageTag(Request $request, $id)
+    {
+        $product = ProductCatalog::findOrFail($id);
+        $request->validate([
+            'tag' => 'required|string|in:auto,matched,mismatched,default'
+        ]);
+        ProductCatalog::where('slug', $product->slug)->update(['image_status' => $request->tag]);
+        return back()->with('success', 'Image status tag updated.');
     }
 
     public function deleteProduct($id)
@@ -463,11 +758,13 @@ class AdminController extends Controller
                     ]);
 
             $data = $response->json();
+            $connected = ($data['connected'] ?? false) || in_array($data['state'] ?? '', ['CONNECTED', 'inChat', 'isLogged', 'chatsAvailable', 'qrReadSuccess']);
 
             return response()->json([
                 'status' => 'success',
-                'qrcode' => $data['qrcode'] ?? null,
-                'state' => $data['status'] ?? ($data['connected'] ?? false ? 'CONNECTED' : 'DISCONNECTED')
+                'connected' => (bool) $connected,
+                'qrcode' => $connected ? null : ($data['qrcode'] ?? null),
+                'state' => $connected ? 'CONNECTED' : ($data['state'] ?? 'INITIALIZING')
             ]);
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);

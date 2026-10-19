@@ -26,15 +26,18 @@ class ProductCatalog extends Model
         'images',
         'is_featured',
         'is_active',
+        'in_stock',
         'image_status',
         'auto_approve_override',
         'auto_approve_min_qty',
+        'vyapar_item_id',
     ];
 
     protected $casts = [
         'images' => 'array',
         'is_featured' => 'boolean',
         'is_active' => 'boolean',
+        'in_stock' => 'boolean',
         'auto_approve_override' => 'boolean',
         'price' => 'decimal:2',
         'units_per_box' => 'integer',

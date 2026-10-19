@@ -1,4 +1,12 @@
 {
+  "Home": "घर",
+  "Catalog": "उत्पादनां",
+  "Heritage & Unit": "पारंपरिक कारखाना",
+  "Contact Us": "संपर्क करा",
+  "Track Order": "ऑर्डर तपासा",
+  "Shop": "दुकान",
+  "WhatsApp": "व्हॉट्सॲप",
+  "Direct Order": "थेट ऑर्डर",
   "Authentic Goan Foods": "अस्सल गोयंकार उत्पादनां",
   "Subtitle": "शुद्ध कोकमाचें आगळ, काजू जाम, सिरप आनी पारंपारीक चव.",
   "Quick Reorder": "परतून ऑर्डर करा",
@@ -8,10 +16,15 @@
   "All Products": "सगळीं उत्पादनां",
   "Available Sizes": "उपलब्ध माप:",
   "Price": "दर",
+  "Price per unit": "एका बॉटलीचो दर",
+  "Per Box": "दर बॉक्स",
   "Add": "जोडा",
+  "Add Box to Cart": "कार्टांत घाला",
+  "Instant WhatsApp Quote": "व्हॉट्सॲप दर मेळवा",
   "Popular": "लोकप्रिय",
   "Quotation Cart": "ऑर्डर कार्ट",
   "Cart Empty": "तुमचें कार्ट रितें आसा.",
+  "Browse Products": "उत्पादनां पळयात →",
   "Estimated Total": "एकूण रक्कम:",
   "Proceed to WhatsApp": "व्हॉट्सॲप ऑर्डर फुडें करा →",
   "Full Name": "तुमचें पुराय नांव",
@@ -21,5 +34,7 @@
   "Weekly Standing Schedule": "दर सप्तकाची नियमित ऑर्डर",
   "Delivery Address": "पत्ता / टीप",
   "Cancel": "रद्द करा",
-  "Send to WhatsApp": "व्हॉट्सॲपाचेर धाडा →"
+  "Send to WhatsApp": "व्हॉट्सॲपाचेर धाडा →",
+  "In Stock": "स्टॉकांत आसा",
+  "Wholesale Carton Only": "फकत व्होलसेल बॉक्स"
 }

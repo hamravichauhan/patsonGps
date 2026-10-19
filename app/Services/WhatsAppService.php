@@ -46,4 +46,12 @@ class WhatsAppService
             return false;
         }
     }
+
+    /**
+     * Dispatch WhatsApp message asynchronously after HTTP response (instant zero-delay UX)
+     */
+    public function queueMessage(string $phone, string $message): void
+    {
+        \App\Jobs\SendWhatsAppAlert::dispatchAfterResponse($phone, $message);
+    }
 }

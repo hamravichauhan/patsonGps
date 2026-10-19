@@ -72,6 +72,9 @@
                         "highPrice" => number_format((float) $maxBoxPrice, 2, '.', ''),
                         "offerCount" => (string) max(1, $variants->count()),
                         "availability" => "https://schema.org/InStock",
+                        "itemCondition" => "https://schema.org/NewCondition",
+                        "url" => url()->current(),
+                        "priceValidUntil" => now()->addYear()->format('Y-12-31'),
                         "seller" => [
                             "@type" => "Organization",
                             "name" => "PatSons Foods"
@@ -286,21 +289,21 @@
 
                 <!-- Call to Actions -->
                 <div class="pt-4 border-t border-gray-100 flex flex-col sm:flex-row gap-3">
-                    {{-- Add to Cart: temporarily disabled - will be re-enabled in future --}}
-                    {{-- <button type="button" x-on:click="triggerAdd()"
-                        class="flex-1 bg-green-800 hover:bg-green-900 active:scale-98 text-white font-extrabold py-3.5 px-6 rounded-2xl text-xs sm:text-sm shadow-md transition flex items-center justify-center gap-2 cursor-pointer">
+                    <button type="button" x-on:click="triggerAdd()"
+                        class="flex-1 bg-green-900 hover:bg-green-800 active:scale-98 text-white font-black py-3.5 px-6 rounded-2xl text-xs sm:text-sm shadow-md transition flex items-center justify-center gap-2 cursor-pointer">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                 d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                         </svg>
                         <span>+ Add Box to Quotation Cart</span>
-                    </button> --}}
+                    </button>
 
-                    <!-- <a :href="'https://wa.me/{{ $adminWa }}?text=' + encodeURIComponent('Hello PatSons Goa! Inquiring for wholesale boxes of: {{ addslashes($product->product_name) }} (' + selectedSize + ', Box of ' + selectedUnitsPerBox + ') - ₹' + boxPrice.toFixed(2) + ' per box')"
-                                    target="_blank" rel="noopener noreferrer"
-                                    class="flex-1 bg-amber-400 hover:bg-amber-300 active:scale-98 text-gray-950 font-black py-3.5 px-6 rounded-2xl text-xs sm:text-sm shadow transition flex items-center justify-center gap-1.5 text-center cursor-pointer">
-                                    <span>💬 Instant WhatsApp Quote</span>
-                                </a> -->
+                    <a :href="'https://wa.me/{{ $adminWa }}?text=' + encodeURIComponent('Hello PatSons Goa! Inquiring for wholesale boxes of: {{ addslashes($product->product_name) }} (' + selectedSize + ', Box of ' + selectedUnitsPerBox + ') - ₹' + boxPrice.toFixed(2) + ' per box')"
+                        target="_blank" rel="noopener noreferrer"
+                        class="flex-1 bg-emerald-600 hover:bg-emerald-700 active:scale-98 text-white font-black py-3.5 px-6 rounded-2xl text-xs sm:text-sm shadow transition flex items-center justify-center gap-2 text-center cursor-pointer">
+                        <span>💬</span>
+                        <span>Instant WhatsApp Quote</span>
+                    </a>
                 </div>
             </div>
         </div>
@@ -392,7 +395,7 @@
                 variants: @json($variants),
                 gallery: @json($galleryImages ?? []),
                 activeImageIndex: 0,
-                // addedToast: false, // disabled until cart is re-enabled
+                addedToast: false,
                 lightboxOpen: false,
 
                 get boxPrice() {
@@ -427,30 +430,25 @@
                     this.selectedPrice = Number(v.price);
                     this.selectedUnitsPerBox = Number(v.units_per_box || 12);
                     this.selectedSize = v.size;
-                }
+                },
 
-                // Add to Cart: temporarily disabled - will be re-enabled in future
-                // triggerAdd() {
-                //     const calculatedBoxPrice = this.boxPrice;
-                //     const packLabel = this.selectedSize + ' (Box of ' + this.selectedUnitsPerBox + ')';
-                //
-                //     if (typeof addToCart === 'function') {
-                //         addToCart(this.selectedId, @json($product->product_name), calculatedBoxPrice, packLabel);
-                //     } else {
-                //         window.dispatchEvent(new CustomEvent('add-to-cart', {
-                //             detail: {
-                //                 id: this.selectedId,
-                //                 name: @json($product->product_name),
-                //                 price: calculatedBoxPrice,
-                //                 size: packLabel,
-                //                 units_per_box: this.selectedUnitsPerBox,
-                //                 image: this.currentImage
-                //             }
-                //         }));
-                //     }
-                //     this.addedToast = true;
-                //     setTimeout(() => this.addedToast = false, 1800);
-                // }
+                triggerAdd() {
+                    const calculatedBoxPrice = this.boxPrice;
+                    const packLabel = this.selectedSize + ' (Box of ' + this.selectedUnitsPerBox + ')';
+
+                    window.dispatchEvent(new CustomEvent('add-to-cart', {
+                        detail: {
+                            id: this.selectedId,
+                            name: @json($product->product_name),
+                            price: calculatedBoxPrice,
+                            size: packLabel,
+                            units_per_box: this.selectedUnitsPerBox,
+                            image: this.currentImage
+                        }
+                    }));
+                    this.addedToast = true;
+                    setTimeout(() => this.addedToast = false, 1800);
+                }
             };
         }
     </script>

@@ -25,6 +25,11 @@ _ide_helper.php
 Homestead.json
 Homestead.yaml
 Thumbs.db
-patsons-wa-gateway/
+patsons-wa-gateway/node_modules/
+patsons-wa-gateway/.env
+patsons-wa-gateway/tokens/
+patsons-wa-gateway/*.log
 *.zip
 *.sql
+*.bak
+*.tmp*

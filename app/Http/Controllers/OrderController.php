@@ -38,7 +38,7 @@ class OrderController extends Controller
             . "Your 4-digit verification code is: *{$otp}*\n\n"
             . "Use this OTP to complete your quotation order. Valid for 10 minutes.";
 
-        $waService->sendMessage($cleanPhone, $msg);
+        $waService->queueMessage($cleanPhone, $msg);
 
         // Check for returning customer details
         $previousOrder = Order::where('customer_phone', $cleanPhone)->latest()->first();
@@ -171,7 +171,7 @@ class OrderController extends Controller
                 . "💰 *Estimated Total:* ₹" . number_format($totalAmount, 2) . "\n\n"
                 . "Our factory team is reviewing your order and will confirm delivery shortly.";
 
-            $waService->sendMessage($cleanPhone, $customerMsg);
+            $waService->queueMessage($cleanPhone, $customerMsg);
 
             // Background WhatsApp to Admin
             $rawAdminPhone = Setting::get('whatsapp_admin_number', config('services.whatsapp.admin_number', '917758943614'));
@@ -189,7 +189,7 @@ class OrderController extends Controller
                 . "━━━━━━━━━━━━━━━━━━━━\n"
                 . "💵 *Grand Total:* ₹" . number_format($totalAmount, 2);
 
-            $waService->sendMessage($adminPhone, $adminMsg);
+            $waService->queueMessage($adminPhone, $adminMsg);
 
             return response()->json([
                 'status' => 'success',
