@@ -15,7 +15,7 @@ class SitemapController extends Controller
     {
         // ---------- Products (only active, distinct slugs) ----------
         $products = ProductCatalog::where('is_active', true)
-            ->select('slug', 'product_name', 'image', 'created_at')
+            ->select('id', 'slug', 'product_name', 'category', 'image', 'images', 'created_at')
             ->orderBy('id', 'desc')
             ->get()
             ->unique('slug')

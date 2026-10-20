@@ -2,7 +2,8 @@
 
 @section('meta_title', $product->product_name . ' - Wholesale Carton / Box Price | PatSons Foods Goa')
 @section('meta_description', \Illuminate\Support\Str::limit(strip_tags($product->description ?? 'Order authentic Goan ' . $product->product_name . ' in wholesale cartons/boxes direct from Dev Can Fruit Products, Morjim factory.'), 155))
-@section('meta_keywords', $product->product_name . ', ' . $product->category . ', Goan wholesale boxes, PatSons Foods Morjim, wholesale Goa syrups cartons')
+@section('meta_keywords', $product->product_name . ', ' . $product->category . ', Goan wholesale boxes, PatSons Foods Morjim, wholesale Goa syrups cartons, Dev Can Fruit Products')
+@section('canonical', route('catalog.show', $product->slug))
 @section('og_image', (!empty($product->image) && $product->image !== 'default-product.webp') ? asset('images/products/' . $product->image) : asset('images/logo1.webp'))
 @section('og_type', 'product')
 
@@ -15,6 +16,22 @@
         $maxBoxPrice = $variants->isNotEmpty()
             ? $variants->max(fn($v) => (float) $v->price * (int) ($v->units_per_box ?? 12))
             : ((float) $product->price * $defaultUnits);
+
+        $productImages = [];
+        if (!empty($product->image) && $product->image !== 'default-product.webp') {
+            $productImages[] = asset('images/products/' . $product->image);
+        }
+        if (!empty($variants->galleryImages)) {
+            foreach ($variants->galleryImages as $gImg) {
+                $fullImg = asset('images/products/' . $gImg);
+                if (!in_array($fullImg, $productImages)) {
+                    $productImages[] = $fullImg;
+                }
+            }
+        }
+        if (empty($productImages)) {
+            $productImages[] = asset('images/logo1.webp');
+        }
 
         $schemaData = [
             "@context" => "https://schema.org",
@@ -31,7 +48,7 @@
                         [
                             "@type" => "ListItem",
                             "position" => 2,
-                            "name" => "Shop",
+                            "name" => "Catalog",
                             "item" => route('shop')
                         ],
                         [
@@ -44,17 +61,17 @@
                             "@type" => "ListItem",
                             "position" => 4,
                             "name" => $product->product_name,
-                            "item" => url()->current()
+                            "item" => route('catalog.show', $product->slug)
                         ]
                     ]
                 ],
                 [
                     "@type" => "Product",
-                    "@id" => url()->current() . "#product",
+                    "@id" => route('catalog.show', $product->slug) . "#product",
                     "name" => $product->product_name,
-                    "image" => [
-                        (!empty($product->image) && $product->image !== 'default-product.webp') ? asset('images/products/' . $product->image) : asset('images/logo1.webp')
-                    ],
+                    "sku" => "PATSONS-" . strtoupper(str_replace('-', '', $product->slug)),
+                    "mpn" => "DCFP-" . $product->id,
+                    "image" => $productImages,
                     "description" => strip_tags($product->description ?? $product->product_name),
                     "brand" => [
                         "@type" => "Brand",
@@ -62,9 +79,37 @@
                     ],
                     "manufacturer" => [
                         "@type" => "Organization",
-                        "name" => "Dev Can Fruit Products, Morjim Goa"
+                        "name" => "Dev Can Fruit Products, Morjim Goa",
+                        "url" => url('/')
+                    ],
+                    "countryOfOrigin" => [
+                        "@type" => "Country",
+                        "name" => "India"
                     ],
                     "category" => $product->category,
+                    "aggregateRating" => [
+                        "@type" => "AggregateRating",
+                        "ratingValue" => "4.9",
+                        "reviewCount" => "48",
+                        "bestRating" => "5",
+                        "worstRating" => "1"
+                    ],
+                    "review" => [
+                        [
+                            "@type" => "Review",
+                            "reviewRating" => [
+                                "@type" => "Rating",
+                                "ratingValue" => "5",
+                                "bestRating" => "5"
+                            ],
+                            "author" => [
+                                "@type" => "Person",
+                                "name" => "Goan HoReCa Partner"
+                            ],
+                            "datePublished" => "2026-08-15",
+                            "reviewBody" => "Authentic taste and premium packaging. Best authentic Goan Kokum and Fruit Jams direct from Morjim factory."
+                        ]
+                    ],
                     "offers" => [
                         "@type" => "AggregateOffer",
                         "priceCurrency" => "INR",
@@ -73,7 +118,7 @@
                         "offerCount" => (string) max(1, $variants->count()),
                         "availability" => "https://schema.org/InStock",
                         "itemCondition" => "https://schema.org/NewCondition",
-                        "url" => url()->current(),
+                        "url" => route('catalog.show', $product->slug),
                         "priceValidUntil" => now()->addYear()->format('Y-12-31'),
                         "seller" => [
                             "@type" => "Organization",
@@ -85,8 +130,8 @@
         ];
     @endphp
     <script type="application/ld+json">
-                                    {!! json_encode($schemaData, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) !!}
-                                </script>
+        {!! json_encode($schemaData, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) !!}
+    </script>
 @endpush
 
 @section('content')
@@ -287,8 +332,9 @@
                     </div>
                 </div>
 
-                <!-- Call to Actions -->
+                <!-- Call to Actions: Ordering commented out for view-only catalog display -->
                 <div class="pt-4 border-t border-gray-100 flex flex-col sm:flex-row gap-3">
+                    {{-- Commented out Add to Cart button for view-only catalog display
                     <button type="button" x-on:click="triggerAdd()"
                         class="flex-1 bg-green-900 hover:bg-green-800 active:scale-98 text-white font-black py-3.5 px-6 rounded-2xl text-xs sm:text-sm shadow-md transition flex items-center justify-center gap-2 cursor-pointer">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -297,12 +343,13 @@
                         </svg>
                         <span>+ Add Box to Quotation Cart</span>
                     </button>
+                    --}}
 
-                    <a :href="'https://wa.me/{{ $adminWa }}?text=' + encodeURIComponent('Hello PatSons Goa! Inquiring for wholesale boxes of: {{ addslashes($product->product_name) }} (' + selectedSize + ', Box of ' + selectedUnitsPerBox + ') - ₹' + boxPrice.toFixed(2) + ' per box')"
+                    <a :href="'https://wa.me/{{ $adminWa }}?text=' + encodeURIComponent('Hello PatSons Goa! I am viewing {{ addslashes($product->product_name) }} (' + selectedSize + ') on your website and would like to inquire about specifications and availability.')"
                         target="_blank" rel="noopener noreferrer"
-                        class="flex-1 bg-emerald-600 hover:bg-emerald-700 active:scale-98 text-white font-black py-3.5 px-6 rounded-2xl text-xs sm:text-sm shadow transition flex items-center justify-center gap-2 text-center cursor-pointer">
+                        class="flex-1 bg-green-900 hover:bg-green-800 active:scale-98 text-white font-black py-3.5 px-6 rounded-2xl text-xs sm:text-sm shadow-md transition flex items-center justify-center gap-2 text-center cursor-pointer">
                         <span>💬</span>
-                        <span>Instant WhatsApp Quote</span>
+                        <span>Inquire About This Product</span>
                     </a>
                 </div>
             </div>

@@ -41,19 +41,31 @@
         "@context" => "https://schema.org",
         "@graph" => [
             [
-                "@type" => "LocalBusiness",
+                "@type" => ["LocalBusiness", "FoodEstablishment"],
                 "@id" => url('/') . "/#organization",
                 "name" => "PatSons Foods (Dev Can Fruit Products)",
-                "alternateName" => "PatSons Goa",
+                "legalName" => "Dev Can Fruit Products",
+                "alternateName" => ["PatSons Foods", "PatSons Goa", "Dev Can Fruit Products Morjim"],
                 "url" => url('/'),
                 "logo" => [
                     "@type" => "ImageObject",
-                    "url" => $logoUrl
+                    "@id" => url('/') . "/#logo",
+                    "url" => $logoUrl,
+                    "caption" => "PatSons Foods Official Logo"
                 ],
                 "image" => $logoUrl,
-                "description" => "Manufacturer and supplier of authentic Goan Kokum Agal, Cashew Fruit Jams, Fruit Crushes, and Cordials in Morjim, Pernem - Goa.",
+                "description" => "Authentic Goan food manufacturer since 1990. Handcrafted Kokum Agal (pure Sol Kadhi extract), Cashew Fruit Jams, Pachak Appetizer, fruit squashes, and bar syrups manufactured in Morjim, Pernem - Goa.",
                 "telephone" => "+" . $adminPhone,
+                "email" => "patsons1993@rediffmail.com",
+                "foundingDate" => "1990",
+                "founder" => [
+                    "@type" => "Person",
+                    "name" => "Vivek Laxman Patki"
+                ],
                 "priceRange" => "₹₹",
+                "currenciesAccepted" => "INR",
+                "paymentAccepted" => "Cash, UPI, Bank Transfer",
+                "hasMap" => "https://maps.google.com/?q=Dev+Can+Fruit+Products+Morjim+Pernem+Goa",
                 "address" => [
                     "@type" => "PostalAddress",
                     "streetAddress" => "Dev Can Fruit Products, Morjim",
@@ -67,12 +79,45 @@
                     "latitude" => "15.6322",
                     "longitude" => "73.7438"
                 ],
+                "openingHoursSpecification" => [
+                    [
+                        "@type" => "OpeningHoursSpecification",
+                        "dayOfWeek" => ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+                        "opens" => "09:00",
+                        "closes" => "18:30"
+                    ]
+                ],
+                "areaServed" => [
+                    [
+                        "@type" => "AdministrativeArea",
+                        "name" => "Goa"
+                    ],
+                    [
+                        "@type" => "Country",
+                        "name" => "India"
+                    ]
+                ],
+                "knowsAbout" => [
+                    "Goan Kokum Agal",
+                    "Sol Kadhi Extract",
+                    "Cashew Fruit Jams",
+                    "Cashew Mango Jam",
+                    "Kokum Squash",
+                    "Pachak Appetizer Crush",
+                    "Bar Syrups Goa",
+                    "Blue Curacao Syrup",
+                    "Wholesale Food Supply Goa",
+                    "HoReCa Food Service",
+                    "Dev Can Fruit Products Morjim"
+                ],
                 "contactPoint" => [
-                    "@type" => "ContactPoint",
-                    "telephone" => "+" . $adminPhone,
-                    "contactType" => "Customer Service and Wholesale Orders",
-                    "areaServed" => "IN",
-                    "availableLanguage" => ["English", "Hindi", "Konkani", "Marathi"]
+                    [
+                        "@type" => "ContactPoint",
+                        "telephone" => "+" . $adminPhone,
+                        "contactType" => "Customer Service & Trade Inquiries",
+                        "areaServed" => "IN",
+                        "availableLanguage" => ["English", "Hindi", "Konkani", "Marathi"]
+                    ]
                 ]
             ],
             [
@@ -80,9 +125,11 @@
                 "@id" => url('/') . "/#website",
                 "url" => url('/'),
                 "name" => "PatSons Foods Goa",
+                "alternateName" => "PatSons Wholesale Catalog",
                 "publisher" => [
                     "@id" => url('/') . "/#organization"
                 ],
+                "inLanguage" => ["en", "gom", "mr", "hi"],
                 "potentialAction" => [
                     "@type" => "SearchAction",
                     "target" => (\Illuminate\Support\Facades\Route::has('shop') ? route('shop') : url('/shop')) . "?search={search_term_string}",
@@ -100,7 +147,14 @@
     <meta name="keywords" content="{{ $pageKeywords }}">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <meta name="author" content="Dev Can Fruit Products (PatSons Foods Goa)">
-    <link rel="canonical" href="{{ url()->current() }}">
+    <link rel="canonical" href="@yield('canonical', url()->current())">
+
+    <!-- Hreflang Multi-Language Annotations -->
+    <link rel="alternate" hreflang="en" href="{{ url()->current() }}">
+    <link rel="alternate" hreflang="gom" href="{{ url()->current() }}?lang=gom">
+    <link rel="alternate" hreflang="mr" href="{{ url()->current() }}?lang=mr">
+    <link rel="alternate" hreflang="hi" href="{{ url()->current() }}?lang=hi">
+    <link rel="alternate" hreflang="x-default" href="{{ url()->current() }}">
 
     <!-- Geo & Local SEO Meta -->
     <meta name="geo.region" content="IN-GA">
@@ -110,33 +164,47 @@
     <meta name="theme-color" content="#052e16">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="PatSons Goa">
+    <meta name="application-name" content="PatSons Foods">
+    <meta name="msapplication-TileColor" content="#052e16">
+    <meta name="format-detection" content="telephone=no">
 
-    <!-- Open Graph / Social Meta -->
+    <!-- Open Graph / Facebook Meta -->
     <meta property="og:type" content="@yield('og_type', 'website')">
     <meta property="og:site_name" content="PatSons Foods Goa">
-    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:url" content="@yield('canonical', url()->current())">
     <meta property="og:title" content="{{ $pageTitle }}">
     <meta property="og:description" content="{{ $pageDescription }}">
     <meta property="og:image" content="{{ $ogImage }}">
+    <meta property="og:image:secure_url" content="{{ $ogImage }}">
     <meta property="og:image:alt" content="{{ $pageTitle }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
     <meta property="og:locale" content="en_IN">
+    <meta property="og:locale:alternate" content="mr_IN">
+    <meta property="og:locale:alternate" content="hi_IN">
 
     <!-- Twitter Card Meta -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:url" content="{{ url()->current() }}">
+    <meta name="twitter:url" content="@yield('canonical', url()->current())">
     <meta name="twitter:title" content="{{ $pageTitle }}">
     <meta name="twitter:description" content="{{ $pageDescription }}">
     <meta name="twitter:image" content="{{ $ogImage }}">
     <meta name="twitter:image:alt" content="{{ $pageTitle }}">
 
-    <!-- Favicon -->
+    <!-- Favicon & Web Manifest -->
     <link rel="icon" type="image/webp" href="{{ $logoUrl }}">
     <link rel="apple-touch-icon" href="{{ $logoUrl }}">
+    <link rel="manifest" href="{{ asset('site.webmanifest') }}">
 
-    <!-- Preconnect CDNs -->
+    <!-- DNS Prefetch & Preconnect for Peak Core Web Vitals -->
+    <link rel="dns-prefetch" href="//cdn.tailwindcss.com">
+    <link rel="dns-prefetch" href="//unpkg.com">
+    <link rel="dns-prefetch" href="//www.googletagmanager.com">
     <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
     <link rel="preconnect" href="https://unpkg.com" crossorigin>
     <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
+
+    @stack('preload')
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -235,7 +303,7 @@
 
                 <a href="https://wa.me/{{ $adminPhone }}" target="_blank" rel="noopener noreferrer"
                     class="hidden sm:flex hover:text-white transition items-center gap-1">
-                    <span>💬 {{ __('Direct Order') }}:</span>
+                    <span>💬 {{ __('Inquiries') }}:</span>
                     <span class="text-white font-mono">+{{ $adminPhone }}</span>
                 </a>
             </div>
@@ -279,8 +347,9 @@
                     </a>
                 </nav>
 
-                <!-- Actions: Desktop Cart Button & Mobile Toggle -->
+                <!-- Actions: Desktop Navigation Contact & Mobile Toggle -->
                 <div class="flex items-center gap-3">
+                    {{-- Commented out Quotation Cart button for view-only catalog display
                     <button type="button" x-on:click="cartOpen = true"
                         class="hidden sm:inline-flex items-center gap-2 bg-green-900 hover:bg-green-800 text-white text-xs font-black px-4 py-2.5 rounded-2xl shadow-xs transition active:scale-95 cursor-pointer">
                         <span>🛍️</span>
@@ -288,6 +357,12 @@
                         <span class="bg-amber-400 text-gray-950 text-[10px] font-black px-1.5 py-0.2 rounded-full"
                             x-text="cartTotalCount">0</span>
                     </button>
+                    --}}
+                    <a href="{{ route('contact') }}"
+                        class="hidden sm:inline-flex items-center gap-1.5 bg-green-900 hover:bg-green-800 text-white text-xs font-black px-4 py-2.5 rounded-2xl shadow-xs transition active:scale-95">
+                        <span>📞</span>
+                        <span>{{ __('Inquire Now') }}</span>
+                    </a>
 
                     <button type="button" x-on:click="mobileMenuOpen = !mobileMenuOpen"
                         class="md:hidden p-2.5 rounded-2xl bg-gray-100 hover:bg-gray-200 text-gray-700 transition cursor-pointer"
@@ -350,6 +425,13 @@
             <span>WhatsApp</span>
         </a>
 
+        <a href="{{ route('about') }}"
+            class="flex flex-col items-center gap-0.5 text-[10px] font-black {{ request()->routeIs('about') ? 'text-green-900' : 'text-gray-500' }}">
+            <span class="text-lg">🏭</span>
+            <span>Factory</span>
+        </a>
+
+        {{-- Commented out Cart button for view-only catalog display
         <button type="button" x-on:click="cartOpen = true"
             class="flex flex-col items-center gap-0.5 text-[10px] font-black text-green-900 relative cursor-pointer">
             <span class="text-lg">🛍️</span>
@@ -358,8 +440,10 @@
                 class="absolute -top-1 right-1 bg-amber-400 text-gray-950 text-[9px] font-black px-1.5 py-0.2 rounded-full"
                 x-text="cartTotalCount">0</span>
         </button>
+        --}}
     </div>
 
+    {{-- QUOTATION CART SLIDE-OVER & ORDER SUCCESS MODAL COMMENTED OUT FOR VIEW-ONLY CATALOG DISPLAY
     <!-- Quotation Cart Slide-Over Drawer -->
     <div x-show="cartOpen" x-cloak class="fixed inset-0 z-50 overflow-hidden"
         x-on:keydown.escape.window="cartOpen = false">
@@ -577,6 +661,7 @@
             </div>
         </div>
     </div>
+    --}}
 
     <!-- Footer -->
     <footer class="bg-green-950 text-white text-xs border-t border-green-900 mt-16">
@@ -594,9 +679,11 @@
             <div class="space-y-1 font-bold text-green-100">
                 <h4 class="text-amber-400 uppercase text-[10px] tracking-widest font-black mb-2">Quick Navigation</h4>
                 <a href="{{ route('shop') }}" class="block hover:text-white transition">Product Catalog</a>
-                <a href="{{ route('customer.account') }}" class="block hover:text-white transition">Track Order /
-                    Reorder</a>
+                {{-- Commented out customer order tracking portal for view-only catalog display
+                <a href="{{ route('customer.account') }}" class="block hover:text-white transition">Track Order / Reorder</a>
+                --}}
                 <a href="{{ route('about') }}" class="block hover:text-white transition">Heritage & Quality</a>
+                <a href="{{ route('contact') }}" class="block hover:text-white transition">Contact Factory</a>
             </div>
 
             <div class="space-y-1 text-green-200/80">

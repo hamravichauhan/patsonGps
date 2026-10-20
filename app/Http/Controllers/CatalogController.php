@@ -75,7 +75,9 @@ class CatalogController extends Controller
         // Attach dynamic multi-image gallery array to each product group
         $productsWithGalleries = $products->map(function ($variants) {
             $primary = $variants->first();
-            $variants->galleryImages = $this->getProductImages($primary->image);
+            if ($primary) {
+                $primary->gallery_images = $this->getProductImages($primary->image);
+            }
             return $variants;
         });
 

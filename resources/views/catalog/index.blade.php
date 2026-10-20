@@ -1,43 +1,77 @@
 @extends('layouts.app')
 @php
-    $catTitle = request('category') ? request('category') . ' - Wholesale Goan Box Packs | PatSons Foods Goa' : 'Wholesale Goan Kokum, Jams, Syrups & Crushes Catalog | PatSons Foods';
-    $catDesc = request('category') 
-        ? 'Browse wholesale carton packs and boxes of ' . request('category') . ' direct from Dev Can Fruit Products factory in Morjim, Pernem - Goa.'
+    $catParam = request('category');
+    $canonicalUrl = $catParam ? route('shop', ['category' => $catParam]) : route('shop');
+    $catTitle = $catParam ? $catParam . ' - Wholesale Goan Box Packs | PatSons Foods Goa' : 'Wholesale Goan Kokum, Jams, Syrups & Crushes Catalog | PatSons Foods';
+    $catDesc = $catParam 
+        ? 'Browse wholesale carton packs and boxes of ' . $catParam . ' direct from Dev Can Fruit Products factory in Morjim, Pernem - Goa. FSSAI certified authentic Goan recipes.'
         : 'Browse our complete catalog of authentic Goan Kokum Agal, Cashew Fruit Jams, bar cordials, squashes, and appetizer crushes direct from Morjim factory.';
 @endphp
 
 @section('meta_title', $catTitle)
 @section('meta_description', $catDesc)
-@section('meta_keywords', 'PatSons Foods catalog, wholesale Goan Kokum Agal, Cashew Jam wholesale, bar cordials Goa, Dev Can Fruit Products Morjim')
+@section('meta_keywords', 'PatSons Foods catalog, wholesale Goan Kokum Agal, Cashew Jam wholesale, bar cordials Goa, Dev Can Fruit Products Morjim, authentic Goan food supply')
+@section('canonical', $canonicalUrl)
 @section('title', $catTitle)
 
 @push('schema')
 @php
+    $breadcrumbs = [
+        [
+            "@type" => "ListItem",
+            "position" => 1,
+            "name" => "Home",
+            "item" => route('home')
+        ],
+        [
+            "@type" => "ListItem",
+            "position" => 2,
+            "name" => "Catalog",
+            "item" => route('shop')
+        ]
+    ];
+
+    if ($catParam) {
+        $breadcrumbs[] = [
+            "@type" => "ListItem",
+            "position" => 3,
+            "name" => $catParam,
+            "item" => $canonicalUrl
+        ];
+    }
+
+    $itemList = [];
+    $pos = 1;
+    foreach ($products->take(24) as $slug => $variants) {
+        $firstItem = $variants->first();
+        if ($firstItem) {
+            $itemList[] = [
+                "@type" => "ListItem",
+                "position" => $pos++,
+                "url" => route('catalog.show', $firstItem->slug),
+                "name" => $firstItem->product_name
+            ];
+        }
+    }
+
     $collectionSchema = [
         "@context" => "https://schema.org",
         "@graph" => [
             [
                 "@type" => "BreadcrumbList",
-                "itemListElement" => [
-                    [
-                        "@type" => "ListItem",
-                        "position" => 1,
-                        "name" => "Home",
-                        "item" => route('home')
-                    ],
-                    [
-                        "@type" => "ListItem",
-                        "position" => 2,
-                        "name" => "Catalog",
-                        "item" => route('shop')
-                    ]
-                ]
+                "itemListElement" => $breadcrumbs
             ],
             [
                 "@type" => "CollectionPage",
                 "name" => $catTitle,
                 "description" => $catDesc,
-                "url" => url()->current()
+                "url" => $canonicalUrl
+            ],
+            [
+                "@type" => "ItemList",
+                "name" => $catTitle,
+                "numberOfItems" => count($itemList),
+                "itemListElement" => $itemList
             ]
         ]
     ];
@@ -122,7 +156,7 @@
                 @foreach($products as $slug => $variants)
                     @php 
                                                                     $primary = $variants->first();
-                        $gallery = isset($variants->galleryImages) && !empty($variants->galleryImages) ? $variants->galleryImages : [$primary->image ?? 'default-product.webp'];
+                        $gallery = !empty($primary->gallery_images) ? $primary->gallery_images : [$primary->image ?? 'default-product.webp'];
                     @endphp
 
                     <div class="group bg-white rounded-3xl border border-gray-200 hover:border-emerald-300 shadow-2xs hover:shadow-xl transition-all duration-300 p-4 sm:p-5 flex flex-col justify-between"
@@ -214,7 +248,8 @@
                                 </span>
                             </div>
 
-                            <!-- CTA Buttons: Add to Cart & WhatsApp Quote -->
+                            <!-- CTA Buttons: Ordering commented out for view-only catalog display -->
+                            {{--
                             <div class="flex items-center gap-2">
                                 <button type="button"
                                     @click="$dispatch('add-to-cart', { id: selectedId, name: '{{ addslashes($primary->product_name) }}', price: selectedPrice, size: selectedSize, image: selectedImage })"
@@ -231,6 +266,12 @@
                                     <span class="hidden sm:inline">Quote</span>
                                 </a>
                             </div>
+                            --}}
+                            <a href="{{ route('catalog.show', $primary->slug) }}"
+                                class="w-full bg-stone-100 hover:bg-green-900 hover:text-white text-stone-800 font-black text-xs py-2.5 px-3 rounded-xl transition text-center flex items-center justify-center gap-1.5 cursor-pointer">
+                                <span>View Product Details</span>
+                                <span>→</span>
+                            </a>
                         </div>
 
                     </div>

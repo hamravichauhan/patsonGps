@@ -1,12 +1,17 @@
 User-agent: *
 Allow: /
+Allow: /images/
+Allow: /images/products/
+Allow: /sitemap.xml
 Disallow: /ps-control-morjim/
 Disallow: /admin/
 Disallow: /order/
 Disallow: /cart
 Disallow: /track-order
+Disallow: /customer/
+Disallow: /api/
 
-# Explicitly permit major AI Search Crawlers
+# Explicitly permit major AI Search Crawlers for Generative AI & Search Engine Overviews
 User-agent: GPTBot
 Allow: /
 

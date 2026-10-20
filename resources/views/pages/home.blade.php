@@ -3,50 +3,71 @@
 @section('meta_title', 'PatSons Foods Goa | Wholesale Goan Kokum, Cashew Jams & Fruit Syrups')
 @section('meta_description', 'Authentic Goan Kokum Agal, handcrafted Cashew Fruit Jams, herbal digestifs, and fruit squashes direct from Dev Can Fruit Products factory, Morjim, Pernem - Goa. Sealed wholesale box packs.')
 @section('meta_keywords', 'PatSons Foods Goa, Dev Can Fruit Products, Goan Kokum Agal wholesale, Cashew Jam cartons, Kokum Syrup box pack, Morjim factory wholesale, Sol Kadhi extract Goa, bar syrups Goa')
+@section('canonical', route('home'))
+
+@push('preload')
+    <!-- Preload Hero LCP Image -->
+    <link rel="preload" as="image" href="{{ file_exists(public_path('images/banner.webp')) ? asset('images/banner.webp') : asset('images/products/default-product.webp') }}" type="image/webp" fetchpriority="high">
+@endpush
 
 @push('schema')
 @php
-    $faqSchema = [
+    $homeSchema = [
         "@context" => "https://schema.org",
-        "@type" => "FAQPage",
-        "mainEntity" => [
+        "@graph" => [
             [
-                "@type" => "Question",
-                "name" => "What authentic Goan food products does PatSons Foods manufacture?",
-                "acceptedAnswer" => [
-                    "@type" => "Answer",
-                    "text" => "PatSons Foods (Dev Can Fruit Products) manufactures authentic Goan Kokum Agal (pure Sol Kadhi extract), Cashew Fruit Jams (Cashew Mango, Cashew Pineapple, Cashew Strawberry), Kokum Squash, Pachak Appetizer Crush, and a premium line of bar syrups including Blue Curacao, Grenadine, and Lime Ginger."
+                "@type" => "BreadcrumbList",
+                "itemListElement" => [
+                    [
+                        "@type" => "ListItem",
+                        "position" => 1,
+                        "name" => "Home",
+                        "item" => route('home')
+                    ]
                 ]
             ],
             [
-                "@type" => "Question",
-                "name" => "Where is PatSons Foods located in Goa?",
-                "acceptedAnswer" => [
-                    "@type" => "Answer",
-                    "text" => "Our family-run manufacturing unit is based in Morjim, Pernem, Goa — 403512, operating under FSSAI license 10613001000730 since 1990."
-                ]
-            ],
-            [
-                "@type" => "Question",
-                "name" => "Do you supply wholesale cartons to hotels, restaurants, and supermarkets in Goa?",
-                "acceptedAnswer" => [
-                    "@type" => "Answer",
-                    "text" => "Yes! We supply sealed wholesale box cartons and commercial food service packaging to hotels, restaurants, cafes (HoReCa), supermarkets, and retail distributors across Goa and pan-India."
-                ]
-            ],
-            [
-                "@type" => "Question",
-                "name" => "How can I place a wholesale order or request trade pricing?",
-                "acceptedAnswer" => [
-                    "@type" => "Answer",
-                    "text" => "You can browse our wholesale catalog on this website or chat directly with our Morjim factory sales team via WhatsApp for instant carton and drum rate inquiries."
+                "@type" => "FAQPage",
+                "mainEntity" => [
+                    [
+                        "@type" => "Question",
+                        "name" => "What authentic Goan food products does PatSons Foods manufacture?",
+                        "acceptedAnswer" => [
+                            "@type" => "Answer",
+                            "text" => "PatSons Foods (Dev Can Fruit Products) manufactures authentic Goan Kokum Agal (pure Sol Kadhi extract), Cashew Fruit Jams (Cashew Mango, Cashew Pineapple, Cashew Strawberry), Kokum Squash, Pachak Appetizer Crush, and a premium line of bar syrups including Blue Curacao, Grenadine, and Lime Ginger."
+                        ]
+                    ],
+                    [
+                        "@type" => "Question",
+                        "name" => "Where is PatSons Foods located in Goa?",
+                        "acceptedAnswer" => [
+                            "@type" => "Answer",
+                            "text" => "Our family-run manufacturing unit is based in Morjim, Pernem, Goa — 403512, operating under FSSAI license 10613001000730 since 1990."
+                        ]
+                    ],
+                    [
+                        "@type" => "Question",
+                        "name" => "Do you supply wholesale cartons to hotels, restaurants, and supermarkets in Goa?",
+                        "acceptedAnswer" => [
+                            "@type" => "Answer",
+                            "text" => "Yes! We supply sealed wholesale box cartons and commercial food service packaging to hotels, restaurants, cafes (HoReCa), supermarkets, and retail distributors across Goa and pan-India."
+                        ]
+                    ],
+                    [
+                        "@type" => "Question",
+                        "name" => "How can I place a wholesale order or request trade pricing?",
+                        "acceptedAnswer" => [
+                            "@type" => "Answer",
+                            "text" => "You can browse our wholesale catalog on this website or chat directly with our Morjim factory sales team via WhatsApp for instant carton and drum rate inquiries."
+                        ]
+                    ]
                 ]
             ]
         ]
     ];
 @endphp
 <script type="application/ld+json">
-{!! json_encode($faqSchema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) !!}
+{!! json_encode($homeSchema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) !!}
 </script>
 @endpush
 
@@ -259,6 +280,8 @@
                                 </span>
                             </div>
 
+                            <!-- Ordering buttons commented out for view-only catalog display -->
+                            {{--
                             <div class="flex items-center gap-2">
                                 <button type="button"
                                     @click="$dispatch('add-to-cart', { id: selectedId, name: '{{ addslashes($primary->product_name) }}', price: boxPrice, size: selectedSize + ' (Box of ' + selectedUnitsPerBox + ')', image: selectedImage })"
@@ -275,6 +298,12 @@
                                     <span class="hidden sm:inline">Quote</span>
                                 </a>
                             </div>
+                            --}}
+                            <a href="{{ route('catalog.show', $primary->slug) }}"
+                                class="w-full bg-stone-100 hover:bg-green-900 hover:text-white text-stone-800 font-black text-xs py-2.5 px-3 rounded-xl transition text-center flex items-center justify-center gap-1.5 cursor-pointer">
+                                <span>View Product Details</span>
+                                <span>→</span>
+                            </a>
                         </div>
                     </div>
                 @endforeach

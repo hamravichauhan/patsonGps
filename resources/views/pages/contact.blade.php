@@ -3,27 +3,56 @@
 @section('meta_title', 'Contact Us & Factory Inquiries | PatSons Foods Goa')
 @section('meta_description', 'Get in touch with PatSons Foods factory at Morjim, Pernem, Goa for wholesale orders, distribution partnerships, and bulk product quotations.')
 @section('meta_keywords', 'contact PatSons Foods, Dev Can Fruit Products Morjim, PatSons Goa phone number, Goan food wholesale contact, Morjim factory Goa')
+@section('canonical', route('contact'))
 
 @push('schema')
 @php
     $contactSchema = [
         "@context" => "https://schema.org",
-        "@type" => "ContactPage",
-        "name" => "Contact Us & Factory Inquiries | PatSons Foods Goa",
-        "description" => "Contact Dev Can Fruit Products and PatSons Foods factory in Morjim, Pernem, Goa.",
-        "url" => route('contact'),
-        "mainEntity" => [
-            "@type" => "LocalBusiness",
-            "name" => "PatSons Foods (Dev Can Fruit Products)",
-            "telephone" => "+919823464066",
-            "email" => "patsons1993@rediffmail.com",
-            "address" => [
-                "@type" => "PostalAddress",
-                "streetAddress" => "Dev Can Fruit Products, Morjim",
-                "addressLocality" => "Pernem",
-                "addressRegion" => "Goa",
-                "postalCode" => "403512",
-                "addressCountry" => "IN"
+        "@graph" => [
+            [
+                "@type" => "BreadcrumbList",
+                "itemListElement" => [
+                    [
+                        "@type" => "ListItem",
+                        "position" => 1,
+                        "name" => "Home",
+                        "item" => route('home')
+                    ],
+                    [
+                        "@type" => "ListItem",
+                        "position" => 2,
+                        "name" => "Contact Us",
+                        "item" => route('contact')
+                    ]
+                ]
+            ],
+            [
+                "@type" => "ContactPage",
+                "name" => "Contact Us & Factory Inquiries | PatSons Foods Goa",
+                "description" => "Contact Dev Can Fruit Products and PatSons Foods factory in Morjim, Pernem, Goa.",
+                "url" => route('contact'),
+                "mainEntity" => [
+                    "@type" => "LocalBusiness",
+                    "name" => "PatSons Foods (Dev Can Fruit Products)",
+                    "legalName" => "Dev Can Fruit Products",
+                    "telephone" => "+919823464066",
+                    "email" => "patsons1993@rediffmail.com",
+                    "hasMap" => "https://maps.google.com/?q=Dev+Can+Fruit+Products+Morjim+Pernem+Goa",
+                    "address" => [
+                        "@type" => "PostalAddress",
+                        "streetAddress" => "Dev Can Fruit Products, Morjim",
+                        "addressLocality" => "Pernem",
+                        "addressRegion" => "Goa",
+                        "postalCode" => "403512",
+                        "addressCountry" => "IN"
+                    ],
+                    "geo" => [
+                        "@type" => "GeoCoordinates",
+                        "latitude" => "15.6322",
+                        "longitude" => "73.7438"
+                    ]
+                ]
             ]
         ]
     ];
