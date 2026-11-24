@@ -30,11 +30,15 @@ class CatalogController extends Controller
         $imagePath = public_path('images/products');
 
         if (File::isDirectory($imagePath)) {
-            self::$cachedDiskFiles ??= File::files($imagePath);
-            foreach (self::$cachedDiskFiles as $file) {
-                $filename = $file->getFilename();
+            // Cache disk files list for 1 hour to prevent constant filesystem disk I/O
+            $fileNames = \Illuminate\Support\Facades\Cache::remember('catalog_disk_image_filenames', 3600, function () use ($imagePath) {
+                return array_map(fn($f) => $f->getFilename(), File::files($imagePath));
+            });
+
+            foreach ($fileNames as $filename) {
                 if (Str::startsWith($filename, $cleanPrefix) || Str::startsWith($filename, $baseName)) {
-                    if (in_array(strtolower($file->getExtension()), ['webp', 'png', 'jpg', 'jpeg'])) {
+                    $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+                    if (in_array($ext, ['webp', 'png', 'jpg', 'jpeg'])) {
                         $gallery[] = $filename;
                     }
                 }
@@ -81,10 +85,13 @@ class CatalogController extends Controller
             return $variants;
         });
 
-        $categories = ProductCatalog::where('is_active', 1)
-            ->distinct()
-            ->pluck('category')
-            ->filter();
+        $categories = \Illuminate\Support\Facades\Cache::remember('active_catalog_categories', 3600, function () {
+            return ProductCatalog::where('is_active', 1)
+                ->distinct()
+                ->pluck('category')
+                ->filter()
+                ->values();
+        });
 
         $adminPhone = Setting::get('whatsapp_admin_number', config('services.whatsapp.admin_number', '917758943614'));
 

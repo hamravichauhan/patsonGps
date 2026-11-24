@@ -15,10 +15,14 @@ class PageController extends Controller
             ->get()
             ->groupBy('slug');
 
-        $categories = ProductCatalog::available()
-            ->select('category')
-            ->distinct()
-            ->pluck('category');
+        $categories = \Illuminate\Support\Facades\Cache::remember('active_catalog_categories', 3600, function () {
+            return ProductCatalog::available()
+                ->select('category')
+                ->distinct()
+                ->pluck('category')
+                ->filter()
+                ->values();
+        });
 
         return view('pages.home', compact('featuredProducts', 'categories'));
     }

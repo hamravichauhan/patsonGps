@@ -17,6 +17,15 @@ use Illuminate\Validation\Rules\Password;
 
 class AdminController extends Controller
 {
+    /**
+     * Clear dynamic storefront catalog caches on mutation
+     */
+    private function clearCatalogCache(): void
+    {
+        \Illuminate\Support\Facades\Cache::forget('active_catalog_categories');
+        \Illuminate\Support\Facades\Cache::forget('catalog_disk_image_filenames');
+    }
+
     // 1. Dashboard Metrics & Recent Quotes
     public function dashboard()
     {
@@ -236,6 +245,8 @@ class AdminController extends Controller
             'auto_approve_min_qty' => $request->filled('auto_approve_min_qty') ? (int) $request->auto_approve_min_qty : null,
         ]);
 
+        $this->clearCatalogCache();
+
         return redirect()->route('admin.products')->with('success', 'Product variant added to catalog!');
     }
 
@@ -386,6 +397,8 @@ class AdminController extends Controller
                 ]);
             }
         }
+
+        $this->clearCatalogCache();
 
         return redirect()->route('admin.products')
             ->with('success', "Updated '{$request->product_name}' packaging and box rates successfully.");
@@ -548,6 +561,8 @@ class AdminController extends Controller
                 $msg = "Bulk action completed.";
         }
 
+        $this->clearCatalogCache();
+
         if ($request->wantsJson()) {
             return response()->json(['success' => true, 'message' => $msg]);
         }
@@ -693,6 +708,8 @@ class AdminController extends Controller
         }
 
         ProductCatalog::where('slug', $product->slug)->delete();
+
+        $this->clearCatalogCache();
 
         return back()->with('success', 'Product and all its variants deleted.');
     }

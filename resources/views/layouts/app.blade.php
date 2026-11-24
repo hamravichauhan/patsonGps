@@ -197,17 +197,22 @@
     <link rel="manifest" href="{{ asset('site.webmanifest') }}">
 
     <!-- DNS Prefetch & Preconnect for Peak Core Web Vitals -->
-    <link rel="dns-prefetch" href="//cdn.tailwindcss.com">
     <link rel="dns-prefetch" href="//unpkg.com">
     <link rel="dns-prefetch" href="//www.googletagmanager.com">
-    <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
     <link rel="preconnect" href="https://unpkg.com" crossorigin>
     <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
 
     @stack('preload')
 
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Preload Flagship Hero Banner for Peak LCP (Largest Contentful Paint) -->
+    <link rel="preload" as="image" href="{{ asset('images/banner.webp') }}" type="image/webp" fetchpriority="high">
+
+    <!-- Compiled High-Performance Tailwind CSS via Vite (with CDN fallback) -->
+    @if(file_exists(public_path('build/manifest.json')))
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @else
+        <script src="https://cdn.tailwindcss.com"></script>
+    @endif
 
     <!-- Alpine.js -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
