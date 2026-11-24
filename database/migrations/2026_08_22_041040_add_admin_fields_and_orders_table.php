@@ -26,6 +26,7 @@ return new class extends Migration {
                 $table->enum('status', ['pending', 'approved', 'dispatched', 'delivered', 'rejected'])->default('pending');
                 $table->text('admin_notes')->nullable();
                 $table->string('reorder_token')->nullable()->unique();
+                $table->text('order_items')->nullable();
                 $table->timestamps();
             });
         }

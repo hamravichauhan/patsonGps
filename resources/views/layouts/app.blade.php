@@ -806,8 +806,6 @@
                         });
                         let data = await res.json();
                         if (res.ok && data.status === 'success') {
-                            if (data.existing_name) this.customerName = data.existing_name;
-                            if (data.existing_address) this.deliveryAddress = data.existing_address;
                             this.step = 'otp';
                         } else {
                             alert(data.message || 'Failed to send OTP code. Please try again.');
@@ -837,6 +835,8 @@
                         });
                         let data = await res.json();
                         if (res.ok && data.status === 'success') {
+                            if (data.existing_name) this.customerName = data.existing_name;
+                            if (data.existing_address) this.deliveryAddress = data.existing_address;
                             this.step = 'details';
                         } else {
                             alert(data.message || 'Invalid or expired OTP code.');

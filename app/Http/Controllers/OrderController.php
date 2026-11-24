@@ -40,23 +40,14 @@ class OrderController extends Controller
 
         $waService->queueMessage($cleanPhone, $msg);
 
-        // Check for returning customer details
-        $previousOrder = Order::where('customer_phone', $cleanPhone)->latest()->first();
-        $isReturning = $previousOrder !== null;
-        $existingName = $previousOrder ? $previousOrder->customer_name : '';
-        $existingAddress = $previousOrder ? $previousOrder->delivery_address : '';
-
         return response()->json([
             'status' => 'success',
             'message' => 'A 4-digit verification code has been sent to your WhatsApp.',
-            'is_returning' => $isReturning,
-            'existing_name' => $existingName,
-            'existing_address' => $existingAddress,
         ]);
     }
 
     /**
-     * Step 2: Verify 4-Digit OTP
+     * Step 2: Verify 4-Digit OTP with attempt throttling
      */
     public function verifyOtp(Request $request)
     {
@@ -67,19 +58,43 @@ class OrderController extends Controller
 
         $cleanPhone = substr(preg_replace('/[^0-9]/', '', $request->phone), -10);
         $cachedOtp = Cache::get('otp_' . $cleanPhone);
+        $attemptKey = 'order_otp_attempts_' . $cleanPhone;
+        $attempts = (int) Cache::get($attemptKey, 0);
 
-        if (!$cachedOtp || $cachedOtp !== trim($request->otp)) {
+        if ($attempts >= 5) {
+            Cache::forget('otp_' . $cleanPhone);
             return response()->json([
                 'status' => 'error',
-                'message' => 'Invalid or expired OTP. Please check and try again.'
+                'message' => 'Too many failed verification attempts. Please request a new code.'
+            ], 429);
+        }
+
+        if (!$cachedOtp || $cachedOtp !== trim($request->otp)) {
+            Cache::increment($attemptKey);
+            $remaining = max(0, 4 - $attempts);
+            return response()->json([
+                'status' => 'error',
+                'message' => "Invalid or expired OTP. ({$remaining} attempts remaining)"
             ], 422);
         }
 
+        Cache::forget('otp_' . $cleanPhone);
+        Cache::forget($attemptKey);
+
         session(['verified_customer_phone' => $cleanPhone]);
+
+        // Safely provide returning customer info only AFTER verification succeeds
+        $previousOrder = Order::where('customer_phone', $cleanPhone)->latest()->first();
+        $isReturning = $previousOrder !== null;
+        $existingName = $previousOrder ? $previousOrder->customer_name : '';
+        $existingAddress = $previousOrder ? $previousOrder->delivery_address : '';
 
         return response()->json([
             'status' => 'success',
             'message' => 'Phone verified successfully!',
+            'is_returning' => $isReturning,
+            'existing_name' => $existingName,
+            'existing_address' => $existingAddress,
         ]);
     }
 
@@ -97,6 +112,15 @@ class OrderController extends Controller
 
             if (empty($cleanPhone) || strlen($cleanPhone) !== 10) {
                 return response()->json(['status' => 'error', 'message' => 'Please provide a valid 10-digit WhatsApp number.'], 422);
+            }
+
+            // Security: Enforce that the phone number was verified via OTP in the active session
+            $verifiedPhone = session('verified_customer_phone');
+            if (empty($verifiedPhone) || $verifiedPhone !== $cleanPhone) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Please verify your phone number via WhatsApp OTP before placing an order.'
+                ], 403);
             }
 
             if (empty($cartItems)) {
@@ -131,6 +155,7 @@ class OrderController extends Controller
             ]);
 
             session(['customer_phone' => $cleanPhone]);
+            session()->forget('verified_customer_phone');
             Cache::forget('otp_' . $cleanPhone);
 
             $totalAmount = 0;
@@ -202,5 +227,35 @@ class OrderController extends Controller
             Log::error('Order Store Exception: ' . $e->getMessage());
             return response()->json(['status' => 'error', 'message' => 'Failed to save order: ' . $e->getMessage()], 500);
         }
+    }
+
+    /**
+     * Direct 1-Click Reorder from WhatsApp or Email Token Link
+     */
+    public function reorderWithToken(string $token)
+    {
+        $order = Order::where('reorder_token', $token)->first();
+        if (!$order) {
+            return redirect()->route('shop')->with('error', 'Invalid or expired reorder link.');
+        }
+
+        session(['customer_phone' => $order->customer_phone]);
+        if (!empty($order->customer_name)) {
+            session(['customer_name' => $order->customer_name]);
+        }
+
+        return redirect()->route('customer.account')->with('success', "Order #{$order->order_number} loaded for reorder.");
+    }
+
+    /**
+     * Reorder fallback route
+     */
+    public function reorder(Request $request)
+    {
+        $token = $request->query('token');
+        if ($token) {
+            return $this->reorderWithToken($token);
+        }
+        return redirect()->route('shop');
     }
 }

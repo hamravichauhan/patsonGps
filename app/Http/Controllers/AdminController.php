@@ -588,8 +588,15 @@ class AdminController extends Controller
                 'Storefront URL'
             ], ',', '"', '\\');
 
+            $sanitize = function ($val) {
+                if (is_string($val) && strlen($val) > 0 && in_array($val[0], ['=', '+', '-', '@', "\t", "\r"])) {
+                    return "'" . $val;
+                }
+                return $val;
+            };
+
             foreach ($products as $p) {
-                fputcsv($file, [
+                fputcsv($file, array_map($sanitize, [
                     $p->id,
                     $p->product_name,
                     $p->category,
@@ -603,7 +610,7 @@ class AdminController extends Controller
                     $p->vyapar_item_id ?? '',
                     $p->image ?? '',
                     url('/products/' . $p->slug),
-                ], ',', '"', '\\');
+                ]), ',', '"', '\\');
             }
 
             fclose($file);

@@ -40,40 +40,6 @@ class CustomerAccountController extends Controller
     }
 
     /**
-     * Standard phone login fallback.
-     */
-    public function loginWithPhone(Request $request)
-    {
-        $request->validate([
-            'phone' => 'required|string',
-        ]);
-
-        $cleanPhone = substr(preg_replace('/[^0-9]/', '', $request->phone), -10);
-
-        if (strlen($cleanPhone) !== 10) {
-            return back()->withErrors(['phone' => 'Please enter a valid 10-digit WhatsApp phone number.']);
-        }
-
-        $request->session()->regenerate();
-        session(['customer_phone' => $cleanPhone]);
-
-        $user = User::where('phone', $cleanPhone)
-            ->orWhere('email', "{$cleanPhone}@patsonfoods.local")
-            ->first();
-
-        if ($user && !empty($user->name)) {
-            session(['customer_name' => $user->name]);
-        } else {
-            $pastOrder = Order::where('customer_phone', $cleanPhone)->whereNotNull('customer_name')->latest()->first();
-            if ($pastOrder && !empty($pastOrder->customer_name)) {
-                session(['customer_name' => $pastOrder->customer_name]);
-            }
-        }
-
-        return redirect()->route('customer.account');
-    }
-
-    /**
      * Send a 4-Digit OTP to customer WhatsApp with 60s cooldown.
      */
     public function sendOtp(Request $request, WhatsAppService $waService)
@@ -204,6 +170,16 @@ class CustomerAccountController extends Controller
                     'status' => 'error',
                     'message' => 'Order #' . $orderNumber . ' could not be found.',
                 ], 404);
+            }
+
+            // Authorization: Ensure requesting session owns this order or is an authenticated admin
+            $sessionPhone = session('customer_phone');
+            $isAdmin = auth()->check() && auth()->user()->is_admin;
+            if (!$isAdmin && (!$sessionPhone || $sessionPhone !== $order->customer_phone)) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Unauthorized: Please verify your WhatsApp phone number to access this order.',
+                ], 403);
             }
 
             $cartItems = [];

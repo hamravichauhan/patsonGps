@@ -15,8 +15,13 @@ app.use(cors());
 app.use(express.json());
 
 const PORT = process.env.PORT || 21465;
-const SECRET_TOKEN = process.env.WHATSAPP_SECRET_TOKEN || 'THISISMYSECURETOKEN';
+const HOST = process.env.HOST || '127.0.0.1';
+const SECRET_TOKEN = process.env.WHATSAPP_SECRET_TOKEN;
 const SESSION_NAME = 'patsons-session';
+
+if (!SECRET_TOKEN || SECRET_TOKEN === 'THISISMYSECURETOKEN') {
+    console.warn('[SECURITY WARNING] WHATSAPP_SECRET_TOKEN is not set or using the default placeholder.');
+}
 
 let globalClient = null;
 let latestQrCode = null;
@@ -30,13 +35,8 @@ function requireAuth(req, res, next) {
         return res.status(401).json({ status: 'error', message: 'Missing Authorization header' });
     }
     const token = authHeader.replace(/^Bearer\s+/i, '').trim();
-    const validTokens = [
-        SECRET_TOKEN,
-        '$2b$10$Vvv_QADgQjgit5ICP1Joa.nrlxYgjpKDESMOtRDQCSaI.wEs0zHgm',
-        'THISISMYSECURETOKEN'
-    ].filter(Boolean);
 
-    if (!validTokens.includes(token)) {
+    if (!SECRET_TOKEN || token !== SECRET_TOKEN) {
         return res.status(403).json({ status: 'error', message: 'Invalid secret token' });
     }
     next();
@@ -193,13 +193,12 @@ app.post(`/api/${SESSION_NAME}/send-message`, requireAuth, async (req, res) => {
     }
 });
 
-// Start Server
-app.listen(PORT, () => {
+// Start Server (Bound strictly to localhost by default for security)
+app.listen(PORT, HOST, () => {
     console.log(`====================================================`);
     console.log(` PatSons Foods Goa - WhatsApp Web Gateway`);
     console.log(` Dev Can Fruit Products, Morjim, Pernem - Goa`);
-    console.log(` Listening on: http://127.0.0.1:${PORT}`);
-    console.log(` Auth Token: ${SECRET_TOKEN}`);
+    console.log(` Listening on: http://${HOST}:${PORT}`);
     console.log(`====================================================`);
     
     // Auto-initialize on boot

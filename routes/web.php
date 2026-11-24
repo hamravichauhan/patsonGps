@@ -50,10 +50,9 @@ Route::get('/my-account', [CustomerAccountController::class, 'index']);
 
 // WhatsApp OTP Authentication for Tracking
 Route::post('/track-order/send-otp', [CustomerAccountController::class, 'sendOtp'])->middleware('throttle:6,1')->name('customer.otp.send');
-Route::post('/track-order/verify-otp', [CustomerAccountController::class, 'verifyOtp'])->name('customer.otp.verify');
+Route::post('/track-order/verify-otp', [CustomerAccountController::class, 'verifyOtp'])->middleware('throttle:6,1')->name('customer.otp.verify');
 
-// Fallback direct login & logout
-Route::post('/my-account/login', [CustomerAccountController::class, 'loginWithPhone'])->name('customer.login');
+// Logout
 Route::post('/track-order/logout', [CustomerAccountController::class, 'logout'])->name('customer.logout');
 Route::post('/my-account/logout', [CustomerAccountController::class, 'logout']);
 
@@ -68,11 +67,11 @@ Route::get('/api/reorder/{orderNumber}', [CustomerAccountController::class, 'loa
 
 // OTP Verification Flow during Cart Drawer Checkout
 Route::post('/order/send-otp', [OrderController::class, 'sendOtp'])->middleware('throttle:6,1')->name('order.sendOtp');
-Route::post('/order/verify-otp', [OrderController::class, 'verifyOtp'])->name('order.verifyOtp');
+Route::post('/order/verify-otp', [OrderController::class, 'verifyOtp'])->middleware('throttle:6,1')->name('order.verifyOtp');
 
-// Order Submission Endpoints
-Route::post('/order/submit', [OrderController::class, 'store'])->name('order.store');
-Route::post('/order/store', [OrderController::class, 'store']);
+// Order Submission Endpoints (Rate limited to prevent automated spam)
+Route::post('/order/submit', [OrderController::class, 'store'])->middleware('throttle:5,1')->name('order.store');
+Route::post('/order/store', [OrderController::class, 'store'])->middleware('throttle:5,1');
 
 // Direct Token Reorder
 Route::get('/reorder/{token}', [OrderController::class, 'reorderWithToken'])->name('order.reorder.token');
@@ -128,6 +127,7 @@ Route::middleware(['auth', 'admin'])->prefix($adminPrefix)->name('admin.')->grou
     // Store Settings, Password & WhatsApp Automation
     Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
     Route::post('/settings', [AdminController::class, 'updateSettings'])->name('settings.update');
+    Route::get('/whatsapp/qr', [AdminController::class, 'getWhatsAppQr'])->name('whatsapp.qr');
 });
 
 // 3. Block default /admin paths (Returns 404 to scanners)
@@ -136,5 +136,3 @@ if ($adminPrefix !== 'admin') {
         abort(404);
     })->where('any', '.*');
 }
-
-Route::get('/whatsapp/qr', [App\Http\Controllers\AdminController::class, 'getWhatsAppQr'])->name('admin.whatsapp.qr');

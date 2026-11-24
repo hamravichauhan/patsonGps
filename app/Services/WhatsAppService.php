@@ -13,7 +13,7 @@ class WhatsAppService
     public function __construct()
     {
         $this->apiUrl = config('services.whatsapp.api_url', env('WHATSAPP_API_URL', 'http://127.0.0.1:21465/api/patsons-session'));
-        $this->token = config('services.whatsapp.secret_token', env('WHATSAPP_SECRET_TOKEN', 'THISISMYSECURETOKEN'));
+        $this->token = config('services.whatsapp.secret_token', env('WHATSAPP_SECRET_TOKEN', ''));
     }
 
     /**
