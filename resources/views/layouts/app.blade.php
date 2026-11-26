@@ -689,7 +689,6 @@
                 </h4>
                 <p>Phone: +{{ $adminPhone }}</p>
                 <p>Location: Morjim, Goa 403512</p>
-                <a href="{{ route('login') }}" class="text-green-400 hover:underline block pt-2">Admin Portal ↗</a>
             </div>
         </div>
         <div class="border-t border-green-900 py-4 text-center text-[10px] text-green-400">
