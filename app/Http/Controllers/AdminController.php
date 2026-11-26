@@ -488,14 +488,22 @@ class AdminController extends Controller
         $variant = ProductCatalog::findOrFail($id);
         $request->validate([
             'price' => 'nullable|numeric|min:0',
+            'mrp' => 'nullable|numeric|min:0',
             'units_per_box' => 'nullable|integer|min:1',
+            'min_order_qty' => 'nullable|integer|min:1',
         ]);
 
         if ($request->filled('price')) {
             $variant->price = (float) $request->price;
         }
+        if ($request->filled('mrp')) {
+            $variant->mrp = (float) $request->mrp;
+        }
         if ($request->filled('units_per_box')) {
             $variant->units_per_box = (int) $request->units_per_box;
+        }
+        if ($request->filled('min_order_qty')) {
+            $variant->min_order_qty = (int) $request->min_order_qty;
         }
         $variant->save();
 
@@ -503,9 +511,10 @@ class AdminController extends Controller
             return response()->json([
                 'success' => true,
                 'price' => number_format($variant->price, 2),
+                'mrp' => number_format($variant->mrp, 2),
                 'units_per_box' => $variant->units_per_box,
                 'box_price' => number_format($variant->box_price, 2),
-                'message' => "Updated {$variant->size} variant (₹{$variant->price}) successfully."
+                'message' => "Updated {$variant->size} variant (WS: ₹{$variant->price} | MRP: ₹{$variant->mrp}) successfully."
             ]);
         }
 

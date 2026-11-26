@@ -314,4 +314,98 @@ class EndpointSecurityTest extends TestCase
         $this->assertEquals('Hotel Coastal Retreat', $user->business_name);
         $this->assertEquals('30ABCDE1234F1Z5', $user->gstin);
     }
+
+    public function test_seeder_syncs_exact_price_sheet_sizes_and_deactivates_duplicates(): void
+    {
+        // Seed sample products matching real catalog
+        ProductCatalog::create(['product_name' => 'Kokum Squash', 'slug' => 'kokum-squash-500', 'category' => 'Squashes', 'size' => '500ml Bottle', 'price' => 40, 'is_active' => true]);
+        ProductCatalog::create(['product_name' => 'Kokum Squash', 'slug' => 'kokum-squash-500can', 'category' => 'Squashes', 'size' => '500ml Can', 'price' => 50, 'is_active' => true]);
+        ProductCatalog::create(['product_name' => 'Kokum Squash', 'slug' => 'kokum-squash-1l', 'category' => 'Squashes', 'size' => '1 Litre Bottle', 'price' => 75, 'is_active' => true]);
+        ProductCatalog::create(['product_name' => 'Kokum Squash', 'slug' => 'kokum-squash-5l', 'category' => 'Squashes', 'size' => '5 Litre Can', 'price' => 300, 'is_active' => true]);
+        ProductCatalog::create(['product_name' => 'Sweet Kokam', 'slug' => 'sweet-kokam-100', 'category' => 'Kokum', 'size' => '100g Pack', 'price' => 40, 'is_active' => true]);
+        ProductCatalog::create(['product_name' => 'Sweet Kokam', 'slug' => 'sweet-kokam-200', 'category' => 'Kokum', 'size' => '200g Pack', 'price' => 75, 'is_active' => true]);
+        $sol = ProductCatalog::create(['product_name' => 'Kokum Sol (Raw / Regular)', 'slug' => 'kokum-sol', 'category' => 'Kokum', 'size' => 'Standard Pack', 'price' => 50, 'is_active' => false]);
+        // Set id = 17 for kokum sol test
+        $sol->id = 17;
+        $sol->save();
+
+        $seeder = new \Database\Seeders\ProductPricingSeeder();
+        $seeder->run();
+
+        // Kokum Squash should only have 500ml Bottle and 1 Litre Bottle active
+        $activeSquashes = ProductCatalog::where('product_name', 'Kokum Squash')
+            ->where('is_active', 1)
+            ->pluck('size')
+            ->toArray();
+        $this->assertContains('500ml Bottle', $activeSquashes);
+        $this->assertContains('1 Litre Bottle', $activeSquashes);
+        $this->assertNotContains('500ml Can', $activeSquashes);
+        $this->assertNotContains('5 Litre Can', $activeSquashes);
+
+        // Sweet Kokam should only have 100g Pack active
+        $activeSweetKokam = ProductCatalog::where('product_name', 'Sweet Kokam')
+            ->where('is_active', 1)
+            ->pluck('size')
+            ->toArray();
+        $this->assertContains('100g Pack', $activeSweetKokam);
+        $this->assertNotContains('200g Pack', $activeSweetKokam);
+
+        // Kokum Sol should be active at 250g Pack with MRP 500
+        $kokumSol = ProductCatalog::where('product_name', 'Kokum Sol (Raw / Regular)')->first();
+        $this->assertNotNull($kokumSol);
+        $this->assertEquals(1, $kokumSol->is_active);
+        $this->assertEquals(500.00, $kokumSol->mrp);
+        $this->assertEquals('250g Pack', $kokumSol->size);
+    }
+
+    public function test_static_image_asset_route_serves_files_with_case_insensitive_fallback(): void
+    {
+        $response = $this->get('/images/products/amala-squash.webp');
+        $response->assertStatus(200);
+        $response->assertHeader('Content-Type', 'image/webp');
+
+        $responseLogo = $this->get('/images/logo1.webp');
+        $responseLogo->assertStatus(200);
+        $responseLogo->assertHeader('Content-Type', 'image/webp');
+
+        $responseFallback = $this->get('/images/products/non-existent-sample.webp');
+        $responseFallback->assertStatus(200);
+        $responseFallback->assertHeader('Content-Type', 'image/webp');
+    }
+
+    public function test_admin_quick_update_updates_price_and_mrp(): void
+    {
+        $admin = User::create([
+            'name' => 'Super Admin',
+            'email' => 'admin@patsons.com',
+            'is_admin' => true,
+            'password' => bcrypt('password123'),
+        ]);
+
+        $item = ProductCatalog::create([
+            'product_name' => 'Quick Edit Item',
+            'slug' => 'quick-edit-item',
+            'category' => 'Test',
+            'size' => '500ml Bottle',
+            'price' => 50.00,
+            'mrp' => 100.00,
+            'units_per_box' => 12,
+            'is_active' => true,
+        ]);
+        $adminPath = env('ADMIN_SECRET_PATH', 'ps-control-morjim');
+
+        $response = $this->actingAs($admin)->patchJson("/{$adminPath}/products/{$item->id}/quick-update", [
+            'price' => 99.00,
+            'mrp' => 189.00,
+            'units_per_box' => 15,
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJson(['success' => true]);
+
+        $item->refresh();
+        $this->assertEquals(99.00, $item->price);
+        $this->assertEquals(189.00, $item->mrp);
+        $this->assertEquals(15, $item->units_per_box);
+    }
 }

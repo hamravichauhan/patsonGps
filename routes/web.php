@@ -138,3 +138,75 @@ if ($adminPrefix !== 'admin') {
         abort(404);
     })->where('any', '.*');
 }
+
+/*
+|--------------------------------------------------------------------------
+| Dynamic Static Asset Fallback (Linux Case-Sensitivity & cPanel Auto-Healing)
+|--------------------------------------------------------------------------
+*/
+Route::get('/images/{folder}/{filename}', function ($folder, $filename) {
+    $searchFolders = [$folder, ucfirst($folder), strtolower($folder)];
+    $paths = [];
+    foreach ($searchFolders as $f) {
+        $paths[] = public_path('images/' . $f . '/' . $filename);
+        $paths[] = base_path('../../public_html/images/' . $f . '/' . $filename);
+        $paths[] = base_path('../public_html/images/' . $f . '/' . $filename);
+    }
+    $paths[] = public_path('images/' . $filename);
+    $paths[] = base_path('../../public_html/images/' . $filename);
+    $paths[] = base_path('../public_html/images/' . $filename);
+
+    foreach ($paths as $path) {
+        if (file_exists($path) && is_file($path)) {
+            $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+            $mime = match ($ext) {
+                'webp' => 'image/webp',
+                'jpg', 'jpeg' => 'image/jpeg',
+                'png' => 'image/png',
+                'svg' => 'image/svg+xml',
+                'gif' => 'image/gif',
+                'ico' => 'image/x-icon',
+                default => 'application/octet-stream',
+            };
+            return response()->file($path, [
+                'Content-Type' => $mime,
+                'Cache-Control' => 'public, max-age=31536000, immutable',
+            ]);
+        }
+    }
+
+    $fallback = public_path('images/Products/default-product.webp');
+    if (file_exists($fallback)) {
+        return response()->file($fallback, ['Content-Type' => 'image/webp']);
+    }
+    abort(404);
+})->where('filename', '.*');
+
+Route::get('/images/{filename}', function ($filename) {
+    $paths = [
+        public_path('images/' . $filename),
+        public_path('images/Products/' . $filename),
+        base_path('../../public_html/images/' . $filename),
+        base_path('../public_html/images/' . $filename),
+        base_path('../../public_html/images/Products/' . $filename),
+        base_path('../public_html/images/Products/' . $filename),
+    ];
+    foreach ($paths as $path) {
+        if (file_exists($path) && is_file($path)) {
+            $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+            $mime = match ($ext) {
+                'webp' => 'image/webp',
+                'jpg', 'jpeg' => 'image/jpeg',
+                'png' => 'image/png',
+                'svg' => 'image/svg+xml',
+                'gif' => 'image/gif',
+                default => 'application/octet-stream',
+            };
+            return response()->file($path, [
+                'Content-Type' => $mime,
+                'Cache-Control' => 'public, max-age=31536000, immutable',
+            ]);
+        }
+    }
+    abort(404);
+});

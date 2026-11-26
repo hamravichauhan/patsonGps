@@ -61,8 +61,8 @@
         <div class="flex flex-col sm:flex-row justify-between items-start gap-6 pb-6 border-b-2 border-green-950">
             <div class="space-y-1.5">
                 <div class="flex items-center gap-3">
-                    <img src="{{ asset('images/products/logo1.webp') }}" alt="PatSons Logo"
-                        onerror="this.src='{{ asset('images/products/LOGO.webp') }}'"
+                    <img src="{{ asset('images/logo1.webp') }}" alt="PatSons Logo"
+                        onerror="this.onerror=null; this.src='{{ asset('images/Products/logo1.webp') }}';"
                         class="h-14 w-auto object-contain">
                     <div>
                         <h1 class="text-2xl font-black text-green-950 tracking-tight">DEV CAN FRUIT PRODUCTS</h1>

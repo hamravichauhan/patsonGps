@@ -10,238 +10,152 @@ class ProductPricingSeeder extends Seeder
     /**
      * Run the database seeds.
      * Seeds exact MRP, Units per Box, and Minimum Order Quantities from Client's Price List.
+     * Deactivates duplicate pack sizes (e.g. 500ml can vs bottle) and unlisted bulk sizes (5L cans, 35L drums).
      */
     public function run(): void
     {
-        $products = ProductCatalog::all();
+        // 1. KOKUM SQUASH: Only 1 LTR (₹200, Box 12) & 500ML Bottle (₹150, Box 12)
+        ProductCatalog::where('product_name', 'Kokum Squash')->where('size', '500ml Bottle')
+            ->update(['mrp' => 150.00, 'units_per_box' => 12, 'min_order_qty' => 12, 'is_active' => 1]);
+        ProductCatalog::where('product_name', 'Kokum Squash')->where('size', '1 Litre Bottle')
+            ->update(['mrp' => 200.00, 'units_per_box' => 12, 'min_order_qty' => 12, 'is_active' => 1]);
+        // Deactivate duplicate 500ml Can, 700ml, 5L Can, 35L Drum
+        ProductCatalog::where('product_name', 'Kokum Squash')
+            ->whereIn('size', ['500ml Can', '700ml Bottle', '5 Litre Can', '35 Litre Drum'])
+            ->update(['is_active' => 0]);
 
-        foreach ($products as $p) {
-            $name = strtolower($p->product_name);
-            $size = strtolower($p->size);
-            $mrp = null;
-            $unitsPerBox = $p->units_per_box ?: 12;
-            $minOrderQty = 1;
+        // 2. KOKUM AGAL: Only 1 LTR (₹150, Box 12) & 500ML Bottle (₹120, Box 15)
+        ProductCatalog::where('product_name', 'like', '%Kokum Agal%')->where('size', '500ml Bottle')
+            ->update(['mrp' => 120.00, 'units_per_box' => 15, 'min_order_qty' => 15, 'is_active' => 1]);
+        ProductCatalog::where('product_name', 'like', '%Kokum Agal%')->where('size', '1 Litre Bottle')
+            ->update(['mrp' => 150.00, 'units_per_box' => 12, 'min_order_qty' => 12, 'is_active' => 1]);
+        // Deactivate duplicate 500ml Can, 700ml, 5L Can, 35L Drum
+        ProductCatalog::where('product_name', 'like', '%Kokum Agal%')
+            ->whereIn('size', ['500ml Can', '700ml Bottle', '5 Litre Can', '35 Litre Drum'])
+            ->update(['is_active' => 0]);
 
-            // 1. KOKAM JUICE WITH WHOLE FRUIT
-            if (str_contains($name, 'kokum juice') || str_contains($name, 'kokam juice')) {
-                if (str_contains($size, '1 litre') || str_contains($size, '1l')) {
-                    $mrp = 250.00;
-                    $unitsPerBox = 12;
-                    $minOrderQty = 12;
-                } elseif (str_contains($size, '500ml')) {
-                    $mrp = 150.00;
-                    $unitsPerBox = 12;
-                    $minOrderQty = 12;
-                }
-            }
+        // 3. KOKAM JUICE WITH WHOLE FRUIT: 1 LTR (₹250, Box 12) & 500ML (₹150, Box 12)
+        ProductCatalog::where('product_name', 'like', '%Kokum Juice with Whole%')->where('size', '500ml Bottle')
+            ->update(['mrp' => 150.00, 'units_per_box' => 12, 'min_order_qty' => 12, 'is_active' => 1]);
+        ProductCatalog::where('product_name', 'like', '%Kokum Juice with Whole%')->where('size', '1 Litre Bottle')
+            ->update(['mrp' => 250.00, 'units_per_box' => 12, 'min_order_qty' => 12, 'is_active' => 1]);
 
-            // 2. KOKAM SQUASH
-            elseif ($name === 'kokum squash' || $name === 'kokam squash') {
-                if (str_contains($size, '1 litre') || str_contains($size, '1l')) {
-                    $mrp = 200.00;
-                    $unitsPerBox = 12;
-                    $minOrderQty = 12;
-                } elseif (str_contains($size, '500ml')) {
-                    $mrp = 150.00;
-                    $unitsPerBox = 12;
-                    $minOrderQty = 12;
-                } elseif (str_contains($size, '700ml')) {
-                    $mrp = 200.00;
-                    $unitsPerBox = 12;
-                    $minOrderQty = 12;
-                } elseif (str_contains($size, '5 litre') || str_contains($size, '5l')) {
-                    $mrp = 600.00;
-                    $unitsPerBox = 4;
-                    $minOrderQty = 1;
-                } elseif (str_contains($size, '35 litre')) {
-                    $mrp = 3500.00;
-                    $unitsPerBox = 1;
-                    $minOrderQty = 1;
-                }
-            }
+        // 4. SWEET KOKAM: Only 100GM (₹120, Min 25)
+        ProductCatalog::where('product_name', 'like', '%Sweet Kokam%')->where('size', '100g Pack')
+            ->update(['mrp' => 120.00, 'units_per_box' => 25, 'min_order_qty' => 25, 'is_active' => 1]);
+        ProductCatalog::where('product_name', 'like', '%Sweet Kokam%')->where('size', '200g Pack')
+            ->update(['is_active' => 0]);
 
-            // 3. KOKAM AGAL (PURE EXTRACT)
-            elseif (str_contains($name, 'kokum agal') || str_contains($name, 'kokam agal')) {
-                if (str_contains($size, '1 litre') || str_contains($size, '1l')) {
-                    $mrp = 150.00;
-                    $unitsPerBox = 12;
-                    $minOrderQty = 12;
-                } elseif (str_contains($size, '500ml')) {
-                    $mrp = 120.00;
-                    $unitsPerBox = 15; // Sheet specifies 15
-                    $minOrderQty = 15;
-                } elseif (str_contains($size, '700ml')) {
-                    $mrp = 150.00;
-                    $unitsPerBox = 12;
-                    $minOrderQty = 12;
-                } elseif (str_contains($size, '5 litre') || str_contains($size, '5l')) {
-                    $mrp = 600.00;
-                    $unitsPerBox = 4;
-                    $minOrderQty = 1;
-                } elseif (str_contains($size, '35 litre')) {
-                    $mrp = 3500.00;
-                    $unitsPerBox = 1;
-                    $minOrderQty = 1;
-                }
-            }
+        // 5. KOKAM SOAL (DRY KOKAM): 250gm min pack (₹500, Box 12)
+        ProductCatalog::where('product_name', 'like', '%Kokum Sol%')->where('id', 17)
+            ->update(['size' => '250g Pack', 'mrp' => 500.00, 'units_per_box' => 12, 'min_order_qty' => 1, 'is_active' => 1]);
+        ProductCatalog::where('product_name', 'like', '%Kokum Sol%')->where('id', 18)
+            ->update(['is_active' => 0]);
 
-            // 4. JAMS (ALL 500G & ALL 1KG)
-            elseif (str_contains($name, 'jam') || str_contains($name, 'marmalade')) {
-                if (str_contains($size, '1kg')) {
-                    $mrp = 280.00; // ALL 1 KG JAM = ₹280
-                    $unitsPerBox = 12;
-                    $minOrderQty = 12;
-                } elseif (str_contains($size, '500g')) {
-                    $mrp = 200.00; // ALL 500GM JAM = ₹200
-                    $unitsPerBox = 12;
-                    $minOrderQty = 12;
-                }
-            }
+        // 6. ALL JAMS: 500GM (₹200, Box 12) & 1 KG (₹280, Box 12)
+        ProductCatalog::where('category', 'like', '%Jam%')->where('size', '500g Jar')
+            ->update(['mrp' => 200.00, 'units_per_box' => 12, 'min_order_qty' => 12, 'is_active' => 1]);
+        ProductCatalog::where('category', 'like', '%Jam%')->where('size', '1kg Jar')
+            ->update(['mrp' => 280.00, 'units_per_box' => 12, 'min_order_qty' => 12, 'is_active' => 1]);
+        ProductCatalog::where('product_name', 'Orange Marmalade')->where('size', '500g Jar')
+            ->update(['mrp' => 200.00, 'units_per_box' => 12, 'min_order_qty' => 12, 'is_active' => 1]);
 
-            // 5. MIX DRY FRUIT HONEY
-            elseif (str_contains($name, 'dry fruit') && str_contains($name, 'honey')) {
-                if (str_contains($size, '500g') || str_contains($size, '500')) {
-                    $mrp = 400.00;
-                    $unitsPerBox = 12;
-                    $minOrderQty = 12;
-                } else {
-                    $mrp = 220.00;
-                    $unitsPerBox = 12;
-                    $minOrderQty = 12;
-                }
-            }
+        // 7. MIX DRY FRUIT HONEY 500GM (₹400, Box 12)
+        ProductCatalog::where('product_name', 'like', '%Mix Dry Fruits with Honey%')
+            ->update(['size' => '500g Jar', 'mrp' => 400.00, 'units_per_box' => 12, 'min_order_qty' => 12, 'is_active' => 1]);
+        // Plain dry fruit packs without honey remain inactive
+        ProductCatalog::where('product_name', 'like', '%Mix Dry Fruits Pack%')->update(['is_active' => 0]);
+        ProductCatalog::where('product_name', 'like', '%Badam%')->update(['is_active' => 0]);
 
-            // 6. SWEET KOKAM
-            elseif (str_contains($name, 'sweet kokam') || str_contains($name, 'sweet kokum')) {
-                if (str_contains($size, '100g')) {
-                    $mrp = 120.00;
-                    $minOrderQty = 25; // customize (25) min
-                    $unitsPerBox = 25;
-                } else {
-                    $mrp = 220.00;
-                    $minOrderQty = 15;
-                    $unitsPerBox = 15;
-                }
-            }
-
-            // 7. KOKAM SOAL (DRY KOKAM)
-            elseif (str_contains($name, 'kokum sol') || str_contains($name, 'kokam soal') || str_contains($name, 'dry kokam')) {
-                $mrp = 500.00;
-                $minOrderQty = 1; // 250gm min pack
-                $unitsPerBox = 12;
-            }
-
-            // 8. KESAR ELAICHI SYRUP 700ML
-            elseif (str_contains($name, 'kesar elaichi')) {
-                if (str_contains($size, '700ml')) {
-                    $mrp = 250.00;
-                    $unitsPerBox = 12;
-                    $minOrderQty = 12;
-                } elseif (str_contains($size, '500ml')) {
-                    $mrp = 180.00;
-                    $unitsPerBox = 12;
-                    $minOrderQty = 12;
-                } else {
-                    $mrp = 90.00;
-                    $unitsPerBox = 12;
-                    $minOrderQty = 12;
-                }
-            }
-
-            // 9. APPETIZER (PACHAK)
-            elseif (str_contains($name, 'appetizer') || str_contains($name, 'pachak')) {
-                if (str_contains($size, '500ml')) {
-                    $mrp = 150.00;
-                    $unitsPerBox = 15; // Sheet specifies 15
-                    $minOrderQty = 15;
-                } elseif (str_contains($size, '1 litre')) {
-                    $mrp = 220.00;
-                    $unitsPerBox = 12;
-                    $minOrderQty = 12;
-                } else {
-                    $mrp = 650.00;
-                    $unitsPerBox = 4;
-                    $minOrderQty = 1;
-                }
-            }
-
-            // 10. JELLIES (NOVELTY / PURSE / ASSORTED / CUBE)
-            elseif (str_contains($name, 'jelly') || str_contains($name, 'cub jelly')) {
-                if (str_contains($size, '100g') || str_contains($size, '100')) {
-                    $mrp = 75.00;
-                    $minOrderQty = 10; // min (10)
-                    $unitsPerBox = 10;
-                } elseif (str_contains($size, '200g') || str_contains($size, '200')) {
-                    $mrp = 125.00;
-                    $minOrderQty = 10;
-                    $unitsPerBox = 10;
-                } elseif (str_contains($size, '300g') || str_contains($size, '300')) {
-                    $mrp = 175.00;
-                    $minOrderQty = 10;
-                    $unitsPerBox = 10;
-                } elseif (str_contains($size, '400g') || str_contains($size, '400')) {
-                    $mrp = 175.00;
-                    $minOrderQty = 10;
-                    $unitsPerBox = 10;
-                } else {
-                    $mrp = 100.00;
-                    $minOrderQty = 10;
-                    $unitsPerBox = 10;
-                }
-            }
-
-            // 11. JAMUN CRUSH / JUICE 700ML
-            elseif (str_contains($name, 'jamun')) {
-                $mrp = 300.00;
-                $unitsPerBox = 12;
-                $minOrderQty = 12;
-            }
-
-            // 12. FRUIT SYRUP MOJITO 700ML
-            elseif (str_contains($name, 'mojito')) {
-                $mrp = 250.00;
-                $unitsPerBox = 12;
-                $minOrderQty = 12;
-            }
-
-            // 13. PASSION FRUIT SQUASH 700ML
-            elseif (str_contains($name, 'passion')) {
-                $mrp = 250.00;
-                $unitsPerBox = 12;
-                $minOrderQty = 12;
-            }
-
-            // 14. BLUE CURACAO SYRUP 700ML
-            elseif (str_contains($name, 'blue curacao') || str_contains($name, 'blue caracao')) {
-                $mrp = 250.00;
-                $unitsPerBox = 12;
-                $minOrderQty = 12;
-            }
-
-            // 15. ALL MIX 700ML SQUASHES & SYRUPS
-            elseif (str_contains($size, '700ml')) {
-                $mrp = 200.00; // ALL MIX 700ML SQUASHS = ₹200
-                $unitsPerBox = 12;
-                $minOrderQty = 12;
-            }
-
-            // 16. SQUASHES & JUICES (1 LITRE)
-            elseif (str_contains($size, '1 litre') && (str_contains($name, 'squash') || str_contains($name, 'juice'))) {
-                $mrp = 200.00;
-                $unitsPerBox = 12;
-                $minOrderQty = 12;
-            }
-
-            // FALLBACK FOR OTHER PRODUCTS (Default reasonable MRP: 1.8x - 2.0x wholesale)
-            if ($mrp === null) {
-                $calculated = round(((float)$p->price * 1.8) / 5) * 5;
-                $mrp = max($calculated, (float)$p->price + 20);
-            }
-
-            $p->mrp = $mrp;
-            $p->units_per_box = $unitsPerBox;
-            $p->min_order_qty = $minOrderQty;
-            $p->save();
+        // 8. SQUASHES: Standard 700ML Bottle (₹200, Box 12)
+        $mixSquashes = [
+            'Alphonso Mango Squash',
+            'Raw Mango Squash',
+            'Orange Squash',
+            'Pineapple Squash',
+            'Lime Ginger Squash',
+            'Mixed Fruit Squash',
+            'Amala Squash',
+            'Pure Amla Juice',
+        ];
+        foreach ($mixSquashes as $sq) {
+            ProductCatalog::where('product_name', $sq)
+                ->where('size', '!=', '5 Litre Can')
+                ->update(['size' => '700ml Bottle', 'mrp' => 200.00, 'units_per_box' => 12, 'min_order_qty' => 12, 'is_active' => 1]);
+            // Deactivate 5L Cans
+            ProductCatalog::where('product_name', $sq)->where('size', '5 Litre Can')
+                ->update(['is_active' => 0]);
         }
+        ProductCatalog::where('product_name', 'Karela Jamun Amla Juice')->update(['is_active' => 0]);
+
+        // 9. PASSION FRUIT SQUASH 700ML (₹250, Box 12)
+        ProductCatalog::where('product_name', 'like', '%Passion%')
+            ->update(['size' => '700ml Bottle', 'mrp' => 250.00, 'units_per_box' => 12, 'min_order_qty' => 12, 'is_active' => 1]);
+
+        // 10. KESAR ELAICHI SYRUP 700ML (₹250, Box 12)
+        ProductCatalog::where('product_name', 'like', '%Kesar Elaichi%')->where('size', '700ml Bottle')
+            ->update(['mrp' => 250.00, 'units_per_box' => 12, 'min_order_qty' => 12, 'is_active' => 1]);
+        ProductCatalog::where('product_name', 'like', '%Kesar Elaichi%')
+            ->whereIn('size', ['200ml Bottle', '500ml Bottle'])
+            ->update(['is_active' => 0]);
+
+        // 11. APPETIZER (PACHAK) 500ML (₹150, Box 15)
+        ProductCatalog::where('product_name', 'like', '%Appetizer%')->where('id', 62)
+            ->update(['size' => '500ml Bottle', 'mrp' => 150.00, 'units_per_box' => 15, 'min_order_qty' => 15, 'is_active' => 1]);
+        ProductCatalog::where('product_name', 'like', '%Appetizer%')->where('id', 63)
+            ->update(['is_active' => 0]); // 5L Can inactive
+
+        // 12. JAMUN CRUSH 700ML (₹300, Box 12)
+        ProductCatalog::where('product_name', 'like', '%Jamun%')->where('id', 43)
+            ->update(['product_name' => 'Jamun Crush', 'size' => '700ml Bottle', 'mrp' => 300.00, 'units_per_box' => 12, 'min_order_qty' => 12, 'is_active' => 1]);
+
+        // 13. FRUIT SYRUP MOJITO 700ML (₹250, Box 12)
+        ProductCatalog::where('product_name', 'like', '%Mojito%')
+            ->update(['size' => '700ml Bottle', 'mrp' => 250.00, 'units_per_box' => 12, 'min_order_qty' => 12, 'is_active' => 1]);
+
+        // 14. BLUE CURACAO SYRUP 700ML (₹250, Box 12)
+        ProductCatalog::where('product_name', 'like', '%Blue Curacao%')
+            ->update(['size' => '700ml Bottle', 'mrp' => 250.00, 'units_per_box' => 12, 'min_order_qty' => 12, 'is_active' => 1]);
+
+        // 15. OTHER 700ML SYRUPS (₹200, Box 12)
+        $syrups700 = [
+            'Rose Falooda Syrup',
+            'Kala Khatta Syrup',
+            'Paan Shot Syrup',
+            'Lime Syrup',
+            'Raspberry Syrup',
+            'Zeera Cordial',
+        ];
+        foreach ($syrups700 as $s) {
+            ProductCatalog::where('product_name', $s)
+                ->update(['size' => '700ml Bottle', 'mrp' => 200.00, 'units_per_box' => 12, 'min_order_qty' => 12, 'is_active' => 1]);
+        }
+
+        // 16. JELLIES: min 10 units
+        // Chocolate Jellies (100g = ₹75, 200g = ₹125, 400g = ₹175)
+        ProductCatalog::where('product_name', 'like', '%Novelty Jellies%')
+            ->update(['size' => '100g Pack', 'mrp' => 75.00, 'units_per_box' => 10, 'min_order_qty' => 10, 'is_active' => 1]);
+        ProductCatalog::where('product_name', 'like', '%Purse Pack%')
+            ->update(['size' => '200g Pack', 'mrp' => 125.00, 'units_per_box' => 10, 'min_order_qty' => 10, 'is_active' => 1]);
+        ProductCatalog::where('product_name', 'like', '%Assorted Box%')
+            ->update(['size' => '400g Box', 'mrp' => 175.00, 'units_per_box' => 10, 'min_order_qty' => 10, 'is_active' => 1]);
+        // Cube Jellies (100g = ₹75, 200g = ₹125, 300g = ₹175)
+        ProductCatalog::where('product_name', 'Cub Jelly')->where('size', 'like', '%100g%')
+            ->update(['size' => '100g Cup', 'mrp' => 75.00, 'units_per_box' => 10, 'min_order_qty' => 10, 'is_active' => 1]);
+        ProductCatalog::where('product_name', 'Cub Jelly')->where('size', 'like', '%200g%')
+            ->update(['size' => '200g Cup', 'mrp' => 125.00, 'units_per_box' => 10, 'min_order_qty' => 10, 'is_active' => 1]);
+        ProductCatalog::where('product_name', 'Cub Jelly')->where('size', 'like', '%300g%')
+            ->update(['size' => '300g Cup', 'mrp' => 175.00, 'units_per_box' => 10, 'min_order_qty' => 10, 'is_active' => 1]);
+
+        // 17. DEACTIVATE UNLISTED / TEST ITEMS
+        ProductCatalog::where('product_name', 'like', '%red chilly s ravi%')->update(['is_active' => 0]);
+        ProductCatalog::where('product_name', 'like', '%Kiwi Crush%')->update(['is_active' => 0]);
+        ProductCatalog::whereIn('product_name', [
+            'Tomato Ketchup',
+            'Tomato Sauce',
+            'Green Chilli Sauce',
+            'Red Chilli Sauce',
+            'Synthetic White Vinegar',
+        ])->update(['is_active' => 0]);
     }
 }

@@ -317,9 +317,9 @@
                                                     <span class="text-gray-300">|</span>
                                                     <span class="text-amber-700 font-bold" title="Retail MRP">MRP: ₹{{ number_format($variant->mrp ?: $variant->price, 0) }}</span>
                                                     <button type="button"
-                                                        @click="openQuickEdit({{ $variant->id }}, '{{ addslashes($p->product_name) }}', '{{ addslashes($variant->size) }}', {{ $variant->price }}, {{ $variant->units_per_box ?: 12 }})"
+                                                        @click="openQuickEdit({{ $variant->id }}, '{{ addslashes($p->product_name) }}', '{{ addslashes($variant->size) }}', {{ $variant->price }}, {{ $variant->units_per_box ?: 12 }}, {{ (float) ($variant->mrp ?: $variant->price) }})"
                                                         class="text-gray-400 hover:text-green-700 ml-1 cursor-pointer text-xs"
-                                                        title="Quick Edit Price & Units">
+                                                        title="Quick Edit Rates & Packaging">
                                                         ✏️
                                                     </button>
                                                 </div>
@@ -450,10 +450,17 @@
                 </div>
 
                 <div class="space-y-3 text-xs font-bold">
-                    <div>
-                        <label class="block uppercase text-gray-500 mb-1">Price per Unit (₹)</label>
-                        <input type="number" step="0.01" min="0" x-model.number="quickEdit.price"
-                            class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-gray-900 outline-none focus:ring-2 focus:ring-green-800">
+                    <div class="grid grid-cols-2 gap-2.5">
+                        <div>
+                            <label class="block uppercase text-gray-500 mb-1">Wholesale Rate (₹)</label>
+                            <input type="number" step="0.01" min="0" x-model.number="quickEdit.price"
+                                class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-gray-900 outline-none focus:ring-2 focus:ring-green-800">
+                        </div>
+                        <div>
+                            <label class="block uppercase text-amber-700 mb-1">Retail MRP (₹)</label>
+                            <input type="number" step="0.01" min="0" x-model.number="quickEdit.mrp"
+                                class="w-full bg-amber-50/50 border border-amber-300 rounded-xl p-2.5 text-gray-900 outline-none focus:ring-2 focus:ring-amber-800">
+                        </div>
                     </div>
 
                     <div>
@@ -462,8 +469,9 @@
                             class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-gray-900 outline-none focus:ring-2 focus:ring-green-800">
                     </div>
 
-                    <div class="p-3 bg-emerald-50 rounded-xl text-emerald-900 text-[11px]">
-                        Estimated Box Price: <strong x-text="'₹' + (quickEdit.price * quickEdit.unitsPerBox).toFixed(2)"></strong>
+                    <div class="p-3 bg-emerald-50 rounded-xl text-emerald-900 text-[11px] flex justify-between">
+                        <span>Carton Wholesale: <strong x-text="'₹' + (quickEdit.price * quickEdit.unitsPerBox).toFixed(2)"></strong></span>
+                        <span>Carton MRP: <strong x-text="'₹' + (quickEdit.mrp * quickEdit.unitsPerBox).toFixed(2)"></strong></span>
                     </div>
                 </div>
 
@@ -731,13 +739,14 @@
                 },
 
                 // Open Quick Edit Modal
-                openQuickEdit(id, productName, size, price, units) {
+                openQuickEdit(id, productName, size, price, units, mrp) {
                     this.quickEdit = {
                         open: true,
                         id: id,
                         productName: productName,
                         size: size,
                         price: parseFloat(price) || 0,
+                        mrp: parseFloat(mrp) || parseFloat(price) || 0,
                         unitsPerBox: parseInt(units) || 12
                     };
                 },
@@ -754,6 +763,7 @@
                             },
                             body: JSON.stringify({
                                 price: this.quickEdit.price,
+                                mrp: this.quickEdit.mrp,
                                 units_per_box: this.quickEdit.unitsPerBox
                             })
                         });
