@@ -12,9 +12,11 @@
 
     <div class="max-w-md w-full bg-stone-800 border border-stone-700 rounded-3xl p-8 shadow-2xl space-y-6">
         <div class="text-center space-y-2">
-            <span class="text-4xl">🌴</span>
+            <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-amber-400/10 text-amber-400 border border-amber-400/20 mb-1">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            </div>
             <h1 class="text-2xl font-black tracking-tight text-amber-400">PatSons Admin Portal</h1>
-            <p class="text-xs text-stone-400">Dev Can Fruit Products • Morji, Goa</p>
+            <p class="text-xs text-stone-400">Dev Can Fruit Products • Morjim, Goa</p>
         </div>
 
         @if($errors->any())

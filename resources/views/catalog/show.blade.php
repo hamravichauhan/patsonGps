@@ -202,12 +202,12 @@
                         @if($product->is_featured)
                             <span
                                 class="bg-amber-400 text-gray-950 text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full shadow-2xs">
-                                ★ Best Seller
+                                Best Seller
                             </span>
                         @endif
                         <span
                             class="bg-emerald-900/90 backdrop-blur-md text-white text-[9px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full shadow-2xs">
-                            📦 Wholesale Carton Only
+                            Wholesale Carton Only
                         </span>
                         <template x-if="gallery && gallery.length > 1">
                             <span
@@ -217,19 +217,22 @@
                     </div>
 
                     <div
-                        class="absolute top-4 right-4 bg-white/90 backdrop-blur-xs text-gray-700 text-[10px] font-bold px-3 py-1.5 rounded-full opacity-0 group-hover:opacity-100 transition shadow-xs z-20 flex items-center gap-1">
-                        <span>🔍</span> Click to zoom
+                        class="absolute top-4 right-4 bg-white/90 backdrop-blur-xs text-gray-700 text-[10px] font-bold px-3 py-1.5 rounded-full opacity-0 group-hover:opacity-100 transition shadow-xs z-20 flex items-center gap-1.5">
+                        <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7"/>
+                        </svg>
+                        <span>Click to zoom</span>
                     </div>
 
                     <template x-if="gallery && gallery.length > 1">
                         <div
                             class="absolute inset-x-3 inset-y-0 flex items-center justify-between z-20 pointer-events-none">
                             <button type="button" x-on:click.stop="prevImage()"
-                                class="pointer-events-auto w-9 h-9 rounded-full bg-white/90 hover:bg-white text-gray-900 shadow-md flex items-center justify-center text-lg font-black transition-all hover:scale-110 active:scale-95">
+                                class="pointer-events-auto w-9 h-9 rounded-full bg-white/90 hover:bg-white text-gray-900 shadow-md flex items-center justify-center text-lg font-black transition-all active:scale-95">
                                 ‹
                             </button>
                             <button type="button" x-on:click.stop="nextImage()"
-                                class="pointer-events-auto w-9 h-9 rounded-full bg-white/90 hover:bg-white text-gray-900 shadow-md flex items-center justify-center text-lg font-black transition-all hover:scale-110 active:scale-95">
+                                class="pointer-events-auto w-9 h-9 rounded-full bg-white/90 hover:bg-white text-gray-900 shadow-md flex items-center justify-center text-lg font-black transition-all active:scale-95">
                                 ›
                             </button>
                         </div>
@@ -239,7 +242,7 @@
                     {{--
                     <div x-show="addedToast" x-cloak x-transition
                         class="absolute inset-0 bg-green-900/90 backdrop-blur-xs flex items-center justify-center text-white font-bold text-sm z-30 rounded-3xl">
-                        ✓ Added Wholesale Box to Quotation Cart!
+                        Added Wholesale Box to Quotation Cart!
                     </div>
                     --}}
                 </div>
@@ -293,7 +296,9 @@
                         </div>
                         <div class="text-left sm:text-right">
                             <span class="text-xs font-black text-emerald-900 bg-white border border-emerald-300 px-3 py-1.5 rounded-xl inline-flex items-center gap-1.5 shadow-2xs">
-                                <span>📦</span>
+                                <svg class="w-4 h-4 text-emerald-800" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                                </svg>
                                 <span>Box of <span x-text="selectedUnitsPerBox"></span> Units</span>
                             </span>
                             <span class="block text-[10px] text-gray-400 font-bold uppercase mt-1">
@@ -332,21 +337,12 @@
 
                 <!-- Call to Actions: Ordering commented out for view-only catalog display -->
                 <div class="pt-4 border-t border-gray-100 flex flex-col sm:flex-row gap-3">
-                    {{-- Commented out Add to Cart button for view-only catalog display
-                    <button type="button" x-on:click="triggerAdd()"
-                        class="flex-1 bg-green-900 hover:bg-green-800 active:scale-98 text-white font-black py-3.5 px-6 rounded-2xl text-xs sm:text-sm shadow-md transition flex items-center justify-center gap-2 cursor-pointer">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                        </svg>
-                        <span>+ Add Box to Quotation Cart</span>
-                    </button>
-                    --}}
-
                     <a :href="'https://wa.me/{{ $adminWa }}?text=' + encodeURIComponent('Hello PatSons Goa! I am viewing {{ addslashes($product->product_name) }} (' + selectedSize + ') on your website and would like to inquire about specifications and availability.')"
                         target="_blank" rel="noopener noreferrer"
                         class="flex-1 bg-green-900 hover:bg-green-800 active:scale-98 text-white font-black py-3.5 px-6 rounded-2xl text-xs sm:text-sm shadow-md transition flex items-center justify-center gap-2 text-center cursor-pointer">
-                        <span>💬</span>
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.698c.969.587 1.961.948 3.01.948h.005c3.182 0 5.768-2.586 5.769-5.766 0-1.542-.6-2.991-1.69-4.08-1.089-1.089-2.539-1.688-4.081-1.688zm0-2c4.288 0 7.768 3.48 7.769 7.766 0 2.078-.809 4.032-2.278 5.502-1.47 1.47-3.424 2.279-5.503 2.279-1.284 0-2.535-.342-3.633-.99l-5.386 1.411 1.436-5.247c-.718-1.155-1.097-2.486-1.096-3.856.002-4.286 3.482-7.766 7.768-7.766z"/>
+                        </svg>
                         <span>Inquire About This Product</span>
                     </a>
                 </div>
@@ -358,7 +354,11 @@
             <!-- Card 1: Heritage & Origin -->
             <div class="bg-white p-5 rounded-3xl border border-stone-200/70 shadow-2xs flex flex-col justify-between">
                 <div>
-                    <span class="text-xl block mb-1.5">🏭</span>
+                    <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-900 border border-emerald-100 flex items-center justify-center mb-3">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                        </svg>
+                    </div>
                     <h3 class="font-extrabold text-stone-900 text-sm">Direct From Morjim, Goa</h3>
                     <p class="text-stone-500 mt-1 leading-relaxed">
                         Manufactured by <strong>Dev Can Fruit Products</strong> at Morjim, Pernem, Goa. Crafted using
@@ -370,7 +370,11 @@
             <!-- Card 2: Standards & Compliance -->
             <div class="bg-white p-5 rounded-3xl border border-stone-200/70 shadow-2xs flex flex-col justify-between">
                 <div>
-                    <span class="text-xl block mb-1.5">📜</span>
+                    <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-900 border border-emerald-100 flex items-center justify-center mb-3">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                        </svg>
+                    </div>
                     <h3 class="font-extrabold text-stone-900 text-sm">FSSAI Certified Quality</h3>
                     <p class="text-stone-500 mt-1 leading-relaxed">
                         FSSAI Central Lic. No. <strong>10613001000730</strong>. Hygienically processed and standard-tested
@@ -382,7 +386,11 @@
             <!-- Card 3: Supply & Inquiry -->
             <div class="bg-white p-5 rounded-3xl border border-stone-200/70 shadow-2xs flex flex-col justify-between">
                 <div>
-                    <span class="text-xl block mb-1.5">📦</span>
+                    <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-900 border border-emerald-100 flex items-center justify-center mb-3">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                        </svg>
+                    </div>
                     <h3 class="font-extrabold text-stone-900 text-sm">Retail & Bulk Inquiries</h3>
                     <p class="text-stone-500 mt-1 leading-relaxed">
                         Securely packed in durable cartons suitable for retail, distribution, and HoReCa partners across Goa

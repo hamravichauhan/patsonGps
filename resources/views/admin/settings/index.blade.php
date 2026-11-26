@@ -18,7 +18,7 @@
         @if(session('success'))
             <div
                 class="bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold p-3.5 rounded-2xl flex items-center justify-between">
-                <span>✓ {{ session('success') }}</span>
+                <span>{{ session('success') }}</span>
                 <button onclick="this.parentElement.remove()" class="text-emerald-700 font-bold">&times;</button>
             </div>
         @endif
@@ -35,7 +35,7 @@
         <div class="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-xs space-y-6">
             <div class="flex items-center justify-between pb-3 border-b border-gray-100">
                 <div class="flex items-center gap-2">
-                    <span class="text-lg">📲</span>
+                    
                     <div>
                         <h2 class="text-sm font-black text-gray-900 uppercase tracking-wider">WhatsApp Business Gateway
                             Device</h2>
@@ -45,7 +45,7 @@
                 </div>
                 <button type="button" onclick="loadWhatsAppQR()"
                     class="bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition cursor-pointer flex items-center gap-2 shadow-xs">
-                    <span>⚡ Link Device / View QR</span>
+                    <span>Link Device / View QR</span>
                 </button>
             </div>
 
@@ -54,7 +54,7 @@
                 class="hidden p-6 border border-dashed border-emerald-300 rounded-2xl bg-emerald-50/40 text-center space-y-3 transition">
                 <div id="qrStatusBadge"
                     class="inline-flex items-center gap-1.5 px-3 py-1 bg-white border border-emerald-200 rounded-full text-[11px] font-bold text-emerald-800 shadow-2xs">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
                     <span>Ready for Scanning</span>
                 </div>
                 <p class="text-xs text-stone-600 max-w-md mx-auto">
@@ -78,7 +78,7 @@
             <div class="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-xs space-y-6">
                 <div class="flex items-center justify-between pb-3 border-b border-gray-100">
                     <div class="flex items-center gap-2">
-                        <span class="text-lg">🔐</span>
+                        
                         <h2 class="text-sm font-black text-gray-900 uppercase tracking-wider">Admin Login & Credentials</h2>
                     </div>
                 </div>
@@ -111,7 +111,7 @@
                         </div>
                         <button type="button" @click="showPasswordFields = true"
                             class="bg-stone-100 hover:bg-stone-200 text-stone-800 font-black text-xs px-4 py-2 rounded-xl transition cursor-pointer flex items-center gap-1.5">
-                            <span>🔑 Change Password</span>
+                            <span>Change Password</span>
                         </button>
                     </div>
 
@@ -154,7 +154,7 @@
             <!-- CARD 3: WhatsApp Alerts & Auto-Approval Settings -->
             <div class="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-xs space-y-6">
                 <div class="flex items-center gap-2 pb-3 border-b border-gray-100">
-                    <span class="text-lg">💬</span>
+                    
                     <h2 class="text-sm font-black text-gray-900 uppercase tracking-wider">WhatsApp Notifications &
                         Automation Rules</h2>
                 </div>
@@ -233,17 +233,17 @@
                         badge.className = "inline-flex items-center gap-1.5 px-3 py-1 bg-white border border-emerald-200 rounded-full text-[11px] font-bold text-emerald-800 shadow-2xs";
                         container.innerHTML = `
                             <div class="bg-white p-5 rounded-2xl border border-emerald-200 shadow-xs max-w-sm mx-auto text-center space-y-2">
-                                <div class="text-4xl">✅</div>
+                                <div class="w-12 h-12 mx-auto rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center"><svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></div>
                                 <h4 class="text-xs font-black text-emerald-900 uppercase">WhatsApp Gateway is Active</h4>
                                 <p class="text-[11px] text-stone-500">Your device is linked and synced. Quotation alerts and dispatch notifications are live!</p>
                             </div>`;
                     } else if (data.qrcode) {
-                        badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span><span>Ready to Scan</span>';
+                        badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-500"></span><span>Ready to Scan</span>';
                         badge.className = "inline-flex items-center gap-1.5 px-3 py-1 bg-white border border-amber-200 rounded-full text-[11px] font-bold text-amber-800 shadow-2xs";
                         container.innerHTML = `
                             <div class="space-y-3">
                                 <img src="${data.qrcode}" class="w-64 h-64 bg-white p-2.5 rounded-2xl shadow-lg border border-stone-200 mx-auto" alt="WhatsApp Link QR">
-                                <span class="text-[11px] text-gray-500 font-bold block animate-pulse">Point your WhatsApp camera at this QR code</span>
+                                <span class="text-[11px] text-gray-500 font-bold block">Point your WhatsApp camera at this QR code</span>
                             </div>`;
                         // Poll to detect pairing completion
                         setTimeout(fetchQR, 3000);
@@ -265,7 +265,7 @@
                 } catch (err) {
                     container.innerHTML = `
                         <div class="bg-red-50 p-4 rounded-xl border border-red-200 text-xs text-red-700 space-y-2">
-                            <p class="font-bold">⚠️ Gateway port 21465 is offline</p>
+                            <p class="font-bold">Gateway port 21465 is offline</p>
                             <p>To start your free gateway, run: <code>cd patsons-wa-gateway && npm start</code></p>
                             <button type="button" onclick="loadWhatsAppQR()" class="px-3 py-1 bg-gray-200 hover:bg-gray-300 font-bold rounded-lg text-black cursor-pointer">Retry Connection</button>
                         </div>`;

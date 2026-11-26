@@ -10,8 +10,10 @@
             <div
                 class="max-w-md mx-auto bg-white rounded-3xl p-6 sm:p-10 border border-stone-200 shadow-xl text-center space-y-6">
                 <div
-                    class="w-16 h-16 bg-green-50 text-green-900 border border-green-200/80 rounded-2xl flex items-center justify-center text-3xl mx-auto shadow-xs">
-                    📦
+                    class="w-16 h-16 bg-green-50 text-green-900 border border-green-200/80 rounded-2xl flex items-center justify-center mx-auto shadow-xs">
+                    <svg class="w-8 h-8 text-emerald-800" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                    </svg>
                 </div>
 
                 <div class="space-y-1">
@@ -39,7 +41,7 @@
 
                     <button type="button" @click="sendOtp()" :disabled="isLoading"
                         class="w-full bg-green-900 hover:bg-green-800 active:scale-98 text-white font-black text-xs py-3.5 px-4 rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50">
-                        <span x-show="!isLoading">📲 Send 4-Digit Verification Code</span>
+                        <span x-show="!isLoading">Send 4-Digit Verification Code</span>
                         <span x-show="isLoading" x-cloak>Sending WhatsApp OTP...</span>
                     </button>
                 </div>
@@ -62,7 +64,7 @@
 
                     <button type="button" @click="verifyOtp()" :disabled="isLoading"
                         class="w-full bg-amber-400 hover:bg-amber-300 active:scale-98 text-stone-950 font-black text-xs py-3.5 px-4 rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50">
-                        <span x-show="!isLoading">✓ Verify & View Order History</span>
+                        <span x-show="!isLoading">Verify & View Order History</span>
                         <span x-show="isLoading" x-cloak>Verifying...</span>
                     </button>
 
@@ -114,7 +116,7 @@
 
                 @if(session('success'))
                     <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-xs font-bold text-emerald-800 flex items-center gap-2 shadow-xs">
-                        <span>✓</span> <span>{{ session('success') }}</span>
+                        <span>{{ session('success') }}</span>
                     </div>
                 @endif
 
@@ -122,7 +124,11 @@
                 @if(!empty($isWholesaler))
                     <div class="p-4.5 rounded-3xl bg-emerald-50 border border-emerald-200 text-emerald-950 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
                         <div class="flex items-center gap-3">
-                            <span class="text-2xl">🏆</span>
+                            <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-900 flex items-center justify-center shrink-0">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                                </svg>
+                            </div>
                             <div>
                                 <div class="font-black text-xs uppercase tracking-wider text-emerald-900">Approved B2B Wholesaler</div>
                                 <div class="text-[11px] text-emerald-800 mt-0.5">Your account has direct factory wholesale pricing enabled across the catalog.</div>
@@ -144,7 +150,11 @@
 
                     @if($orders->isEmpty())
                         <div class="bg-white rounded-3xl p-12 text-center border border-stone-200 space-y-3">
-                            <span class="text-4xl block">🍃</span>
+                            <div class="w-12 h-12 rounded-2xl bg-stone-100 text-stone-500 mx-auto flex items-center justify-center">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                                </svg>
+                            </div>
                             <h3 class="text-base font-black text-stone-900">No Orders Found</h3>
                             <p class="text-xs text-stone-500 max-w-sm mx-auto">No orders have been submitted yet under +91
                                 {{ $phone }}.</p>
@@ -177,7 +187,7 @@
                                                             @elseif($o->status === 'dispatched') bg-blue-100 text-blue-800 
                                                             @elseif($o->status === 'rejected') bg-red-100 text-red-800 
                                                             @else bg-amber-100 text-amber-800 @endif">
-                                                {{ $o->status === 'pending' ? '⏳ Under Review' : '✓ ' . ucfirst($o->status) }}
+                                                {{ $o->status === 'pending' ? 'Under Review' : ucfirst($o->status) }}
                                             </span>
                                         </div>
                                     </div>
@@ -215,12 +225,12 @@
                                             <a href="https://wa.me/917758943614?text=Hello%20PatSons!%20Inquiring%20about%20Order%20%23{{ $o->order_number }}."
                                                 target="_blank"
                                                 class="w-full sm:w-auto text-xs font-bold text-green-900 hover:bg-green-50 border border-green-200 px-3.5 py-2.5 rounded-xl transition text-center">
-                                                💬 Inquiry on WhatsApp
+                                                Inquiry on WhatsApp
                                             </a>
 
                                             <button type="button" @click="reorder('{{ $o->order_number }}')" :disabled="loadingReorder"
                                                 class="w-full sm:w-auto bg-green-900 hover:bg-green-800 active:scale-95 text-white text-xs font-black px-4 py-2.5 rounded-xl shadow-xs transition flex items-center justify-center gap-1.5 cursor-pointer">
-                                                <span>🔁 1-Click Reorder</span>
+                                                <span>1-Click Reorder</span>
                                             </button>
                                         </div>
                                     </div>

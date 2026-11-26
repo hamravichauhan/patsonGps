@@ -60,7 +60,7 @@
                 <div class="flex items-center justify-between">
                     <label class="block uppercase text-emerald-900 font-black text-[11px]">Product Photo</label>
                     <span class="text-[10px] font-black uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">
-                        ✨ Auto WebP + Transparent BG
+                        Auto WebP + Transparent BG
                     </span>
                 </div>
                 <input type="file" name="primary_image" accept="image/*" class="w-full text-xs text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-emerald-700 file:text-white hover:file:bg-emerald-800 cursor-pointer">

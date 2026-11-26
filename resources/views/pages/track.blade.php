@@ -4,7 +4,9 @@
     <div class="max-w-xl mx-auto px-4 py-12">
         <div class="bg-white p-6 sm:p-8 rounded-3xl border border-gray-100 shadow-sm">
             <div class="text-center mb-6">
-                <span class="text-3xl">🔎</span>
+                <div class="w-12 h-12 mx-auto rounded-2xl bg-emerald-50 text-emerald-900 border border-emerald-100 flex items-center justify-center mb-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                </div>
                 <h1 class="text-xl font-black text-gray-900 mt-2">Track Quotation / Order</h1>
                 <p class="text-xs text-gray-500">Enter your Order # and 10-digit WhatsApp number to verify status.</p>
             </div>
@@ -54,7 +56,7 @@
                     <div class="pt-2 border-t border-gray-200">
                         <a href="{{ route('order.reorder.token', $order->reorder_token) }}"
                             class="block text-center bg-white border border-green-800 text-green-800 font-bold py-2 rounded-xl text-xs hover:bg-green-50 transition">
-                            🔄 1-Click Reorder This Order
+                            1-Click Reorder This Order
                         </a>
                     </div>
                 </div>

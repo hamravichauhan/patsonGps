@@ -138,7 +138,7 @@
             <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none snap-x">
                 <a href="{{ route('shop', array_merge(request()->except('category'))) }}"
                     class="snap-start shrink-0 px-4 py-2 rounded-2xl text-xs font-black transition-all border {{ !request('category') ? 'bg-green-900 text-white border-green-900 shadow-sm' : 'bg-white text-gray-700 border-gray-200 hover:border-gray-300' }}">
-                    🌿 All Products ({{ $products->count() }})
+                    All Products ({{ $products->count() }})
                 </a>
 
                 @foreach($categories as $cat)
@@ -204,7 +204,7 @@
                                         @if($primary->is_featured)
                                             <span
                                                 class="bg-amber-400 text-gray-950 text-[9px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full shadow-xs">
-                                                ★ Best Seller
+                                                Best Seller
                                             </span>
                                         @endif
                                     </div>
@@ -212,7 +212,7 @@
                                     @if(count($gallery) > 1)
                                         <span
                                             class="absolute bottom-2.5 right-2.5 bg-black/60 backdrop-blur-xs text-white text-[9px] font-black px-2 py-0.5 rounded-md">
-                                            {{ count($gallery) }} Photos 📸
+                                            {{ count($gallery) }} Photos
                                         </span>
                                     @endif
                                 </div>
@@ -273,7 +273,6 @@
                                 <button type="button"
                                     @click="$dispatch('add-to-cart', { id: selectedId, name: '{{ addslashes($primary->product_name) }}', price: selectedPrice, size: selectedSize, image: selectedImage })"
                                     class="flex-1 bg-green-900 hover:bg-green-800 text-white font-black text-xs py-2.5 px-3 rounded-xl shadow-xs transition active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer">
-                                    <span>🛍️</span>
                                     <span>+ Add to Cart</span>
                                 </button>
                                 <a :href="'https://wa.me/{{ $adminPhone }}?text=' + encodeURIComponent('Hello PatSons! I want to inquire about: {{ addslashes($primary->product_name) }} (' + selectedSize + ') - ₹' + Number(selectedPrice).toFixed(2) + ' per unit.')"
@@ -281,7 +280,6 @@
                                     rel="noopener noreferrer"
                                     class="bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-800 font-black text-xs py-2.5 px-3 rounded-xl transition active:scale-95 flex items-center justify-center gap-1 cursor-pointer"
                                     title="WhatsApp Quote">
-                                    <span>💬</span>
                                     <span class="hidden sm:inline">Quote</span>
                                 </a>
                             </div>
@@ -299,7 +297,11 @@
         @else
             <!-- Empty State -->
             <div class="bg-white rounded-3xl border border-gray-200 p-12 text-center max-w-md mx-auto space-y-4 shadow-xs">
-                <span class="text-4xl block">🔍</span>
+                <div class="w-12 h-12 rounded-2xl bg-gray-100 text-gray-500 mx-auto flex items-center justify-center">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                </div>
                 <h3 class="text-lg font-black text-gray-900">No products found</h3>
                 <p class="text-xs text-gray-500">We couldn't find any products matching your search criteria.</p>
                 <a href="{{ route('shop') }}"

@@ -13,9 +13,7 @@
                         <span class="text-xs font-bold text-gray-500">({{ $totalSkus }} Variants)</span>
                     </div>
                 </div>
-                <div class="w-11 h-11 rounded-2xl bg-emerald-50 text-emerald-800 flex items-center justify-center text-xl shrink-0">
-                    📦
-                </div>
+                <div class="w-11 h-11 rounded-2xl bg-emerald-50 text-emerald-800 flex items-center justify-center shrink-0"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg></div>
             </div>
 
             <div class="bg-white p-4 sm:p-5 rounded-2xl border border-gray-200/80 shadow-xs flex items-center justify-between">
@@ -26,9 +24,7 @@
                         <span class="text-xs font-bold text-gray-400">Live / {{ $hiddenCount }} Hidden</span>
                     </div>
                 </div>
-                <div class="w-11 h-11 rounded-2xl bg-emerald-50 text-emerald-800 flex items-center justify-center text-xl shrink-0">
-                    🟢
-                </div>
+                <div class="w-11 h-11 rounded-2xl bg-emerald-50 text-emerald-800 flex items-center justify-center shrink-0"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></div>
             </div>
 
             <div class="bg-white p-4 sm:p-5 rounded-2xl border border-gray-200/80 shadow-xs flex items-center justify-between">
@@ -38,16 +34,14 @@
                         <span>{{ $inStockCount }}</span>
                         <span class="text-xs font-bold {{ $outOfStockCount > 0 ? 'text-rose-600' : 'text-gray-400' }}">
                             @if($outOfStockCount > 0)
-                                (⚠️ {{ $outOfStockCount }} Out of Stock)
+                                ({{ $outOfStockCount }} Out of Stock)
                             @else
                                 (All In Stock)
                             @endif
                         </span>
                     </div>
                 </div>
-                <div class="w-11 h-11 rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center text-xl shrink-0">
-                    🏭
-                </div>
+                <div class="w-11 h-11 rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center shrink-0"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg></div>
             </div>
 
             <div class="bg-white p-4 sm:p-5 rounded-2xl border border-gray-200/80 shadow-xs flex items-center justify-between">
@@ -57,9 +51,7 @@
                         {{ $featuredCount }}
                     </div>
                 </div>
-                <div class="w-11 h-11 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl shrink-0">
-                    ★
-                </div>
+                <div class="w-11 h-11 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg></div>
             </div>
         </div>
 
@@ -73,7 +65,7 @@
                 <a href="{{ route('admin.products.export') }}"
                     class="bg-white hover:bg-gray-100 text-gray-800 border border-gray-300 text-xs font-black px-4 py-2.5 rounded-xl shadow-2xs transition inline-flex items-center gap-2 cursor-pointer"
                     title="Export wholesale catalog to Excel / CSV">
-                    <span>📥</span>
+                    
                     <span>Export CSV</span>
                 </a>
                 <a href="{{ route('admin.products.create') }}"
@@ -89,13 +81,13 @@
             <div class="flex flex-col md:flex-row gap-3 items-center justify-between">
                 <!-- Instant Client-Side Live Search -->
                 <div class="relative flex-1 w-full">
-                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400 text-sm">🔍</span>
+                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400 text-sm"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg></span>
                     <input type="text" x-model="clientSearch" @input="onSearchChange()"
                         placeholder="Instant search by product name, category, pack size..."
                         class="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-gray-900 outline-none focus:ring-2 focus:ring-green-800">
                     <button x-show="clientSearch.length > 0" @click="clientSearch = ''; onSearchChange();"
                         class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-700 text-xs font-bold">
-                        ✕
+                        &times;
                     </button>
                 </div>
 
@@ -104,11 +96,11 @@
                     <select x-model="statusFilter" @change="onStatusFilterChange()"
                         class="bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-bold text-gray-800 outline-none focus:ring-2 focus:ring-green-800 cursor-pointer">
                         <option value="">All Statuses</option>
-                        <option value="active">🟢 Live in Store</option>
-                        <option value="hidden">⚪ Hidden</option>
-                        <option value="in_stock">📦 In Stock</option>
-                        <option value="out_of_stock">⚠️ Out of Stock</option>
-                        <option value="featured">★ Featured Best Seller</option>
+                        <option value="active">Live in Store</option>
+                        <option value="hidden">Hidden</option>
+                        <option value="in_stock">In Stock</option>
+                        <option value="out_of_stock">Out of Stock</option>
+                        <option value="featured">Featured Best Seller</option>
                     </select>
 
                     <div class="flex items-center gap-1.5 text-xs font-bold text-gray-500 shrink-0">
@@ -132,7 +124,7 @@
                         ? 'bg-green-950 text-white font-black shadow-xs ring-1 ring-green-900'
                         : 'bg-gray-50 hover:bg-gray-100 text-gray-700 font-bold border border-gray-200'"
                     class="px-3.5 py-1.5 rounded-xl text-xs flex items-center gap-1.5 transition shrink-0 cursor-pointer">
-                    <span>🗂️ All</span>
+                    <span>All</span>
                     <span class="text-[10px] px-2 py-0.5 rounded-full"
                         :class="activeCategory === 'all' ? 'bg-amber-400 text-gray-950 font-black' : 'bg-gray-200/80 text-gray-700'">
                         {{ $groupedProducts->count() }}
@@ -172,31 +164,31 @@
             <div class="flex items-center gap-2 flex-wrap text-xs font-bold">
                 <button type="button" @click="executeBulkAction('activate')"
                     class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-xl transition cursor-pointer">
-                    🟢 Make Live
+                    Make Live
                 </button>
                 <button type="button" @click="executeBulkAction('deactivate')"
                     class="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1.5 rounded-xl transition cursor-pointer">
-                    ⚪ Hide
+                    Hide
                 </button>
                 <button type="button" @click="executeBulkAction('mark_in_stock')"
                     class="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-xl transition cursor-pointer">
-                    📦 Mark In Stock
+                    Mark In Stock
                 </button>
                 <button type="button" @click="executeBulkAction('mark_out_of_stock')"
                     class="bg-amber-600 hover:bg-amber-500 text-white px-3 py-1.5 rounded-xl transition cursor-pointer">
-                    ⚠️ Out of Stock
+                    Out of Stock
                 </button>
                 <button type="button" @click="executeBulkAction('feature')"
                     class="bg-amber-400 hover:bg-amber-300 text-gray-950 font-black px-3 py-1.5 rounded-xl transition cursor-pointer">
-                    ★ Feature
+                    Feature
                 </button>
                 <button type="button" @click="executeBulkAction('delete')"
                     class="bg-rose-700 hover:bg-rose-600 text-white px-3 py-1.5 rounded-xl transition cursor-pointer">
-                    🗑️ Delete
+                    Delete
                 </button>
                 <button type="button" @click="selectedSlugs = []"
                     class="text-gray-400 hover:text-white px-2 py-1 transition cursor-pointer">
-                    Deselect All ✕
+                    Deselect All
                 </button>
             </div>
         </div>
@@ -261,7 +253,7 @@
                                     <div class="w-16 h-16 rounded-xl overflow-hidden bg-gradient-to-b from-stone-50 via-amber-50/10 to-stone-100/60 border border-gray-200 relative flex items-center justify-center p-1.5 shadow-2xs">
                                         @if(!$isDefault && $imgSrc)
                                             <img src="{{ $imgSrc }}" alt="{{ $p->product_name }}"
-                                                class="max-h-full max-w-full object-contain filter drop-shadow-[0_4px_6px_rgba(0,0,0,0.12)] transition transform hover:scale-110"
+                                                class="max-h-full max-w-full object-contain filter drop-shadow-[0_4px_6px_rgba(0,0,0,0.12)] transition transform "
                                                 onerror="this.onerror=null; this.src='{{ asset('images/products/default-product.webp') }}';"
                                                 loading="lazy">
                                             @if($totalGalleryCount > 0)
@@ -270,7 +262,7 @@
                                                 </span>
                                             @endif
                                         @else
-                                            <span class="text-2xl opacity-40">🥫</span>
+                                            <svg class="w-8 h-8 text-gray-400 opacity-60" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
                                         @endif
                                     </div>
                                 </td>
@@ -286,7 +278,6 @@
                                             <a href="{{ url('/products/' . $slug) }}" target="_blank"
                                                 class="text-gray-400 hover:text-green-800 text-[11px] font-bold inline-flex items-center gap-0.5"
                                                 title="View live product on customer storefront">
-                                                <span>👁️</span>
                                                 <span class="underline">View</span>
                                             </a>
                                         </div>
@@ -320,7 +311,7 @@
                                                         @click="openQuickEdit({{ $variant->id }}, '{{ addslashes($p->product_name) }}', '{{ addslashes($variant->size) }}', {{ $variant->price }}, {{ $variant->units_per_box ?: 12 }}, {{ (float) ($variant->mrp ?: $variant->price) }})"
                                                         class="text-gray-400 hover:text-green-700 ml-1 cursor-pointer text-xs"
                                                         title="Quick Edit Rates & Packaging">
-                                                        ✏️
+                                                        
                                                     </button>
                                                 </div>
                                             </div>
@@ -334,7 +325,7 @@
                                         @click="toggleStock({{ $p->id }}, '{{ $slug }}')"
                                         :id="'stock-btn-' + '{{ $slug }}'"
                                         class="text-xs font-black px-3 py-1.5 rounded-xl transition border cursor-pointer {{ $isInStock ? 'bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100' : 'bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100' }}">
-                                        {{ $isInStock ? '🟢 In Stock' : '🔴 Sold Out' }}
+                                        {{ $isInStock ? 'In Stock' : 'Sold Out' }}
                                     </button>
                                 </td>
 
@@ -344,7 +335,7 @@
                                         @click="toggleStatus({{ $p->id }}, '{{ $slug }}')"
                                         :id="'status-btn-' + '{{ $slug }}'"
                                         class="text-xs font-black px-3 py-1.5 rounded-xl transition border cursor-pointer {{ $isActive ? 'bg-green-50 text-green-900 border-green-200 hover:bg-green-100' : 'bg-gray-100 text-gray-500 border-gray-200 hover:bg-gray-200' }}">
-                                        {{ $isActive ? '🟢 Live' : '⚪ Hidden' }}
+                                        {{ $isActive ? 'Live' : 'Hidden' }}
                                     </button>
                                 </td>
 
@@ -355,7 +346,7 @@
                                         :id="'featured-btn-' + '{{ $slug }}'"
                                         class="text-xs font-black px-2.5 py-1.5 rounded-xl transition border cursor-pointer {{ $isFeatured ? 'bg-amber-50 text-amber-800 border-amber-300 hover:bg-amber-100' : 'bg-gray-50 text-gray-400 border-gray-200 hover:bg-gray-100' }}"
                                         title="Toggle Featured / Best Seller">
-                                        {{ $isFeatured ? '★ Best Seller' : '☆ Regular' }}
+                                        {{ $isFeatured ? 'Best Seller' : 'Regular' }}
                                     </button>
                                 </td>
 
@@ -374,7 +365,7 @@
                                                 class="bg-gray-100 hover:bg-blue-600 hover:text-white text-gray-700 font-bold text-xs px-2.5 py-1.5 rounded-lg border border-gray-200 transition cursor-pointer"
                                                 title="Duplicate product as new variant draft"
                                                 onclick="return confirm('Duplicate this product to create a new draft variant?')">
-                                                📋 Clone
+                                                Clone
                                             </button>
                                         </form>
 
@@ -385,7 +376,7 @@
                                             <button type="submit"
                                                 class="bg-gray-100 hover:bg-rose-700 hover:text-white text-gray-500 font-bold text-xs p-1.5 rounded-lg border border-gray-200 transition cursor-pointer"
                                                 title="Delete product">
-                                                🗑️
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                             </button>
                                         </form>
                                     </div>
@@ -659,11 +650,11 @@
                             if (btn && row) {
                                 if (data.is_active) {
                                     btn.className = 'text-xs font-black px-3 py-1.5 rounded-xl transition border cursor-pointer bg-green-50 text-green-900 border-green-200 hover:bg-green-100';
-                                    btn.innerText = '🟢 Live';
+                                    btn.innerText = 'Live';
                                     row.setAttribute('data-is-active', '1');
                                 } else {
                                     btn.className = 'text-xs font-black px-3 py-1.5 rounded-xl transition border cursor-pointer bg-gray-100 text-gray-500 border-gray-200 hover:bg-gray-200';
-                                    btn.innerText = '⚪ Hidden';
+                                    btn.innerText = 'Hidden';
                                     row.setAttribute('data-is-active', '0');
                                 }
                             }
@@ -691,11 +682,11 @@
                             if (btn && row) {
                                 if (data.in_stock) {
                                     btn.className = 'text-xs font-black px-3 py-1.5 rounded-xl transition border cursor-pointer bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100';
-                                    btn.innerText = '🟢 In Stock';
+                                    btn.innerText = 'In Stock';
                                     row.setAttribute('data-in-stock', '1');
                                 } else {
                                     btn.className = 'text-xs font-black px-3 py-1.5 rounded-xl transition border cursor-pointer bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100';
-                                    btn.innerText = '🔴 Sold Out';
+                                    btn.innerText = 'Sold Out';
                                     row.setAttribute('data-in-stock', '0');
                                 }
                             }
@@ -723,11 +714,11 @@
                             if (btn && row) {
                                 if (data.is_featured) {
                                     btn.className = 'text-xs font-black px-2.5 py-1.5 rounded-xl transition border cursor-pointer bg-amber-50 text-amber-800 border-amber-300 hover:bg-amber-100';
-                                    btn.innerText = '★ Best Seller';
+                                    btn.innerText = 'Best Seller';
                                     row.setAttribute('data-is-featured', '1');
                                 } else {
                                     btn.className = 'text-xs font-black px-2.5 py-1.5 rounded-xl transition border cursor-pointer bg-gray-50 text-gray-400 border-gray-200 hover:bg-gray-100';
-                                    btn.innerText = '☆ Regular';
+                                    btn.innerText = 'Regular';
                                     row.setAttribute('data-is-featured', '0');
                                 }
                             }

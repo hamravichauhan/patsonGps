@@ -141,8 +141,12 @@
         <!-- ==================== MISSION / VISION / COMMITMENT ==================== -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
 
-            <div class="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm space-y-2">
-                <span class="text-2xl block">🎯</span>
+            <div class="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm space-y-3">
+                <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-900 border border-emerald-100 flex items-center justify-center">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                </div>
                 <h3 class="text-sm font-black text-gray-900">What We're Trying To Do</h3>
                 <p class="text-xs text-gray-600 leading-relaxed">
                     Make fruit products the honest way — good for you, good for the farmers we buy from, and good
@@ -150,8 +154,12 @@
                 </p>
             </div>
 
-            <div class="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm space-y-2">
-                <span class="text-2xl block">🌏</span>
+            <div class="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm space-y-3">
+                <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-900 border border-emerald-100 flex items-center justify-center">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
                 <h3 class="text-sm font-black text-gray-900">Where We're Headed</h3>
                 <p class="text-xs text-gray-600 leading-relaxed">
                     To be the name people think of when they want real Goan kokum, real cashew jam, real fruit —
@@ -159,8 +167,12 @@
                 </p>
             </div>
 
-            <div class="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm space-y-2">
-                <span class="text-2xl block">✅</span>
+            <div class="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm space-y-3">
+                <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-900 border border-emerald-100 flex items-center justify-center">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                    </svg>
+                </div>
                 <h3 class="text-sm font-black text-gray-900">Our Promise to You</h3>
                 <p class="text-xs text-gray-600 leading-relaxed">
                     Every batch is checked before it leaves the factory. If it's not good enough for us to keep in our
@@ -181,32 +193,32 @@
             </div>
 
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
-                <div class="flex items-center gap-2 bg-stone-50 rounded-xl px-3 py-2.5 border border-stone-200/60">
-                    <span class="text-base">🍹</span><span class="font-bold text-gray-800">Fruit Pulps</span>
+                <div class="flex items-center gap-2.5 bg-stone-50 rounded-xl px-3.5 py-2.5 border border-stone-200/60">
+                    <span class="w-2 h-2 rounded-full bg-emerald-600 shrink-0"></span><span class="font-bold text-gray-800">Fruit Pulps</span>
                 </div>
-                <div class="flex items-center gap-2 bg-stone-50 rounded-xl px-3 py-2.5 border border-stone-200/60">
-                    <span class="text-base">🍧</span><span class="font-bold text-gray-800">Fruit Crushes</span>
+                <div class="flex items-center gap-2.5 bg-stone-50 rounded-xl px-3.5 py-2.5 border border-stone-200/60">
+                    <span class="w-2 h-2 rounded-full bg-emerald-600 shrink-0"></span><span class="font-bold text-gray-800">Fruit Crushes</span>
                 </div>
-                <div class="flex items-center gap-2 bg-stone-50 rounded-xl px-3 py-2.5 border border-stone-200/60">
-                    <span class="text-base">🥤</span><span class="font-bold text-gray-800">Fruit Syrups</span>
+                <div class="flex items-center gap-2.5 bg-stone-50 rounded-xl px-3.5 py-2.5 border border-stone-200/60">
+                    <span class="w-2 h-2 rounded-full bg-emerald-600 shrink-0"></span><span class="font-bold text-gray-800">Fruit Syrups</span>
                 </div>
-                <div class="flex items-center gap-2 bg-stone-50 rounded-xl px-3 py-2.5 border border-stone-200/60">
-                    <span class="text-base">🧃</span><span class="font-bold text-gray-800">Fruit Juices</span>
+                <div class="flex items-center gap-2.5 bg-stone-50 rounded-xl px-3.5 py-2.5 border border-stone-200/60">
+                    <span class="w-2 h-2 rounded-full bg-emerald-600 shrink-0"></span><span class="font-bold text-gray-800">Fruit Juices</span>
                 </div>
-                <div class="flex items-center gap-2 bg-stone-50 rounded-xl px-3 py-2.5 border border-stone-200/60">
-                    <span class="text-base">🍯</span><span class="font-bold text-gray-800">Jams</span>
+                <div class="flex items-center gap-2.5 bg-stone-50 rounded-xl px-3.5 py-2.5 border border-stone-200/60">
+                    <span class="w-2 h-2 rounded-full bg-emerald-600 shrink-0"></span><span class="font-bold text-gray-800">Jams</span>
                 </div>
-                <div class="flex items-center gap-2 bg-stone-50 rounded-xl px-3 py-2.5 border border-stone-200/60">
-                    <span class="text-base">🍊</span><span class="font-bold text-gray-800">Marmalades</span>
+                <div class="flex items-center gap-2.5 bg-stone-50 rounded-xl px-3.5 py-2.5 border border-stone-200/60">
+                    <span class="w-2 h-2 rounded-full bg-emerald-600 shrink-0"></span><span class="font-bold text-gray-800">Marmalades</span>
                 </div>
-                <div class="flex items-center gap-2 bg-stone-50 rounded-xl px-3 py-2.5 border border-stone-200/60">
-                    <span class="text-base">🍬</span><span class="font-bold text-gray-800">Cube Jelly Sweets</span>
+                <div class="flex items-center gap-2.5 bg-stone-50 rounded-xl px-3.5 py-2.5 border border-stone-200/60">
+                    <span class="w-2 h-2 rounded-full bg-emerald-600 shrink-0"></span><span class="font-bold text-gray-800">Cube Jelly Sweets</span>
                 </div>
-                <div class="flex items-center gap-2 bg-stone-50 rounded-xl px-3 py-2.5 border border-stone-200/60">
-                    <span class="text-base">🥥</span><span class="font-bold text-gray-800">Dry Kokum</span>
+                <div class="flex items-center gap-2.5 bg-stone-50 rounded-xl px-3.5 py-2.5 border border-stone-200/60">
+                    <span class="w-2 h-2 rounded-full bg-emerald-600 shrink-0"></span><span class="font-bold text-gray-800">Dry Kokum</span>
                 </div>
-                <div class="flex items-center gap-2 bg-stone-50 rounded-xl px-3 py-2.5 border border-stone-200/60">
-                    <span class="text-base">✨</span><span class="font-bold text-gray-800">And More…</span>
+                <div class="flex items-center gap-2.5 bg-stone-50 rounded-xl px-3.5 py-2.5 border border-stone-200/60">
+                    <span class="w-2 h-2 rounded-full bg-amber-500 shrink-0"></span><span class="font-bold text-gray-800">And More…</span>
                 </div>
             </div>
         </div>

@@ -10,8 +10,10 @@
             <div
                 class="max-w-md mx-auto bg-white rounded-3xl p-6 sm:p-8 border border-stone-200 shadow-xl text-center space-y-6">
                 <div
-                    class="w-14 h-14 bg-green-50 text-green-900 border border-green-200 rounded-2xl flex items-center justify-center mx-auto text-2xl">
-                    📦
+                    class="w-14 h-14 bg-green-50 text-green-900 border border-green-200 rounded-2xl flex items-center justify-center mx-auto shadow-2xs">
+                    <svg class="w-7 h-7 text-emerald-800" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                    </svg>
                 </div>
 
                 <div class="space-y-1">
@@ -37,7 +39,7 @@
 
                     <button type="button" @click="sendOtp()" :disabled="isLoading"
                         class="w-full bg-green-900 hover:bg-green-800 active:scale-98 text-white font-black text-xs py-3.5 px-4 rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50">
-                        <span x-show="!isLoading">📲 Send WhatsApp OTP</span>
+                        <span x-show="!isLoading">Send WhatsApp OTP</span>
                         <span x-show="isLoading" x-cloak>Sending Code...</span>
                     </button>
                 </div>
@@ -59,7 +61,7 @@
 
                     <button type="button" @click="verifyOtp()" :disabled="isLoading"
                         class="w-full bg-amber-400 hover:bg-amber-300 active:scale-98 text-stone-950 font-black text-xs py-3.5 px-4 rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50">
-                        <span x-show="!isLoading">✓ Verify & View Orders</span>
+                        <span x-show="!isLoading">Verify & View Orders</span>
                         <span x-show="isLoading" x-cloak>Verifying...</span>
                     </button>
 
@@ -113,7 +115,11 @@
                 <!-- Orders List -->
                 @if($orders->isEmpty())
                     <div class="bg-white rounded-3xl p-12 text-center border border-stone-200 space-y-3">
-                        <span class="text-4xl block">🍃</span>
+                        <div class="w-12 h-12 rounded-2xl bg-stone-100 text-stone-500 mx-auto flex items-center justify-center">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                            </svg>
+                        </div>
                         <h3 class="text-base font-black text-stone-900">No Orders Found</h3>
                         <p class="text-xs text-stone-500 max-w-sm mx-auto">No orders have been submitted yet under this phone
                             number.</p>
@@ -144,11 +150,11 @@
                                     <div>
                                         @if($order->status === 'approved' || $order->status === 'completed')
                                             <span class="bg-green-100 text-green-900 text-xs font-black px-3 py-1 rounded-full">
-                                                ✓ {{ ucfirst($order->status) }}
+                                                {{ ucfirst($order->status) }}
                                             </span>
                                         @elseif($order->status === 'pending')
                                             <span class="bg-amber-100 text-amber-950 text-xs font-black px-3 py-1 rounded-full">
-                                                ⏳ Processing / Review
+                                                Processing / Review
                                             </span>
                                         @else
                                             <span class="bg-stone-100 text-stone-700 text-xs font-black px-3 py-1 rounded-full">
@@ -189,7 +195,7 @@
                                     <div class="flex items-center gap-2 w-full sm:w-auto">
                                         <button type="button" @click="reorder('{{ $order->order_number }}')"
                                             class="w-full sm:w-auto bg-green-900 hover:bg-green-800 active:scale-95 text-white font-black text-xs px-4 py-2.5 rounded-xl shadow-xs transition flex items-center justify-center gap-1.5 cursor-pointer">
-                                            <span>🔄 Reorder Items</span>
+                                            <span>Reorder Items</span>
                                         </button>
                                     </div>
                                 </div>

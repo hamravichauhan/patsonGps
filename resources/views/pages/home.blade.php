@@ -90,7 +90,7 @@
                     fetchpriority="high"
                     decoding="async"
                     onerror="this.onerror=null; this.src='{{ asset('images/products/default-product.webp') }}';"
-                    class="absolute inset-0 w-full h-full object-cover object-center scale-110 transition-transform duration-700 pointer-events-none select-none z-0">
+                    class="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-500 pointer-events-none select-none z-0">
 
                 <!-- Subtle Dark Tint for Text Readability -->
                 <div class="absolute inset-0 bg-gradient-to-r from-black/85 via-black/50 to-transparent z-1"></div>
@@ -99,7 +99,7 @@
                 <div class="relative z-10 max-w-2xl p-6 sm:p-10 lg:p-14 space-y-4 sm:space-y-6 text-left">
                     <div
                         class="inline-flex items-center gap-2 bg-white/15 backdrop-blur-md border border-white/25 px-3.5 py-1 rounded-full text-white text-[11px] font-bold tracking-wide">
-                        <span>🌴 Est. 1990 • Dev Can Fruit Products, Morjim Goa</span>
+                        <span>Est. 1990 • Dev Can Fruit Products, Morjim Goa</span>
                     </div>
 
                     <h1
@@ -117,13 +117,13 @@
                     <div class="pt-2 flex flex-wrap items-center gap-3">
                         <a href="{{ route('shop') }}"
                             class="bg-amber-400 hover:bg-amber-300 active:scale-95 text-stone-950 font-black px-7 py-3.5 rounded-2xl text-xs sm:text-sm shadow-lg transition-all flex items-center gap-2">
-                            <span>📦 Explore Wholesale Catalog</span>
+                            <span>Explore Catalog</span>
                             <span>→</span>
                         </a>
                         <a href="https://wa.me/{{ $adminWa }}?text=Hello%20PatSons%20Goa!%20I%20would%20like%20to%20inquire%20about%20your%20wholesale%20box%20pricing."
                             target="_blank"
                             class="bg-white/20 hover:bg-white/30 active:scale-95 text-white border border-white/30 font-black px-6 py-3.5 rounded-2xl text-xs sm:text-sm transition-all flex items-center gap-2 backdrop-blur-md">
-                            <span>💬 WhatsApp Inquiries</span>
+                            <span>WhatsApp Inquiries</span>
                         </a>
                     </div>
                 </div>
@@ -137,7 +137,7 @@
             <div class="text-center max-w-xl mx-auto mb-8">
                 <span
                     class="text-[11px] font-extrabold text-green-900 uppercase tracking-widest bg-green-50 px-3.5 py-1 rounded-full">
-                    Wholesale Catalog
+                    Product Categories
                 </span>
                 <h2 class="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight mt-2">
                     Browse By Category
@@ -146,21 +146,48 @@
 
             @php
                 $categories = [
-                    ['name' => 'Kokum & Agal', 'icon' => '🥥', 'desc' => 'Pure Extracts', 'slug' => 'Kokum & Agal'],
-                    ['name' => 'Cashew Jams', 'icon' => '🍯', 'desc' => 'Nutty Spreads', 'slug' => 'Cashew & Fruit Jams'],
-                    ['name' => 'Squashes & Juices', 'icon' => '🍹', 'desc' => 'Amla, Jamun & Fruit', 'slug' => 'Squashes & Juices'],
-                    ['name' => 'Syrups & Crushes', 'icon' => '🍧', 'desc' => 'Mocktails & Coolers', 'slug' => 'Syrups & Crushes'],
-                    ['name' => 'Dry Fruits & Honey', 'icon' => '🥜', 'desc' => 'Gourmet Wellness', 'slug' => 'Dry Fruits & Honey'],
+                    [
+                        'name' => 'Kokum & Agal',
+                        'desc' => 'Pure Extracts',
+                        'slug' => 'Kokum & Agal',
+                        'icon_path' => 'M12 21.5c4.142 0 7.5-3.358 7.5-7.5 0-4.142-7.5-12-7.5-12S4.5 9.858 4.5 14c0 4.142 3.358 7.5 7.5 7.5z'
+                    ],
+                    [
+                        'name' => 'Cashew Jams',
+                        'desc' => 'Nutty Spreads',
+                        'slug' => 'Cashew & Fruit Jams',
+                        'icon_path' => 'M7 3h10M6 6h12a2 2 0 012 2v11a3 3 0 01-3 3H7a3 3 0 01-3-3V8a2 2 0 012-2zm0 5h12'
+                    ],
+                    [
+                        'name' => 'Squashes & Juices',
+                        'desc' => 'Amla, Jamun & Fruit',
+                        'slug' => 'Squashes & Juices',
+                        'icon_path' => 'M9 3h6m-4 0v4m-2 0h6l2 4v10a2 2 0 01-2 2H9a2 2 0 01-2-2V11l2-4z'
+                    ],
+                    [
+                        'name' => 'Syrups & Crushes',
+                        'desc' => 'Mocktails & Coolers',
+                        'slug' => 'Syrups & Crushes',
+                        'icon_path' => 'M19.5 5.5l-6.5 6.5v7h4m-4 0H7m4-7L4.5 5.5h15z'
+                    ],
+                    [
+                        'name' => 'Dry Fruits & Honey',
+                        'desc' => 'Gourmet Wellness',
+                        'slug' => 'Dry Fruits & Honey',
+                        'icon_path' => 'M12 3v18m0-18C7.5 3 4 6.5 4 11c0 5.5 8 10 8 10s8-4.5 8-10c0-4.5-3.5-8-8-8z'
+                    ],
                 ];
             @endphp
 
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
                 @foreach($categories as $category)
                     <a href="{{ route('shop', ['category' => $category['slug']]) }}"
-                        class="group bg-white hover:bg-green-50/40 border border-gray-200 hover:border-green-300 p-5 rounded-2xl text-center shadow-xs hover:shadow-md transition-all flex flex-col justify-between items-center">
-                        <span class="text-3xl sm:text-4xl block mb-2 group-hover:scale-110 transition-transform duration-300">
-                            {{ $category['icon'] }}
-                        </span>
+                        class="group bg-white hover:bg-emerald-50/30 border border-gray-200 hover:border-emerald-300 p-5 rounded-2xl text-center shadow-2xs hover:shadow-sm transition-all flex flex-col justify-between items-center">
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-900 border border-emerald-100 flex items-center justify-center mb-3 group-hover:bg-green-900 group-hover:text-white transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="{{ $category['icon_path'] }}"/>
+                            </svg>
+                        </div>
                         <div>
                             <h3
                                 class="font-black text-xs sm:text-sm text-gray-900 group-hover:text-green-900 transition-colors leading-tight">
@@ -236,7 +263,7 @@
                                         loading="lazy">
                                     <span
                                         class="absolute top-2 left-2 bg-emerald-900/80 backdrop-blur-md text-white text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md">
-                                        📦 Box Pack
+                                        Carton Pack
                                     </span>
                                 </div>
                             </a>
@@ -294,7 +321,6 @@
                                 <button type="button"
                                     @click="$dispatch('add-to-cart', { id: selectedId, name: '{{ addslashes($primary->product_name) }}', price: boxPrice, size: selectedSize + ' (Box of ' + selectedUnitsPerBox + ')', image: selectedImage })"
                                     class="flex-1 bg-green-900 hover:bg-green-800 text-white font-black text-xs py-2.5 px-3 rounded-xl shadow-xs transition active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer">
-                                    <span>🛍️</span>
                                     <span>+ Add Box</span>
                                 </button>
                                 <a :href="'https://wa.me/{{ $adminWa }}?text=' + encodeURIComponent('Hello PatSons! I want to inquire about wholesale box of: {{ addslashes($primary->product_name) }} (' + selectedSize + ', Box of ' + selectedUnitsPerBox + ') - ₹' + boxPrice.toFixed(2))"
@@ -302,7 +328,6 @@
                                     rel="noopener noreferrer"
                                     class="bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-800 font-black text-xs py-2.5 px-3 rounded-xl transition active:scale-95 flex items-center justify-center gap-1 cursor-pointer"
                                     title="WhatsApp Quote">
-                                    <span>💬</span>
                                     <span class="hidden sm:inline">Quote</span>
                                 </a>
                             </div>

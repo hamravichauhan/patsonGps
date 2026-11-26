@@ -295,14 +295,16 @@
     <div class="bg-green-950 text-white text-[11px] py-2 px-4 border-b border-green-900">
         <div class="max-w-7xl mx-auto flex items-center justify-between gap-2">
             <div class="flex items-center gap-2">
-                <span class="inline-block w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
-                <span class="font-bold text-amber-200">🌴 Dev Can Fruit Products • Morjim, Pernem - Goa</span>
+                <span class="inline-block w-2 h-2 rounded-full bg-amber-400"></span>
+                <span class="font-bold text-amber-200">Dev Can Fruit Products • Morjim, Pernem - Goa</span>
             </div>
 
             <div class="flex items-center gap-3 font-bold text-green-200">
                 <!-- Multi-Language Switcher (EN, Konkani, Marathi, Hindi) -->
                 <div class="flex items-center gap-1.5 text-[10px] bg-green-900/80 px-2.5 py-1 rounded-full border border-green-800">
-                    <span class="text-amber-300">🌐</span>
+                    <svg class="w-3.5 h-3.5 text-amber-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 12a9 9 0 1018 0 9 9 0 00-18 0zm0 0h18M12 3a15.3 15.3 0 014 9 15.3 15.3 0 01-4 9m0-18a15.3 15.3 0 00-4 9 15.3 15.3 0 004 9"/>
+                    </svg>
                     <a href="{{ route('lang.switch', 'en') }}" class="{{ app()->getLocale() === 'en' ? 'text-amber-300 font-black underline' : 'text-green-200 hover:text-white' }}" title="English">EN</a>
                     <span class="text-green-700">|</span>
                     <a href="{{ route('lang.switch', 'gom') }}" class="{{ app()->getLocale() === 'gom' ? 'text-amber-300 font-black underline' : 'text-green-200 hover:text-white' }}" title="Konkani">कोंकणी</a>
@@ -314,7 +316,7 @@
 
                 <a href="https://wa.me/{{ $adminPhone }}" target="_blank" rel="noopener noreferrer"
                     class="hidden sm:flex hover:text-white transition items-center gap-1">
-                    <span>💬 {{ __('Inquiries') }}:</span>
+                    <span>{{ __('Inquiries') }}:</span>
                     <span class="text-white font-mono">+{{ $adminPhone }}</span>
                 </a>
             </div>
@@ -364,7 +366,6 @@
                     {{-- Commented out Quotation Cart button for view-only catalog display
                     <button type="button" x-on:click="cartOpen = true"
                         class="hidden sm:inline-flex items-center gap-2 bg-green-900 hover:bg-green-800 text-white text-xs font-black px-4 py-2.5 rounded-2xl shadow-xs transition active:scale-95 cursor-pointer">
-                        <span>🛍️</span>
                         <span>{{ __('Quotation Cart') }}</span>
                         <span class="bg-amber-400 text-gray-950 text-[10px] font-black px-1.5 py-0.2 rounded-full"
                             x-text="cartTotalCount">0</span>
@@ -372,7 +373,7 @@
                     --}}
                     <a href="{{ route('contact') }}"
                         class="hidden sm:inline-flex items-center gap-1.5 bg-green-900 hover:bg-green-800 text-white text-xs font-black px-4 py-2.5 rounded-2xl shadow-xs transition active:scale-95">
-                        <span>📞</span>
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
                         <span>{{ __('Inquire Now') }}</span>
                     </a>
 
@@ -396,19 +397,19 @@
             class="md:hidden bg-white border-b border-gray-200 px-5 py-4 space-y-3 shadow-lg">
             <a href="{{ route('home') }}" x-on:click="mobileMenuOpen = false"
                 class="flex items-center justify-between py-2.5 text-xs font-black uppercase text-gray-800 border-b border-gray-100">
-                <span>🏡 Home</span><span>→</span>
+                <span>Home</span><span>→</span>
             </a>
             <a href="{{ route('shop') }}" x-on:click="mobileMenuOpen = false"
                 class="flex items-center justify-between py-2.5 text-xs font-black uppercase text-green-900 border-b border-gray-100">
-                <span>🛒 Product Catalog</span><span>→</span>
+                <span>Product Catalog</span><span>→</span>
             </a>
             <a href="{{ route('about') }}" x-on:click="mobileMenuOpen = false"
                 class="flex items-center justify-between py-2.5 text-xs font-black uppercase text-gray-800 border-b border-gray-100">
-                <span>📜 Morjim Factory Heritage</span><span>→</span>
+                <span>Morjim Factory Heritage</span><span>→</span>
             </a>
             <a href="{{ route('contact') }}" x-on:click="mobileMenuOpen = false"
                 class="flex items-center justify-between py-2.5 text-xs font-black uppercase text-gray-800">
-                <span>📞 Contact Us</span><span>→</span>
+                <span>Contact Us</span><span>→</span>
             </a>
         </div>
     </header>
@@ -422,31 +423,30 @@
         class="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-gray-200 px-4 py-2 flex items-center justify-around shadow-2xl safe-area-inset-bottom">
         <a href="{{ route('home') }}"
             class="flex flex-col items-center gap-0.5 text-[10px] font-black {{ request()->routeIs('home') ? 'text-green-900' : 'text-gray-500' }}">
-            <span class="text-lg">🏡</span>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
             <span>Home</span>
         </a>
         <a href="{{ route('shop') }}"
             class="flex flex-col items-center gap-0.5 text-[10px] font-black {{ request()->routeIs('shop') || request()->routeIs('catalog.*') ? 'text-green-900' : 'text-gray-500' }}">
-            <span class="text-lg">🛒</span>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
             <span>Shop</span>
         </a>
         <a href="https://wa.me/{{ $adminPhone }}?text=Hello%20PatSons!%20I%20have%20an%20inquiry." target="_blank"
             rel="noopener noreferrer"
             class="flex flex-col items-center gap-0.5 text-[10px] font-black text-emerald-700">
-            <span class="text-lg">💬</span>
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766 0-3.18-2.586-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.311.045-.698.077-2.222-.556-1.946-.807-3.21-2.778-3.308-2.909-.098-.131-.796-1.06-.796-2.023 0-.962.502-1.437.681-1.634.179-.197.391-.247.521-.247.13 0 .26.002.373.007.12.006.279-.046.435.328.16.386.551 1.344.6 1.442.049.098.082.213.016.344-.065.131-.098.213-.196.328-.098.115-.207.257-.295.345-.098.098-.201.205-.087.401.114.197.508.838 1.09 1.356.75.668 1.383.875 1.579.973.196.098.311.082.426-.049.115-.131.491-.573.622-.77.13-.197.261-.164.441-.098.18.066 1.144.54 1.34.638.196.098.327.147.376.23.049.082.049.475-.095.88z"/></svg>
             <span>WhatsApp</span>
         </a>
 
         <a href="{{ route('about') }}"
             class="flex flex-col items-center gap-0.5 text-[10px] font-black {{ request()->routeIs('about') ? 'text-green-900' : 'text-gray-500' }}">
-            <span class="text-lg">🏭</span>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
             <span>Factory</span>
         </a>
 
         {{-- Commented out Cart button for view-only catalog display
         <button type="button" x-on:click="cartOpen = true"
             class="flex flex-col items-center gap-0.5 text-[10px] font-black text-green-900 relative cursor-pointer">
-            <span class="text-lg">🛍️</span>
             <span>{{ __('Cart') }}</span>
             <span
                 class="absolute -top-1 right-1 bg-amber-400 text-gray-950 text-[9px] font-black px-1.5 py-0.2 rounded-full"
@@ -495,7 +495,11 @@
                 <div class="flex-1 overflow-y-auto p-4 sm:p-5 space-y-3">
                     <template x-if="cartItems.length === 0">
                         <div class="py-16 text-center space-y-3">
-                            <span class="text-5xl block animate-bounce">🍃</span>
+                            <div class="w-14 h-14 bg-emerald-50 text-emerald-800 rounded-2xl flex items-center justify-center mx-auto border border-emerald-100">
+                                <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                                </svg>
+                            </div>
                             <h3 class="text-sm font-black text-gray-800">{{ __('Your quotation cart is empty') }}</h3>
                             <p class="text-xs font-bold text-gray-400 max-w-xs mx-auto">Add wholesale boxes of authentic Goan Kokum Agal, Cashew Jam, or Syrups.</p>
                             <a href="{{ route('shop') }}" x-on:click="cartOpen = false"
@@ -543,7 +547,7 @@
                     <!-- 1-Click WhatsApp Direct Quote Button -->
                     <button type="button" x-on:click="openWhatsAppQuotation()"
                         class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs py-3.5 px-4 rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer active:scale-95">
-                        <span class="text-base">💬</span>
+                        <svg class="w-4 h-4 fill-currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766 0-3.18-2.586-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.311.045-.698.077-2.222-.556-1.946-.807-3.21-2.778-3.308-2.909-.098-.131-.796-1.06-.796-2.023 0-.962.502-1.437.681-1.634.179-.197.391-.247.521-.247.13 0 .26.002.373.007.12.006.279-.046.435.328.16.386.551 1.344.6 1.442.049.098.082.213.016.344-.065.131-.098.213-.196.328-.098.115-.207.257-.295.345-.098.098-.201.205-.087.401.114.197.508.838 1.09 1.356.75.668 1.383.875 1.579.973.196.098.311.082.426-.049.115-.131.491-.573.622-.77.13-.197.261-.164.441-.098.18.066 1.144.54 1.34.638.196.098.327.147.376.23.049.082.049.475-.095.88z"/></svg>
                         <span>{{ __('Instant 1-Click WhatsApp Quote') }}</span>
                     </button>
 
@@ -568,7 +572,7 @@
                             </div>
                             <button type="button" x-on:click="requestOtp()" :disabled="isSubmitting"
                                 class="w-full bg-green-900 hover:bg-green-800 text-white font-black text-xs py-2.5 px-4 rounded-xl shadow-xs transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50">
-                                <span x-show="!isSubmitting">📲 Send Verification Code</span>
+                                <span x-show="!isSubmitting">Send Verification Code</span>
                                 <span x-show="isSubmitting" x-cloak>Sending Code...</span>
                             </button>
                         </div>
@@ -588,7 +592,7 @@
                             </div>
                             <button type="button" x-on:click="verifyOtpCode()" :disabled="isSubmitting"
                                 class="w-full bg-green-900 hover:bg-green-800 text-white font-black text-xs py-2.5 px-4 rounded-xl shadow-xs transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50">
-                                <span x-show="!isSubmitting">✓ Verify & Continue</span>
+                                <span x-show="!isSubmitting">Verify & Continue</span>
                                 <span x-show="isSubmitting" x-cloak>Verifying...</span>
                             </button>
                             <button type="button" x-on:click="step = 'phone'; otpCode = ''"
@@ -602,7 +606,7 @@
                     <template x-if="step === 'details'">
                         <div class="space-y-2">
                             <div class="bg-blue-50 border border-blue-200 p-2 rounded-xl text-center">
-                                <span class="text-[11px] text-blue-900 font-bold">✓ Verified: +91 <span x-text="customerPhone"></span></span>
+                                <span class="text-[11px] text-blue-900 font-bold">Verified: +91 <span x-text="customerPhone"></span></span>
                             </div>
                             <div>
                                 <label class="block text-[10px] font-black text-gray-600 uppercase mb-1">Full Name *</label>
@@ -617,7 +621,7 @@
                             </div>
                             <button type="button" x-on:click="submitFinalOrder()" :disabled="isSubmitting"
                                 class="w-full bg-amber-400 hover:bg-amber-300 text-gray-950 font-black text-xs py-3 px-4 rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50">
-                                <span x-show="!isSubmitting">🚀 Place Factory Order →</span>
+                                <span x-show="!isSubmitting">Place Factory Order →</span>
                                 <span x-show="isSubmitting" x-cloak>Placing Order...</span>
                             </button>
                         </div>
@@ -639,8 +643,8 @@
             x-on:click.away="orderSuccessModal = false">
 
             <div
-                class="w-16 h-16 bg-emerald-100 text-emerald-800 rounded-full flex items-center justify-center mx-auto text-3xl animate-bounce">
-                ✓
+                class="w-16 h-16 bg-emerald-100 text-emerald-800 rounded-full flex items-center justify-center mx-auto">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
             </div>
 
             <div class="space-y-1.5">
@@ -653,7 +657,9 @@
 
             <div class="bg-emerald-50 rounded-2xl p-4 border border-emerald-100 text-left space-y-2">
                 <div class="flex items-center gap-2 text-emerald-900 text-xs font-black">
-                    <span>💬</span>
+                    <svg class="w-4 h-4 text-emerald-800" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.698c.969.587 1.961.948 3.01.948h.005c3.182 0 5.768-2.586 5.769-5.766 0-1.542-.6-2.991-1.69-4.08-1.089-1.089-2.539-1.688-4.081-1.688zm0-2c4.288 0 7.768 3.48 7.769 7.766 0 2.078-.809 4.032-2.278 5.502-1.47 1.47-3.424 2.279-5.503 2.279-1.284 0-2.535-.342-3.633-.99l-5.386 1.411 1.436-5.247c-.718-1.155-1.097-2.486-1.096-3.856.002-4.286 3.482-7.766 7.768-7.766z"/>
+                    </svg>
                     <span>WhatsApp Notification Sent</span>
                 </div>
                 <p class="text-[11px] text-emerald-800 leading-relaxed font-medium">
@@ -665,7 +671,7 @@
             <div class="flex flex-col gap-2 pt-2">
                 <a :href="placedRedirectUrl"
                     class="w-full bg-green-900 hover:bg-green-800 text-white font-black text-xs py-3 px-4 rounded-xl transition shadow-xs flex items-center justify-center gap-2">
-                    <span>🔍 Track Order Status</span>
+                    <span>Track Order Status</span>
                 </a>
                 <button type="button" x-on:click="orderSuccessModal = false; cartOpen = false"
                     class="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold text-xs py-3 px-4 rounded-xl transition cursor-pointer">
@@ -780,7 +786,7 @@
                         return;
                     }
                     let lines = [
-                        "🌴 *QUOTATION INQUIRY - PATSONS FOODS GOA*",
+                        "*QUOTATION INQUIRY - PATSONS FOODS GOA*",
                         "Dev Can Fruit Products, Morjim, Goa",
                         "━━━━━━━━━━━━━━━━━━━━"
                     ];
@@ -792,7 +798,7 @@
                         lines.push(`  Qty: ${qty} | Unit: ₹${pr.toFixed(2)} | Subtotal: ₹${sub.toFixed(2)}`);
                     });
                     lines.push("━━━━━━━━━━━━━━━━━━━━");
-                    lines.push(`💰 *Total Est. Amount:* ₹${this.cartTotalAmount.toFixed(2)}`);
+                    lines.push(`*Total Est. Amount:* ₹${this.cartTotalAmount.toFixed(2)}`);
                     lines.push("");
                     lines.push("Please provide the wholesale/trade quote and delivery availability.");
 

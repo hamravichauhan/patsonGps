@@ -47,7 +47,7 @@
             <div class="flex items-center gap-2">
                 <a href="{{ url('/product/' . $product->slug) }}" target="_blank" rel="noopener noreferrer"
                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 text-xs font-bold transition shadow-2xs">
-                    <span>👁 View in Storefront</span>
+                    <span>View in Storefront</span>
                     <span class="text-[10px]">↗</span>
                 </a>
             </div>
@@ -77,7 +77,7 @@
 
     @if(session('success'))
         <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold p-3.5 rounded-2xl flex items-center justify-between">
-            <span>✓ {{ session('success') }}</span>
+            <span>{{ session('success') }}</span>
             <button onclick="this.parentElement.remove()" class="text-emerald-700 font-bold">&times;</button>
         </div>
     @endif
@@ -89,7 +89,7 @@
         <!-- Product Base Info -->
         <div id="basic-info" class="scroll-mt-24 space-y-5">
             <div class="flex items-center gap-2 pb-2 border-b border-gray-100">
-                <span class="text-base">📝</span>
+                
                 <h3 class="text-xs font-black text-gray-900 uppercase tracking-wider">General Information</h3>
             </div>
 
@@ -122,7 +122,7 @@
         <div id="variants" class="scroll-mt-24 space-y-4">
             <div class="flex items-center justify-between pb-2 border-b border-gray-100">
                 <div class="flex items-center gap-2">
-                    <span class="text-base">📦</span>
+                    
                     <div>
                         <h3 class="text-xs font-black text-gray-900 uppercase tracking-wider">Wholesale Box & Pack Sizes</h3>
                         <p class="text-[11px] text-gray-500">Specify single unit price and number of units per carton to calculate wholesale box prices automatically.</p>
@@ -184,7 +184,7 @@
                         <!-- Remove Row -->
                         <div class="pt-2 sm:pt-4">
                             <button type="button" @click="variants.splice(index, 1)" x-show="variants.length > 1" class="text-red-500 hover:text-red-700 text-xs font-bold p-1 cursor-pointer" title="Remove Variant">
-                                ✕
+                                &times;
                             </button>
                         </div>
                     </div>
@@ -197,7 +197,7 @@
         <!-- Individual Product Auto-Approval Override -->
         <div id="rules" class="scroll-mt-24 bg-stone-50/80 p-5 rounded-2xl border border-stone-200/80 space-y-4">
             <div class="flex items-center gap-2 pb-2 border-b border-stone-200">
-                <span class="text-base">⚡</span>
+                
                 <div>
                     <h3 class="text-xs font-black text-gray-900 uppercase tracking-wider">Individual Auto-Approval Rules</h3>
                     <p class="text-[11px] text-gray-500 mt-0.5">Configure custom order approval quantity thresholds specific to this product.</p>
@@ -232,7 +232,7 @@
         <!-- Unified Photo Gallery Section -->
         <div id="gallery" class="scroll-mt-24 space-y-4">
             <div class="flex items-center gap-2 pb-2 border-b border-gray-100">
-                <span class="text-base">🖼️</span>
+                
                 <div>
                     <h3 class="text-xs font-black text-gray-900 uppercase tracking-wider">Shared Photo Gallery (Auto-Discovered Variants)</h3>
                     <p class="text-[11px] text-gray-500">Tick the photos you want displayed in the customer storefront. All pack sizes share this gallery.</p>
@@ -271,7 +271,7 @@
 
                                 @if($isPrimary)
                                     <span class="absolute top-2 left-2 bg-green-900 text-white text-[9px] font-black px-2 py-0.5 rounded-md shadow-xs">
-                                        ★ Cover
+                                        Primary Cover
                                     </span>
                                 @endif
                             </div>

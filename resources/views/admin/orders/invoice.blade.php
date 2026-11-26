@@ -42,13 +42,12 @@
         <div class="flex items-center gap-2">
             <button onclick="window.print()"
                 class="inline-flex items-center gap-2 px-5 py-2.5 bg-green-900 hover:bg-green-800 text-white font-black text-xs rounded-xl shadow-md transition cursor-pointer">
-                <span>🖨️</span>
+                
                 <span>Print Delivery Challan / Invoice</span>
             </button>
             <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $order->customer_phone) }}?text={{ urlencode('Hello ' . $order->customer_name . '! Here is the delivery challan summary for your PatSons Goa Order #' . $order->order_number . '. Grand Total: ₹' . number_format($order->total_amount, 2) . '. Our delivery van is ready.') }}"
                 target="_blank"
                 class="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs rounded-xl shadow-md transition">
-                <span>💬</span>
                 <span>WhatsApp Summary</span>
             </a>
         </div>

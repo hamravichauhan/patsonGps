@@ -37,7 +37,7 @@
                                     class="text-gray-400 font-medium">{{ $o->customer_phone }}</span>
                             </div>
                             @if($o->delivery_address)
-                                <div class="text-[11px] text-gray-500 mt-0.5 font-normal">📍 {{ $o->delivery_address }}</div>
+                                <div class="text-[11px] text-gray-500 mt-0.5 font-normal">{{ $o->delivery_address }}</div>
                             @endif
                         </div>
 
@@ -86,13 +86,12 @@
                             <a href="{{ route('admin.orders.invoice', $o->id) }}"
                                 target="_blank"
                                 class="bg-gray-900 hover:bg-black text-white text-xs font-bold px-3.5 py-2 rounded-xl flex items-center gap-1.5 shadow-2xs transition">
-                                <span>🖨️</span>
                                 <span>Challan / Invoice</span>
                             </a>
                             <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $o->customer_phone) }}?text=Hello%20{{ urlencode($o->customer_name) }},%20your%20PatSons%20Goa%20Order%20%23{{ $o->order_number }}%20status%20is%20now:%20{{ strtoupper($o->status) }}."
                                 target="_blank"
                                 class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-2 rounded-xl flex items-center gap-1.5 shadow-2xs transition">
-                                <span>💬 Message Customer</span>
+                                <span>Message Customer</span>
                             </a>
                         </div>
                     </form>
