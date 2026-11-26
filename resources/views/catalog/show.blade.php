@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
-@section('meta_title', $product->product_name . ' - Wholesale Carton / Box Price | PatSons Foods Goa')
-@section('meta_description', \Illuminate\Support\Str::limit(strip_tags($product->description ?? 'Order authentic Goan ' . $product->product_name . ' in wholesale cartons/boxes direct from Dev Can Fruit Products, Morjim factory.'), 155))
-@section('meta_keywords', $product->product_name . ', ' . $product->category . ', Goan wholesale boxes, PatSons Foods Morjim, wholesale Goa syrups cartons, Dev Can Fruit Products')
+@section('meta_title', $product->product_name . ' • Authentic Goan ' . $product->category . ' | PatSons Goa')
+@section('meta_description', \Illuminate\Support\Str::limit('Buy authentic Goan ' . $product->product_name . ' handcrafted by Dev Can Fruit Products, Morjim Goa. 100% natural Goan ingredients, FSSAI certified. Inquire for direct orders.', 158))
+@section('meta_keywords', $product->product_name . ', ' . $product->category . ', authentic Goan food, Dev Can Fruit Products, PatSons Foods Goa, Morjim Pernem Goa, FSSAI certified food Goa')
 @section('canonical', route('catalog.show', $product->slug))
 @section('og_image', (!empty($product->image) && $product->image !== 'default-product.webp') ? asset('images/products/' . $product->image) : asset('images/logo1.webp'))
 @section('og_type', 'product')
@@ -126,6 +126,35 @@
                             "name" => "PatSons Foods"
                         ]
                     ]
+                ],
+                [
+                    "@type" => "FAQPage",
+                    "mainEntity" => [
+                        [
+                            "@type" => "Question",
+                            "name" => "Where is PatSons " . $product->product_name . " manufactured?",
+                            "acceptedAnswer" => [
+                                "@type" => "Answer",
+                                "text" => "PatSons " . $product->product_name . " is manufactured and packaged by Dev Can Fruit Products at our Morjim factory unit in Pernem, Goa (FSSAI Lic. No. 10613001000730) using authentic Goan heritage formulations."
+                            ]
+                        ],
+                        [
+                            "@type" => "Question",
+                            "name" => "What pack sizes are available for " . $product->product_name . "?",
+                            "acceptedAnswer" => [
+                                "@type" => "Answer",
+                                "text" => "Available in " . $variants->pluck('size')->unique()->join(', ') . " (" . ((int) ($product->units_per_box ?? 12)) . " units per carton). Sealed factory packaging."
+                            ]
+                        ],
+                        [
+                            "@type" => "Question",
+                            "name" => "How do I place an inquiry or direct order for " . $product->product_name . "?",
+                            "acceptedAnswer" => [
+                                "@type" => "Answer",
+                                "text" => "Direct factory inquiries can be sent via WhatsApp to Dev Can Fruit Products at +" . $adminPhone . " or through the online inquiry button."
+                            ]
+                        ]
+                    ]
                 ]
             ]
         ];
@@ -157,20 +186,31 @@
                     <span>Back</span>
                 </button>
 
-                <nav class="flex items-center gap-1.5 font-semibold text-stone-500 overflow-x-auto py-1 scrollbar-none">
-                    <a href="{{ route('home') }}"
-                        class="hover:text-green-800 transition px-1.5 py-0.5 rounded hover:bg-stone-100">Home</a>
+                <nav aria-label="Breadcrumb" class="flex items-center gap-1.5 font-semibold text-stone-500 overflow-x-auto py-1 scrollbar-none" itemscope itemtype="https://schema.org/BreadcrumbList">
+                    <span itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                        <a itemprop="item" href="{{ route('home') }}" class="hover:text-green-800 transition px-1.5 py-0.5 rounded hover:bg-stone-100">
+                            <span itemprop="name">Home</span>
+                        </a>
+                        <meta itemprop="position" content="1" />
+                    </span>
                     <span class="text-stone-300">/</span>
-                    <a href="{{ route('shop') }}"
-                        class="hover:text-green-800 transition px-1.5 py-0.5 rounded hover:bg-stone-100">Shop</a>
+                    <span itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                        <a itemprop="item" href="{{ route('shop') }}" class="hover:text-green-800 transition px-1.5 py-0.5 rounded hover:bg-stone-100">
+                            <span itemprop="name">Shop</span>
+                        </a>
+                        <meta itemprop="position" content="2" />
+                    </span>
                     <span class="text-stone-300">/</span>
-                    <a href="{{ route('shop', ['category' => $product->category]) }}"
-                        class="hover:text-green-800 transition px-2 py-0.5 rounded-md bg-stone-100 hover:bg-stone-200 text-stone-700">
-                        {{ $product->category }}
-                    </a>
+                    <span itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                        <a itemprop="item" href="{{ route('shop', ['category' => $product->category]) }}" class="hover:text-green-800 transition px-2 py-0.5 rounded-md bg-stone-100 hover:bg-stone-200 text-stone-700">
+                            <span itemprop="name">{{ $product->category }}</span>
+                        </a>
+                        <meta itemprop="position" content="3" />
+                    </span>
                     <span class="text-stone-300">/</span>
-                    <span class="text-stone-900 font-bold truncate max-w-[180px] sm:max-w-xs">
-                        {{ $product->product_name }}
+                    <span itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="text-stone-900 font-bold truncate max-w-[180px] sm:max-w-xs">
+                        <span itemprop="name">{{ $product->product_name }}</span>
+                        <meta itemprop="position" content="4" />
                     </span>
                 </nav>
             </div>
@@ -396,6 +436,93 @@
                         Securely packed in durable cartons suitable for retail, distribution, and HoReCa partners across Goa
                         and beyond.
                     </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Authentic Goan Culinary Guide & Product FAQ -->
+        @php
+            $catLower = strtolower($product->category);
+            $culinaryTip = 'Traditional Goan heritage preparation crafted with natural ingredients and authentic recipes.';
+            $storageTip = 'Store in a cool, dry place. Keep sealed and refrigerate after opening for best freshness.';
+
+            if (str_contains($catLower, 'kokum') || str_contains($catLower, 'agal')) {
+                $culinaryTip = 'Essential for authentic Goan Sol Kadhi. Blend with freshly pressed thick coconut milk, crushed garlic, chopped green chilies, roasted cumin, and fresh cilantro. Also serves as an authentic natural souring agent in Goan fish and prawn curries.';
+                $storageTip = 'Shake gently before pouring. Keep in a dry, cool spot away from sunlight.';
+            } elseif (str_contains($catLower, 'jam')) {
+                $culinaryTip = 'Artisanal spread handcrafted from coastal Goan cashew apples and natural fruit pulp. Excellent with traditional Goan pao/poi, sourdough toast, waffles, or as a gourmet glaze on bakery creations.';
+                $storageTip = 'Refrigerate after opening to preserve authentic fruit texture and natural aroma.';
+            } elseif (str_contains($catLower, 'squash') || str_contains($catLower, 'juice')) {
+                $culinaryTip = 'Pure fruit cooler concentrate. Blend 1 measure of squash with 3 to 4 measures of chilled water or club soda. Serve over crushed ice with fresh mint.';
+                $storageTip = 'Keep refrigerated once unsealed. Consume within recommended shelf life.';
+            } elseif (str_contains($catLower, 'syrup') || str_contains($catLower, 'crush')) {
+                $culinaryTip = 'Professional-grade cocktail and mocktail cordial. Ideal for crafting signature Blue Lagoon sodas, Mojito refreshments, falooda dressings, and artisanal desserts.';
+                $storageTip = 'Store upright in a cool pantry. Avoid direct heat exposure.';
+            } elseif (str_contains($catLower, 'jelly') || str_contains($catLower, 'confectionery')) {
+                $culinaryTip = 'Traditional fruit jelly confections prepared with authentic fruit essences. Enjoy as an after-meal palate cleanser, festive treat, or tea-time sweet.';
+                $storageTip = 'Store in an airtight container at room temperature.';
+            }
+        @endphp
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 text-xs">
+            <!-- Culinary & Pairing Guide -->
+            <div class="bg-green-950 text-white p-6 sm:p-8 rounded-3xl space-y-4 shadow-xs border border-green-900">
+                <div class="flex items-center gap-2.5">
+                    <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+                    <h3 class="text-sm font-black uppercase tracking-wider text-amber-300">Authentic Goan Culinary Guide</h3>
+                </div>
+                <p class="text-green-100/90 leading-relaxed text-xs">
+                    {{ $culinaryTip }}
+                </p>
+                <div class="pt-3 border-t border-green-900/80 flex items-start gap-2.5 text-green-200/80">
+                    <svg class="w-4 h-4 text-amber-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span><strong>Storage Advice:</strong> {{ $storageTip }}</span>
+                </div>
+            </div>
+
+            <!-- Frequently Asked Questions Accordion -->
+            <div class="bg-white p-6 sm:p-8 rounded-3xl border border-stone-200/80 shadow-2xs space-y-3" x-data="{ openFaq: 1 }">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
+                    <h3 class="text-sm font-black text-stone-900 uppercase tracking-wider">Product FAQ</h3>
+                </div>
+
+                <!-- FAQ 1 -->
+                <div class="border border-stone-200/70 rounded-2xl overflow-hidden transition">
+                    <button type="button" @click="openFaq = openFaq === 1 ? null : 1"
+                        class="w-full text-left p-3.5 font-bold text-stone-900 flex justify-between items-center hover:bg-stone-50 transition cursor-pointer">
+                        <span>Where is this product manufactured?</span>
+                        <span class="text-stone-400 text-sm ml-2 font-mono" x-text="openFaq === 1 ? '−' : '+'">−</span>
+                    </button>
+                    <div x-show="openFaq === 1" x-cloak class="p-3.5 pt-0 text-stone-600 text-[11px] leading-relaxed border-t border-stone-100 bg-stone-50/50">
+                        Handcrafted by <strong>Dev Can Fruit Products</strong> at our Morjim factory unit, Pernem, Goa (FSSAI Lic. No. 10613001000730). Established in 1990 with three decades of traditional Goan agro-processing heritage.
+                    </div>
+                </div>
+
+                <!-- FAQ 2 -->
+                <div class="border border-stone-200/70 rounded-2xl overflow-hidden transition">
+                    <button type="button" @click="openFaq = openFaq === 2 ? null : 2"
+                        class="w-full text-left p-3.5 font-bold text-stone-900 flex justify-between items-center hover:bg-stone-50 transition cursor-pointer">
+                        <span>What pack sizes and cartons are available?</span>
+                        <span class="text-stone-400 text-sm ml-2 font-mono" x-text="openFaq === 2 ? '−' : '+'">+</span>
+                    </button>
+                    <div x-show="openFaq === 2" x-cloak class="p-3.5 pt-0 text-stone-600 text-[11px] leading-relaxed border-t border-stone-100 bg-stone-50/50">
+                        Available in sealed individual packs of {{ $variants->pluck('size')->unique()->join(', ') }} and packaged in standard wholesale cartons for retail, restaurants, and hospitality distribution across Goa.
+                    </div>
+                </div>
+
+                <!-- FAQ 3 -->
+                <div class="border border-stone-200/70 rounded-2xl overflow-hidden transition">
+                    <button type="button" @click="openFaq = openFaq === 3 ? null : 3"
+                        class="w-full text-left p-3.5 font-bold text-stone-900 flex justify-between items-center hover:bg-stone-50 transition cursor-pointer">
+                        <span>How can I place an inquiry or direct order?</span>
+                        <span class="text-stone-400 text-sm ml-2 font-mono" x-text="openFaq === 3 ? '−' : '+'">+</span>
+                    </button>
+                    <div x-show="openFaq === 3" x-cloak class="p-3.5 pt-0 text-stone-600 text-[11px] leading-relaxed border-t border-stone-100 bg-stone-50/50">
+                        You can inquire directly with Dev Can Fruit Products via the <strong>Inquire About This Product</strong> button, or connect with our Morjim office on WhatsApp at <strong>+{{ $adminWa }}</strong>.
+                    </div>
                 </div>
             </div>
         </div>

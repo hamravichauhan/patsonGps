@@ -23,6 +23,12 @@ Route::get('/shop', [CatalogController::class, 'index'])->name('shop');
 Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
 Route::get('/product/{slug}', [CatalogController::class, 'show'])->name('catalog.show');
 
+// 301 Permanent Redirects for SEO URL variations
+Route::get('/products/{slug}', fn($slug) => redirect('/product/' . $slug, 301));
+Route::get('/catalog/{slug}', fn($slug) => redirect('/product/' . $slug, 301));
+Route::get('/item/{slug}', fn($slug) => redirect('/product/' . $slug, 301));
+Route::get('/items/{slug}', fn($slug) => redirect('/product/' . $slug, 301));
+
 // 3. Static Content Pages
 Route::get('/about', [PageController::class, 'about'])->name('about');
 Route::get('/contact', [PageController::class, 'contact'])->name('contact');

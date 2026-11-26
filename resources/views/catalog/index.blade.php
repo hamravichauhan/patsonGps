@@ -2,10 +2,10 @@
 @php
     $catParam = request('category');
     $canonicalUrl = $catParam ? route('shop', ['category' => $catParam]) : route('shop');
-    $catTitle = $catParam ? $catParam . ' - Wholesale Goan Box Packs | PatSons Foods Goa' : 'Wholesale Goan Kokum, Jams, Syrups & Crushes Catalog | PatSons Foods';
+    $catTitle = $catParam ? $catParam . ' • Authentic Goan Food Products | PatSons Goa' : 'Authentic Goan Kokum Agal, Cashew Jams, Syrups & Squashes | PatSons Foods Goa';
     $catDesc = $catParam 
-        ? 'Browse wholesale carton packs and boxes of ' . $catParam . ' direct from Dev Can Fruit Products factory in Morjim, Pernem - Goa. FSSAI certified authentic Goan recipes.'
-        : 'Browse our complete catalog of authentic Goan Kokum Agal, Cashew Fruit Jams, bar cordials, squashes, and appetizer crushes direct from Morjim factory.';
+        ? 'Discover authentic Goan ' . $catParam . ' handcrafted by Dev Can Fruit Products, Morjim Goa. 100% natural Goan ingredients, FSSAI certified. Inquire for direct factory orders.'
+        : 'Browse our complete catalog of authentic Goan Kokum Agal, Cashew Fruit Jams, bar cordials, squashes, and appetizer crushes direct from Dev Can Fruit Products, Morjim factory.';
 @endphp
 
 @section('meta_title', $catTitle)

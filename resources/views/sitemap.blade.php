@@ -60,13 +60,13 @@
             <loc>{{ url('/product/' . $product->slug) }}</loc>
             <lastmod>{{ !empty($product->created_at) ? \Carbon\Carbon::parse($product->created_at)->toAtomString() : now()->toAtomString() }}</lastmod>
             <changefreq>weekly</changefreq>
-            <priority>0.8</priority>
+            <priority>0.85</priority>
 
             @if(!empty($product->image) && $product->image !== 'default-product.webp')
                 <image:image>
                     <image:loc>{{ asset('images/products/' . $product->image) }}</image:loc>
-                    <image:title>{{ htmlspecialchars($product->product_name . ' - Authentic Goan Product', ENT_XML1, 'UTF-8') }}</image:title>
-                    <image:caption>{{ htmlspecialchars('Wholesale carton pack of ' . $product->product_name . ' from Dev Can Fruit Products, Morjim Goa', ENT_XML1, 'UTF-8') }}</image:caption>
+                    <image:title>{{ htmlspecialchars($product->product_name . ' - Authentic Goan Food Product', ENT_XML1, 'UTF-8') }}</image:title>
+                    <image:caption>{{ htmlspecialchars('Authentic Goan ' . $product->product_name . ' handcrafted by Dev Can Fruit Products, Morjim Goa', ENT_XML1, 'UTF-8') }}</image:caption>
                 </image:image>
             @endif
 

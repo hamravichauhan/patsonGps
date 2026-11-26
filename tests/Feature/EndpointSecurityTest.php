@@ -408,4 +408,37 @@ class EndpointSecurityTest extends TestCase
         $this->assertEquals(189.00, $item->mrp);
         $this->assertEquals(15, $item->units_per_box);
     }
+
+    public function test_seo_301_redirects_for_product_aliases(): void
+    {
+        $response = $this->get('/products/kokum-agal');
+        $response->assertStatus(301);
+        $response->assertRedirect('/product/kokum-agal');
+
+        $responseCatalog = $this->get('/catalog/kokum-agal');
+        $responseCatalog->assertStatus(301);
+        $responseCatalog->assertRedirect('/product/kokum-agal');
+    }
+
+    public function test_product_page_seo_metadata_and_schema(): void
+    {
+        $item = ProductCatalog::firstOrCreate([
+            'slug' => 'test-seo-kokum',
+        ], [
+            'product_name' => 'Kokum Agal Pure',
+            'category' => 'Kokum & Agal',
+            'size' => '1 Litre Bottle',
+            'price' => 150.00,
+            'mrp' => 200.00,
+            'units_per_box' => 12,
+            'is_active' => true,
+        ]);
+
+        $response = $this->get('/product/test-seo-kokum');
+        $response->assertStatus(200);
+        $response->assertSee('Authentic Goan', false);
+        $response->assertSee('FAQPage', false);
+        $response->assertSee('BreadcrumbList', false);
+        $response->assertSee('Authentic Goan Culinary Guide', false);
+    }
 }
