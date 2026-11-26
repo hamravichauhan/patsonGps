@@ -6,7 +6,9 @@
         'id' => $v->id, 
         'size' => $v->size, 
         'price' => (float)$v->price, 
+        'mrp' => (float)($v->mrp ?? 0),
         'units_per_box' => (int)($v->units_per_box ?? 12),
+        'min_order_qty' => (int)($v->min_order_qty ?? ($v->units_per_box ?? 1)),
         'is_active' => (bool)$v->is_active
     ])->toJson() }} 
 }">
@@ -127,7 +129,7 @@
                     </div>
                 </div>
                 <button type="button" 
-                        @click="variants.push({ id: null, size: '', price: 0.00, units_per_box: 12, is_active: true })" 
+                        @click="variants.push({ id: null, size: '', price: 0.00, mrp: 0.00, units_per_box: 12, min_order_qty: 12, is_active: true })" 
                         class="bg-gray-900 hover:bg-black text-white text-xs font-bold px-3 py-1.5 rounded-xl transition cursor-pointer">
                     + Add Size Variant
                 </button>
@@ -139,29 +141,44 @@
                         <input type="hidden" :name="'variants[' + index + '][id]'" :value="v.id">
                         
                         <!-- Size / Pack Name -->
-                        <div class="flex-1 min-w-[180px]">
+                        <div class="flex-1 min-w-[150px]">
                             <label class="block text-[10px] font-bold text-gray-500 uppercase mb-0.5">Pack Size Label</label>
                             <input type="text" :name="'variants[' + index + '][size]'" x-model="v.size" placeholder="e.g. 700ml Bottle, 500g Jar" required class="w-full bg-white border border-gray-200 rounded-xl px-3 py-2 text-xs font-bold outline-none focus:ring-2 focus:ring-green-800">
                         </div>
 
-                        <!-- Single Piece Rate -->
-                        <div class="w-28">
-                            <label class="block text-[10px] font-bold text-gray-500 uppercase mb-0.5">Price / Unit (₹)</label>
-                            <input type="number" step="0.01" min="0" :name="'variants[' + index + '][price]'" x-model="v.price" required class="w-full bg-white border border-gray-200 rounded-xl px-3 py-2 text-xs font-bold outline-none focus:ring-2 focus:ring-green-800">
+                        <!-- Single Piece Wholesale Rate -->
+                        <div class="w-24">
+                            <label class="block text-[10px] font-bold text-emerald-800 uppercase mb-0.5">Wholesale (₹)</label>
+                            <input type="number" step="0.01" min="0" :name="'variants[' + index + '][price]'" x-model="v.price" required class="w-full bg-white border border-emerald-300 rounded-xl px-3 py-2 text-xs font-bold outline-none focus:ring-2 focus:ring-green-800">
+                        </div>
+
+                        <!-- Maximum Retail Price (MRP) -->
+                        <div class="w-24">
+                            <label class="block text-[10px] font-bold text-amber-800 uppercase mb-0.5">MRP / Retail (₹)</label>
+                            <input type="number" step="0.01" min="0" :name="'variants[' + index + '][mrp]'" x-model="v.mrp" placeholder="MRP" class="w-full bg-white border border-amber-300 rounded-xl px-3 py-2 text-xs font-bold outline-none focus:ring-2 focus:ring-amber-800">
                         </div>
 
                         <!-- Multiplier: Units per Box -->
-                        <div class="w-28">
+                        <div class="w-20">
                             <label class="block text-[10px] font-bold text-gray-500 uppercase mb-0.5">Units / Box</label>
-                            <input type="number" min="1" step="1" :name="'variants[' + index + '][units_per_box]'" x-model="v.units_per_box" required class="w-full bg-white border border-gray-200 rounded-xl px-3 py-2 text-xs font-bold outline-none focus:ring-2 focus:ring-green-800">
+                            <input type="number" min="1" step="1" :name="'variants[' + index + '][units_per_box]'" x-model="v.units_per_box" required class="w-full bg-white border border-gray-200 rounded-xl px-2.5 py-2 text-xs font-bold outline-none focus:ring-2 focus:ring-green-800">
+                        </div>
+
+                        <!-- Min Order Quantity -->
+                        <div class="w-20">
+                            <label class="block text-[10px] font-bold text-gray-500 uppercase mb-0.5">Min Qty</label>
+                            <input type="number" min="1" step="1" :name="'variants[' + index + '][min_order_qty]'" x-model="v.min_order_qty" class="w-full bg-white border border-gray-200 rounded-xl px-2.5 py-2 text-xs font-bold outline-none focus:ring-2 focus:ring-green-800">
                         </div>
 
                         <!-- Calculated Box Total Preview -->
                         <div class="w-32 text-right self-center pt-2 sm:pt-0">
-                            <span class="text-[10px] text-gray-400 block font-bold uppercase">Box Wholesale</span>
-                            <span class="text-xs font-black text-green-900">
-                                ₹<span x-text="(Number(v.price || 0) * Number(v.units_per_box || 1)).toFixed(2)"></span>
-                            </span>
+                            <span class="text-[9px] text-gray-400 block font-bold uppercase">Box Previews</span>
+                            <div class="text-[11px] font-black text-emerald-800">
+                                WS: ₹<span x-text="(Number(v.price || 0) * Number(v.units_per_box || 1)).toFixed(0)"></span>
+                            </div>
+                            <div class="text-[10px] font-bold text-amber-700">
+                                MRP: ₹<span x-text="(Number(v.mrp || v.price || 0) * Number(v.units_per_box || 1)).toFixed(0)"></span>
+                            </div>
                         </div>
 
                         <!-- Remove Row -->

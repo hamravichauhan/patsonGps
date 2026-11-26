@@ -239,4 +239,79 @@ class EndpointSecurityTest extends TestCase
         ]);
         $this->assertStringContainsString('images/products/default-product.webp', $productWithDefault->image_url);
     }
+
+    public function test_pricing_service_resolves_mrp_for_guests_and_wholesale_for_wholesalers(): void
+    {
+        $product = ProductCatalog::create([
+            'product_name' => 'Kokum Squash Test',
+            'slug' => 'kokum-squash-test',
+            'category' => 'Squashes',
+            'size' => '1 Litre Bottle',
+            'price' => 75.00,
+            'mrp' => 200.00,
+            'units_per_box' => 12,
+            'is_active' => true,
+        ]);
+
+        // Guest visitor: sees MRP
+        $this->assertFalse(\App\Services\PricingService::isWholesaler());
+        $this->assertEquals(200.00, \App\Services\PricingService::getEffectivePrice($product));
+        $this->assertEquals(2400.00, \App\Services\PricingService::getEffectiveBoxPrice($product));
+
+        // Approved wholesaler user
+        $wholesaler = User::create([
+            'name' => 'Goa Distributors',
+            'email' => 'goadist@example.com',
+            'phone' => '9822112233',
+            'is_wholesaler' => true,
+            'password' => bcrypt('secret123'),
+        ]);
+
+        $this->actingAs($wholesaler);
+        $this->assertTrue(\App\Services\PricingService::isWholesaler());
+        $this->assertEquals(75.00, \App\Services\PricingService::getEffectivePrice($product));
+        $this->assertEquals(900.00, \App\Services\PricingService::getEffectiveBoxPrice($product));
+    }
+
+    public function test_admin_can_toggle_customer_wholesaler_status(): void
+    {
+        $admin = User::create([
+            'name' => 'Admin Boss',
+            'email' => 'boss@patsonsgoa.com',
+            'is_admin' => true,
+            'password' => bcrypt('password123'),
+        ]);
+
+        $customer = User::create([
+            'name' => 'Retail Customer',
+            'email' => 'retail@example.com',
+            'phone' => '9890001122',
+            'is_wholesaler' => false,
+            'password' => bcrypt('password123'),
+        ]);
+
+        $adminPath = env('ADMIN_SECRET_PATH', 'ps-control-morjim');
+        $response = $this->actingAs($admin)->post("/{$adminPath}/users/{$customer->id}/toggle-wholesaler");
+        $response->assertSessionHas('success');
+
+        $customer->refresh();
+        $this->assertTrue($customer->is_wholesaler);
+    }
+
+    public function test_customer_can_submit_wholesale_application(): void
+    {
+        $response = $this->withSession(['customer_phone' => '9823998877', 'customer_name' => 'Hotel Coastal'])
+            ->post('/my-account/request-wholesale', [
+                'business_name' => 'Hotel Coastal Retreat',
+                'gstin' => '30ABCDE1234F1Z5',
+            ]);
+
+        $response->assertSessionHas('success');
+
+        $user = User::where('phone', 'like', '%9823998877%')->first();
+        $this->assertNotNull($user);
+        $this->assertTrue($user->wholesale_requested);
+        $this->assertEquals('Hotel Coastal Retreat', $user->business_name);
+        $this->assertEquals('30ABCDE1234F1Z5', $user->gstin);
+    }
 }

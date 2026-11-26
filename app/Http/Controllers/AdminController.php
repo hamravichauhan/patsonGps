@@ -320,7 +320,9 @@ class AdminController extends Controller
             'variants' => 'required|array|min:1',
             'variants.*.size' => 'required|string|max:100',
             'variants.*.price' => 'required|numeric|min:0',
+            'variants.*.mrp' => 'nullable|numeric|min:0',
             'variants.*.units_per_box' => 'required|integer|min:1',
+            'variants.*.min_order_qty' => 'nullable|integer|min:1',
             'primary_image' => 'nullable|file|mimes:jpeg,png,jpg,webp,avif,gif,bmp,heic|max:20480',
             'images' => 'nullable|array',
             'images.*' => 'nullable|file|mimes:jpeg,png,jpg,webp,avif,gif,bmp,heic|max:20480',
@@ -372,13 +374,19 @@ class AdminController extends Controller
 
         // Update existing variant rows or create newly added size variants
         foreach ($request->input('variants') as $vData) {
+            $mrpVal = !empty($vData['mrp']) ? (float) $vData['mrp'] : null;
+            $unitsBox = (int) ($vData['units_per_box'] ?? 12);
+            $minQty = !empty($vData['min_order_qty']) ? (int) $vData['min_order_qty'] : $unitsBox;
+
             if (!empty($vData['id'])) {
                 $vModel = ProductCatalog::find($vData['id']);
                 if ($vModel) {
                     $vModel->update([
                         'size' => $vData['size'],
                         'price' => $vData['price'],
-                        'units_per_box' => (int) ($vData['units_per_box'] ?? 12),
+                        'mrp' => $mrpVal,
+                        'units_per_box' => $unitsBox,
+                        'min_order_qty' => $minQty,
                         'is_active' => isset($vData['is_active']) ? (bool) $vData['is_active'] : true,
                     ]);
                 }
@@ -389,7 +397,9 @@ class AdminController extends Controller
                     'category' => $request->category,
                     'size' => $vData['size'],
                     'price' => $vData['price'],
-                    'units_per_box' => (int) ($vData['units_per_box'] ?? 12),
+                    'mrp' => $mrpVal,
+                    'units_per_box' => $unitsBox,
+                    'min_order_qty' => $minQty,
                     'description' => $request->description,
                     'image' => $resolvedImage,
                     'images' => $cleanGallery,
@@ -722,6 +732,19 @@ class AdminController extends Controller
     {
         $users = User::latest()->paginate(20);
         return view('admin.users.index', compact('users'));
+    }
+
+    public function toggleWholesaler(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+        $user->is_wholesaler = !$user->is_wholesaler;
+        if ($user->is_wholesaler) {
+            $user->wholesale_requested = false;
+        }
+        $user->save();
+
+        $statusLabel = $user->is_wholesaler ? 'approved as a Verified Wholesaler (B2B Pricing Unlocked)' : 'reverted to Standard Retail Customer';
+        return back()->with('success', "Customer '{$user->name}' is now {$statusLabel}.");
     }
 
     // 5. Store Settings

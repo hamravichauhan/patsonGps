@@ -20,7 +20,9 @@ class ProductCatalog extends Model
         'category',
         'size',
         'price',
+        'mrp',
         'units_per_box',
+        'min_order_qty',
         'description',
         'image',
         'images',
@@ -40,7 +42,9 @@ class ProductCatalog extends Model
         'in_stock' => 'boolean',
         'auto_approve_override' => 'boolean',
         'price' => 'decimal:2',
+        'mrp' => 'decimal:2',
         'units_per_box' => 'integer',
+        'min_order_qty' => 'integer',
     ];
 
     /**
@@ -127,5 +131,20 @@ class ProductCatalog extends Model
     {
         $units = $this->units_per_box ?: 12;
         return (float) ($this->price * $units);
+    }
+
+    public function getBoxMrpAttribute(): float
+    {
+        return \App\Services\PricingService::getBoxMrp($this);
+    }
+
+    public function getEffectivePriceAttribute(): float
+    {
+        return \App\Services\PricingService::getEffectivePrice($this);
+    }
+
+    public function getEffectiveBoxPriceAttribute(): float
+    {
+        return \App\Services\PricingService::getEffectiveBoxPrice($this);
     }
 }

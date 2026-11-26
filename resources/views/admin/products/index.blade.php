@@ -307,16 +307,22 @@
                                 <td class="py-3 px-4">
                                     <div class="flex flex-wrap gap-1.5">
                                         @foreach($items as $variant)
-                                            <div class="inline-flex items-center gap-1.5 bg-gray-50 border border-gray-200/90 text-gray-800 text-[11px] font-bold px-2.5 py-1 rounded-lg">
-                                                <span>{{ $variant->size }}</span>
-                                                <span class="text-green-800 font-black">₹{{ number_format($variant->price, 0) }}</span>
-                                                <span class="text-[10px] text-gray-400">({{ $variant->units_per_box ?: 12 }}/box)</span>
-                                                <button type="button"
-                                                    @click="openQuickEdit({{ $variant->id }}, '{{ addslashes($p->product_name) }}', '{{ addslashes($variant->size) }}', {{ $variant->price }}, {{ $variant->units_per_box ?: 12 }})"
-                                                    class="text-gray-400 hover:text-green-700 ml-0.5 cursor-pointer text-xs"
-                                                    title="Quick Edit Price & Units">
-                                                    ✏️
-                                                </button>
+                                            <div class="inline-flex flex-col gap-0.5 bg-gray-50 border border-gray-200/90 text-gray-800 text-[11px] font-bold px-2.5 py-1.5 rounded-xl shadow-2xs">
+                                                <div class="flex items-center justify-between gap-2">
+                                                    <span class="text-gray-900">{{ $variant->size }}</span>
+                                                    <span class="text-[9px] text-gray-400">({{ $variant->units_per_box ?: 12 }}/box)</span>
+                                                </div>
+                                                <div class="flex items-center gap-1.5 text-[10px]">
+                                                    <span class="text-emerald-800 font-black" title="Wholesale Box Price">WS: ₹{{ number_format($variant->price, 0) }}</span>
+                                                    <span class="text-gray-300">|</span>
+                                                    <span class="text-amber-700 font-bold" title="Retail MRP">MRP: ₹{{ number_format($variant->mrp ?: $variant->price, 0) }}</span>
+                                                    <button type="button"
+                                                        @click="openQuickEdit({{ $variant->id }}, '{{ addslashes($p->product_name) }}', '{{ addslashes($variant->size) }}', {{ $variant->price }}, {{ $variant->units_per_box ?: 12 }})"
+                                                        class="text-gray-400 hover:text-green-700 ml-1 cursor-pointer text-xs"
+                                                        title="Quick Edit Price & Units">
+                                                        ✏️
+                                                    </button>
+                                                </div>
                                             </div>
                                         @endforeach
                                     </div>

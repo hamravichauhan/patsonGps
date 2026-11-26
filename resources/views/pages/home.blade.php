@@ -196,30 +196,40 @@
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                @php $isWholesaler = \App\Services\PricingService::isWholesaler(); @endphp
                 @foreach($featuredProducts->take(4) as $slug => $variants)
-                    @php $primary = $variants->first(); @endphp
+                    @php 
+                        $primary = $variants->first(); 
+                        $initWholesale = (float) $primary->price;
+                        $initMrp = (float) ($primary->mrp ?: $primary->price);
+                    @endphp
                     <div class="bg-white rounded-3xl border border-gray-200 hover:border-green-300 shadow-xs hover:shadow-xl transition-all duration-300 p-5 flex flex-col justify-between"
                         x-data="{
-                                                                                    selectedId: {{ $primary->id }},
-                                                                                    selectedPrice: {{ (float) $primary->price }},
-                                                                                    selectedUnitsPerBox: {{ (int) ($primary->units_per_box ?? 12) }},
-                                                                                    selectedSize: '{{ $primary->size }}',
-                                                                                    selectedImage: '{{ $primary->image ?? 'default-product.webp' }}',
-                                                                                    variants: {{ $variants->toJson() }},
-                                                                                    get boxPrice() {
-                                                                                        return Number(this.selectedPrice) * Number(this.selectedUnitsPerBox || 12);
-                                                                                    },
-                                                                                    updateVariant(e) {
-                                                                                        let found = this.variants.find(v => v.id == e.target.value);
-                                                                                        if (found) {
-                                                                                            this.selectedId = found.id;
-                                                                                            this.selectedPrice = Number(found.price);
-                                                                                            this.selectedUnitsPerBox = Number(found.units_per_box || 12);
-                                                                                            this.selectedSize = found.size;
-                                                                                            if (found.image) this.selectedImage = found.image;
-                                                                                        }
-                                                                                    }
-                                                                                }">
+                            selectedId: {{ $primary->id }},
+                            wholesalePrice: {{ $initWholesale }},
+                            mrpPrice: {{ $initMrp }},
+                            selectedPrice: {{ $isWholesaler ? $initWholesale : $initMrp }},
+                            selectedUnitsPerBox: {{ (int) ($primary->units_per_box ?? 12) }},
+                            selectedSize: '{{ $primary->size }}',
+                            selectedImage: '{{ $primary->image ?? 'default-product.webp' }}',
+                            isWholesaler: {{ $isWholesaler ? 'true' : 'false' }},
+                            variants: {{ $variants->toJson() }},
+                            get boxPrice() {
+                                return Number(this.selectedPrice) * Number(this.selectedUnitsPerBox || 12);
+                            },
+                            updateVariant(e) {
+                                let found = this.variants.find(v => v.id == e.target.value);
+                                if (found) {
+                                    this.selectedId = found.id;
+                                    this.wholesalePrice = Number(found.price);
+                                    this.mrpPrice = Number(found.mrp || found.price);
+                                    this.selectedPrice = this.isWholesaler ? this.wholesalePrice : this.mrpPrice;
+                                    this.selectedUnitsPerBox = Number(found.units_per_box || 12);
+                                    this.selectedSize = found.size;
+                                    if (found.image) this.selectedImage = found.image;
+                                }
+                            }
+                        }">
                         <div>
                             <a href="{{ route('catalog.show', $primary->slug) }}" class="block">
                                 <div
@@ -258,22 +268,25 @@
                                     @foreach($variants as $variant)
                                         @php
                                             $uBox = (int) ($variant->units_per_box ?? 12);
-                                            $totalBoxPrice = (float) $variant->price * $uBox;
+                                            $rateUnit = (float) ($isWholesaler ? $variant->price : ($variant->mrp ?: $variant->price));
+                                            $totalBoxPrice = $rateUnit * $uBox;
                                         @endphp
                                         <option value="{{ $variant->id }}">
-                                            {{ $variant->size }} (Box of {{ $uBox }}) — ₹{{ number_format($totalBoxPrice, 2) }}
+                                            {{ $variant->size }} (Box of {{ $uBox }}) — ₹{{ number_format($totalBoxPrice, 0) }} {{ $isWholesaler ? '(Wholesale)' : '(MRP)' }}
                                         </option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
 
-                        <!-- Wholesale Box Price & Action Buttons -->
+                        <!-- Price & Tier Information -->
                         <div class="mt-4 pt-3.5 border-t border-gray-100">
                             <div class="flex items-baseline justify-between mb-3">
                                 <div>
-                                    <span class="text-[9px] text-gray-400 font-bold uppercase block">Per Box (<span
-                                            x-text="selectedUnitsPerBox"></span> pcs)</span>
+                                    <span class="text-[9px] text-gray-400 font-bold uppercase block">
+                                        <span x-text="isWholesaler ? 'Wholesale / Box' : 'MRP / Carton'"></span>
+                                        (<span x-text="selectedUnitsPerBox"></span> pcs)
+                                    </span>
                                     <span class="text-xl font-black text-green-900">₹<span x-text="boxPrice.toFixed(2)"></span></span>
                                 </div>
                                 <span class="text-[10px] text-emerald-700 font-black bg-emerald-50 px-2 py-0.5 rounded-md">

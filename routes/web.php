@@ -47,6 +47,7 @@ Route::get('/lang/{locale}', function ($locale) {
 // Customer Account & Order Tracking Hub
 Route::get('/track-order', [CustomerAccountController::class, 'index'])->name('customer.account');
 Route::get('/my-account', [CustomerAccountController::class, 'index']);
+Route::post('/my-account/request-wholesale', [CustomerAccountController::class, 'requestWholesale'])->name('customer.request-wholesale');
 
 // WhatsApp OTP Authentication for Tracking
 Route::post('/track-order/send-otp', [CustomerAccountController::class, 'sendOtp'])->middleware('throttle:6,1')->name('customer.otp.send');
@@ -123,6 +124,7 @@ Route::middleware(['auth', 'admin'])->prefix($adminPrefix)->name('admin.')->grou
 
     // Customer & User Directory
     Route::get('/users', [AdminController::class, 'users'])->name('users');
+    Route::post('/users/{id}/toggle-wholesaler', [AdminController::class, 'toggleWholesaler'])->name('users.toggle-wholesaler');
 
     // Store Settings, Password & WhatsApp Automation
     Route::get('/settings', [AdminController::class, 'settings'])->name('settings');

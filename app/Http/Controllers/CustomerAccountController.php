@@ -32,11 +32,53 @@ class CustomerAccountController extends Controller
             ->latest()
             ->get();
 
+        $customerUser = User::where('phone', 'like', "%{$phone}%")->first();
+
         return view('pages.my-account', [
             'orders' => $orders,
             'phone' => $phone,
             'customerName' => $customerName,
+            'customerUser' => $customerUser,
+            'isWholesaler' => $customerUser?->is_wholesaler ?? false,
         ]);
+    }
+
+    /**
+     * Submit customer B2B wholesale access request.
+     */
+    public function requestWholesale(Request $request)
+    {
+        $phone = session('customer_phone');
+        if (!$phone) {
+            return redirect()->route('customer.account')->with('error', 'Please log in to submit a wholesale verification request.');
+        }
+
+        $request->validate([
+            'business_name' => 'nullable|string|max:150',
+            'gstin' => 'nullable|string|max:20',
+        ]);
+
+        $cleanPhone = substr(preg_replace('/[^0-9]/', '', $phone), -10);
+        $user = User::where('phone', 'like', "%{$cleanPhone}%")->first();
+        if (!$user) {
+            $user = User::create([
+                'phone' => $phone,
+                'name' => session('customer_name') ?: 'Wholesale Partner',
+                'email' => "partner_{$cleanPhone}@patsonsgoa.com",
+                'password' => bcrypt(\Illuminate\Support\Str::random(16)),
+            ]);
+        }
+
+        $user->wholesale_requested = true;
+        if ($request->filled('business_name')) {
+            $user->business_name = $request->business_name;
+        }
+        if ($request->filled('gstin')) {
+            $user->gstin = strtoupper($request->gstin);
+        }
+        $user->save();
+
+        return back()->with('success', 'Your B2B Wholesale application has been submitted to PatSons Admin for verification.');
     }
 
     /**
