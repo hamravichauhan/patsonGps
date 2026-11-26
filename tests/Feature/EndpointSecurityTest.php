@@ -420,6 +420,17 @@ class EndpointSecurityTest extends TestCase
         $responseCatalog->assertRedirect('/product/kokum-agal');
     }
 
+    public function test_admin_login_and_admin_prefix_return_404_not_found(): void
+    {
+        $this->get('/admin')->assertStatus(404);
+        $this->get('/admin/login')->assertStatus(404);
+        $this->get('/admin/dashboard')->assertStatus(404);
+        $this->get('/admin/products')->assertStatus(404);
+
+        // Only secret path ps-control-morjim is active
+        $this->get('/ps-control-morjim/login')->assertStatus(200);
+    }
+
     public function test_product_page_seo_metadata_and_schema(): void
     {
         $item = ProductCatalog::firstOrCreate([

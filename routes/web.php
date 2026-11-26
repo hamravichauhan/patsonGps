@@ -138,12 +138,13 @@ Route::middleware(['auth', 'admin'])->prefix($adminPrefix)->name('admin.')->grou
     Route::get('/whatsapp/qr', [AdminController::class, 'getWhatsAppQr'])->name('whatsapp.qr');
 });
 
-// 3. Block default /admin paths (Returns 404 to scanners)
-if ($adminPrefix !== 'admin') {
-    Route::any('/admin/{any?}', function () {
-        abort(404);
-    })->where('any', '.*');
-}
+// 3. Block default /admin paths (Returns 404 to all scanners and bots)
+Route::any('/admin', function () {
+    abort(404);
+});
+Route::any('/admin/{any}', function () {
+    abort(404);
+})->where('any', '.*');
 
 /*
 |--------------------------------------------------------------------------
