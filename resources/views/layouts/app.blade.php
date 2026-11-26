@@ -155,13 +155,6 @@
     <meta name="author" content="Dev Can Fruit Products (PatSons Foods Goa)">
     <link rel="canonical" href="@yield('canonical', url()->current())">
 
-    <!-- Hreflang Multi-Language Annotations -->
-    <link rel="alternate" hreflang="en" href="{{ url()->current() }}">
-    <link rel="alternate" hreflang="gom" href="{{ url()->current() }}?lang=gom">
-    <link rel="alternate" hreflang="mr" href="{{ url()->current() }}?lang=mr">
-    <link rel="alternate" hreflang="hi" href="{{ url()->current() }}?lang=hi">
-    <link rel="alternate" hreflang="x-default" href="{{ url()->current() }}">
-
     <!-- Geo & Local SEO Meta -->
     <meta name="geo.region" content="IN-GA">
     <meta name="geo.placename" content="Morjim, Pernem, Goa">
@@ -186,8 +179,6 @@
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:locale" content="en_IN">
-    <meta property="og:locale:alternate" content="mr_IN">
-    <meta property="og:locale:alternate" content="hi_IN">
 
     <!-- Twitter Card Meta -->
     <meta name="twitter:card" content="summary_large_image">
@@ -300,22 +291,9 @@
             </div>
 
             <div class="flex items-center gap-3 font-bold text-green-200">
-                <!-- Multi-Language Switcher (EN, Konkani, Marathi, Hindi) -->
-                <div class="flex items-center gap-1.5 text-[10px] bg-green-900/80 px-2.5 py-1 rounded-full border border-green-800">
-                    <svg class="w-3.5 h-3.5 text-amber-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 12a9 9 0 1018 0 9 9 0 00-18 0zm0 0h18M12 3a15.3 15.3 0 014 9 15.3 15.3 0 01-4 9m0-18a15.3 15.3 0 00-4 9 15.3 15.3 0 004 9"/>
-                    </svg>
-                    <a href="{{ route('lang.switch', 'en') }}" class="{{ app()->getLocale() === 'en' ? 'text-amber-300 font-black underline' : 'text-green-200 hover:text-white' }}" title="English">EN</a>
-                    <span class="text-green-700">|</span>
-                    <a href="{{ route('lang.switch', 'gom') }}" class="{{ app()->getLocale() === 'gom' ? 'text-amber-300 font-black underline' : 'text-green-200 hover:text-white' }}" title="Konkani">कोंकणी</a>
-                    <span class="text-green-700">|</span>
-                    <a href="{{ route('lang.switch', 'mr') }}" class="{{ app()->getLocale() === 'mr' ? 'text-amber-300 font-black underline' : 'text-green-200 hover:text-white' }}" title="Marathi">मराठी</a>
-                    <span class="text-green-700">|</span>
-                    <a href="{{ route('lang.switch', 'hi') }}" class="{{ app()->getLocale() === 'hi' ? 'text-amber-300 font-black underline' : 'text-green-200 hover:text-white' }}" title="Hindi">हिंदी</a>
-                </div>
-
                 <a href="https://wa.me/{{ $adminPhone }}" target="_blank" rel="noopener noreferrer"
-                    class="hidden sm:flex hover:text-white transition items-center gap-1">
+                    class="hover:text-white transition flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5 text-amber-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
                     <span>{{ __('Inquiries') }}:</span>
                     <span class="text-white font-mono">+{{ $adminPhone }}</span>
                 </a>
