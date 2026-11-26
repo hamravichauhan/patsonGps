@@ -118,61 +118,19 @@
                     </div>
                 @endif
 
-                <!-- B2B Wholesale Status / Application Card -->
+                <!-- Wholesaler Status (if unlocked) -->
                 @if(!empty($isWholesaler))
                     <div class="p-4.5 rounded-3xl bg-emerald-50 border border-emerald-200 text-emerald-950 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
                         <div class="flex items-center gap-3">
                             <span class="text-2xl">🏆</span>
                             <div>
                                 <div class="font-black text-xs uppercase tracking-wider text-emerald-900">Approved B2B Wholesaler</div>
-                                <div class="text-[11px] text-emerald-800 mt-0.5">Your account has direct factory wholesale pricing enabled across the entire catalog.</div>
+                                <div class="text-[11px] text-emerald-800 mt-0.5">Your account has direct factory wholesale pricing enabled across the catalog.</div>
                             </div>
                         </div>
                         <span class="px-3 py-1 bg-emerald-700 text-white text-[10px] font-black uppercase tracking-wider rounded-lg shadow-2xs self-start sm:self-center">
-                            Wholesale Unlocked
+                            Wholesale Active
                         </span>
-                    </div>
-                @elseif(!empty($customerUser?->wholesale_requested))
-                    <div class="p-4.5 rounded-3xl bg-amber-50 border border-amber-200 text-amber-950 flex items-center gap-3 shadow-2xs">
-                        <span class="text-2xl">⏳</span>
-                        <div>
-                            <div class="font-black text-xs uppercase tracking-wider text-amber-900">Wholesale Verification in Progress</div>
-                            <div class="text-[11px] text-amber-800 mt-0.5">Your B2B application has been submitted to PatSons Admin. We will activate your wholesale rates shortly.</div>
-                        </div>
-                    </div>
-                @else
-                    <div class="p-5 rounded-3xl bg-stone-50 border border-stone-200 text-stone-900 space-y-3 shadow-2xs" x-data="{ openRequest: false }">
-                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                            <div class="flex items-center gap-3">
-                                <span class="text-2xl">🛒</span>
-                                <div>
-                                    <div class="font-black text-xs uppercase tracking-wider text-stone-900">Account Tier: Standard Retail (MRP)</div>
-                                    <div class="text-[11px] text-stone-600 mt-0.5">Are you a retailer, grocery store, hotel, or distributor looking for wholesale carton prices?</div>
-                                </div>
-                            </div>
-                            <button type="button" @click="openRequest = !openRequest" class="px-4 py-2 rounded-xl bg-green-900 hover:bg-green-800 text-white text-xs font-black transition shadow-xs cursor-pointer self-start sm:self-center">
-                                Request B2B Wholesale Pricing →
-                            </button>
-                        </div>
-
-                        <div x-show="openRequest" x-cloak class="pt-3 border-t border-stone-200/80">
-                            <form method="POST" action="{{ route('customer.request-wholesale') }}" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                @csrf
-                                <div>
-                                    <label class="block text-[10px] font-black text-stone-500 uppercase mb-1">Business / Firm / Shop Name</label>
-                                    <input type="text" name="business_name" required placeholder="e.g. Goa Supermarket / Bar" class="w-full bg-white border border-stone-200 rounded-xl px-3 py-2 text-xs font-bold outline-none focus:ring-2 focus:ring-green-800">
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] font-black text-stone-500 uppercase mb-1">GSTIN / Trade License (Optional)</label>
-                                    <input type="text" name="gstin" placeholder="e.g. 30ABCDE1234F1Z5" class="w-full bg-white border border-stone-200 rounded-xl px-3 py-2 text-xs font-bold outline-none focus:ring-2 focus:ring-green-800">
-                                </div>
-                                <div class="sm:col-span-2 flex justify-end">
-                                    <button type="submit" class="px-4 py-2 bg-amber-400 hover:bg-amber-300 text-stone-950 font-black text-xs rounded-xl shadow-xs transition cursor-pointer">
-                                        Submit Wholesale Application
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
                     </div>
                 @endif
 

@@ -276,56 +276,29 @@
                         {{ $product->description }}
                     </p>
 
-                    <!-- Pricing Tier Box Price Card -->
-                    <div class="mt-6 p-4.5 rounded-2xl {{ $isWholesaler ? 'bg-emerald-50/60 border border-emerald-200' : 'bg-stone-50 border border-stone-200/70' }} flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <!-- Single Clean MRP Price Card -->
+                    <div class="mt-6 p-4.5 rounded-2xl bg-stone-50 border border-stone-200/70 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div>
-                            @if($isWholesaler)
-                                <div class="flex items-center gap-1.5 mb-1">
-                                    <span class="text-[9px] font-black uppercase tracking-wider bg-emerald-800 text-white px-2 py-0.5 rounded">
-                                        Wholesale B2B Rate
-                                    </span>
-                                    <span class="text-xs text-stone-400 line-through">
-                                        MRP: ₹<span x-text="(Number(selectedMrp || selectedPrice) * Number(selectedUnitsPerBox || 12)).toFixed(0)"></span>
-                                    </span>
-                                </div>
-                                <div class="flex items-baseline gap-2">
-                                    <span class="text-3xl font-black text-emerald-950">
-                                        ₹<span x-text="boxPrice.toFixed(2)"></span>
-                                    </span>
-                                    <span class="text-xs text-stone-500 font-semibold">
-                                        (₹<span x-text="Number(selectedPrice).toFixed(2)"></span> / piece)
-                                    </span>
-                                </div>
-                            @else
-                                <div class="flex items-center gap-1.5 mb-1">
-                                    <span class="text-[9px] font-black uppercase tracking-wider bg-amber-200 text-stone-900 px-2 py-0.5 rounded">
-                                        Retail MRP
-                                    </span>
-                                </div>
-                                <div class="flex items-baseline gap-2">
-                                    <span class="text-3xl font-black text-stone-900">
-                                        ₹<span x-text="boxPrice.toFixed(2)"></span>
-                                    </span>
-                                    <span class="text-xs text-stone-500 font-semibold">
-                                        (₹<span x-text="Number(selectedPrice).toFixed(2)"></span> / piece MRP)
-                                    </span>
-                                </div>
-                            @endif
+                            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">
+                                Maximum Retail Price (MRP)
+                            </span>
+                            <div class="flex items-baseline gap-2 mt-0.5">
+                                <span class="text-3xl font-black text-stone-900">
+                                    ₹<span x-text="boxPrice.toFixed(2)"></span>
+                                </span>
+                                <span class="text-xs text-stone-500 font-semibold">
+                                    (₹<span x-text="Number(selectedMrp).toFixed(2)"></span> / piece MRP)
+                                </span>
+                            </div>
                         </div>
                         <div class="text-left sm:text-right">
                             <span class="text-xs font-black text-emerald-900 bg-white border border-emerald-300 px-3 py-1.5 rounded-xl inline-flex items-center gap-1.5 shadow-2xs">
                                 <span>📦</span>
                                 <span>Box of <span x-text="selectedUnitsPerBox"></span> Units</span>
                             </span>
-                            @if(!$isWholesaler)
-                                <a href="{{ route('customer.account') }}" class="block text-[11px] text-amber-800 hover:text-amber-900 font-bold mt-1.5 underline">
-                                    Are you a B2B wholesaler? Login →
-                                </a>
-                            @else
-                                <span class="block text-[10px] text-emerald-700 font-bold uppercase mt-1">
-                                    Direct Factory Rate
-                                </span>
-                            @endif
+                            <span class="block text-[10px] text-gray-400 font-bold uppercase mt-1">
+                                Sealed Carton Pack
+                            </span>
                         </div>
                     </div>
 
@@ -347,9 +320,9 @@
                                     </div>
                                     <div class="text-right">
                                         <span class="text-xs font-black text-green-900 block">
-                                            ₹<span x-text="(Number(isWholesaler ? v.price : (v.mrp || v.price)) * Number(v.units_per_box || 12)).toFixed(2)"></span>
+                                            ₹<span x-text="(Number(v.mrp || v.price) * Number(v.units_per_box || 12)).toFixed(2)"></span>
                                         </span>
-                                        <span class="text-[10px] text-gray-400 font-bold" x-text="isWholesaler ? 'wholesale/box' : 'mrp/box'"></span>
+                                        <span class="text-[10px] text-gray-400 font-bold">per box</span>
                                     </div>
                                 </button>
                             </template>
@@ -459,16 +432,12 @@
 
     <script>
         function productViewer() {
-            const isWholesaler = {{ $isWholesaler ? 'true' : 'false' }};
-            const currentWholesale = {{ (float) $product->price }};
             const currentMrp = {{ (float) ($product->mrp ?: $product->price) }};
 
             return {
                 selectedId: {{ (int) $product->id }},
-                isWholesaler: isWholesaler,
-                wholesalePrice: currentWholesale,
                 selectedMrp: currentMrp,
-                selectedPrice: isWholesaler ? currentWholesale : currentMrp,
+                selectedPrice: currentMrp,
                 selectedUnitsPerBox: {{ (int) ($product->units_per_box ?? 12) }},
                 selectedSize: @json($product->size),
                 variants: @json($variants),
@@ -478,7 +447,7 @@
                 lightboxOpen: false,
 
                 get boxPrice() {
-                    return Number(this.selectedPrice) * Number(this.selectedUnitsPerBox || 12);
+                    return Number(this.selectedMrp) * Number(this.selectedUnitsPerBox || 12);
                 },
 
                 get currentImage() {
@@ -506,9 +475,8 @@
 
                 setVariant(v) {
                     this.selectedId = v.id;
-                    this.wholesalePrice = Number(v.price);
                     this.selectedMrp = Number(v.mrp || v.price);
-                    this.selectedPrice = this.isWholesaler ? this.wholesalePrice : this.selectedMrp;
+                    this.selectedPrice = this.selectedMrp;
                     this.selectedUnitsPerBox = Number(v.units_per_box || 12);
                     this.selectedSize = v.size;
                 },

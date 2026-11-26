@@ -153,34 +153,6 @@
             </div>
         </div>
 
-        @php $isWholesaler = \App\Services\PricingService::isWholesaler(); @endphp
-
-        <!-- B2B Wholesale vs Retail Pricing Banner -->
-        @if(!$isWholesaler)
-            <div class="mb-6 p-4 rounded-3xl bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200/90 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-2xs">
-                <div class="flex items-center gap-3 text-left">
-                    <span class="text-2xl">🏭</span>
-                    <div>
-                        <h4 class="text-xs font-black text-amber-950 uppercase tracking-wider">Are you a Retailer, Hotel, or Distributor?</h4>
-                        <p class="text-[11px] text-amber-900/80">Prices shown below are retail MRP. Log in with an approved account to unlock direct factory wholesale rates.</p>
-                    </div>
-                </div>
-                <a href="{{ route('customer.account') }}" class="shrink-0 px-4 py-2 bg-amber-400 hover:bg-amber-300 text-stone-950 text-xs font-black rounded-xl transition shadow-xs">
-                    B2B Wholesale Login →
-                </a>
-            </div>
-        @else
-            <div class="mb-6 p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-between text-xs font-bold text-emerald-950 shadow-2xs">
-                <span class="flex items-center gap-2">
-                    <span class="text-emerald-600 font-black">✓</span>
-                    <span><strong>Verified Wholesaler Account:</strong> Direct factory wholesale carton pricing is unlocked.</span>
-                </span>
-                <span class="text-[10px] bg-emerald-700 text-white px-2.5 py-0.5 rounded-md font-black uppercase tracking-wider">
-                    B2B Wholesale Tier
-                </span>
-            </div>
-        @endif
-
         <!-- ==================== PRODUCT GRID ==================== -->
         @if($products->count() > 0)
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 sm:gap-6">
@@ -188,7 +160,6 @@
                     @php 
                         $primary = $variants->first();
                         $gallery = !empty($primary->gallery_images) ? $primary->gallery_images : [$primary->image ?? 'default-product.webp'];
-                        $initWholesale = (float) $primary->price;
                         $initMrp = (float) ($primary->mrp ?: $primary->price);
                         $initUnitsBox = (int) ($primary->units_per_box ?: 12);
                         $initMinQty = (int) ($primary->min_order_qty ?: $initUnitsBox);
@@ -197,20 +168,17 @@
                     <div class="group bg-white rounded-3xl border border-gray-200 hover:border-emerald-300 shadow-2xs hover:shadow-xl transition-all duration-300 p-4 sm:p-5 flex flex-col justify-between"
                         x-data="{
                             selectedId: {{ $primary->id }},
-                            wholesalePrice: {{ $initWholesale }},
                             mrpPrice: {{ $initMrp }},
-                            selectedPrice: {{ $isWholesaler ? $initWholesale : $initMrp }},
+                            selectedPrice: {{ $initMrp }},
                             selectedUnitsPerBox: {{ $initUnitsBox }},
                             selectedMinQty: {{ $initMinQty }},
                             selectedSize: '{{ $primary->size }}',
                             selectedImage: '{{ $primary->image ?? 'default-product.webp' }}',
-                            isWholesaler: {{ $isWholesaler ? 'true' : 'false' }},
                             variants: {{ $variants->toJson() }},
                             setVariant(v) {
                                 this.selectedId = v.id;
-                                this.wholesalePrice = Number(v.price);
                                 this.mrpPrice = Number(v.mrp || v.price);
-                                this.selectedPrice = this.isWholesaler ? this.wholesalePrice : this.mrpPrice;
+                                this.selectedPrice = this.mrpPrice;
                                 this.selectedUnitsPerBox = Number(v.units_per_box || 12);
                                 this.selectedMinQty = Number(v.min_order_qty || this.selectedUnitsPerBox);
                                 this.selectedSize = v.size;
@@ -279,40 +247,19 @@
                             </div>
                         </div>
 
-                        <!-- Price Row -->
+                        <!-- Price Row (MRP Single Price View) -->
                         <div class="mt-4 pt-3 border-t border-gray-100">
                             <div class="flex items-baseline justify-between mb-2">
                                 <div>
-                                    <!-- Wholesaler View -->
-                                    <template x-if="isWholesaler">
-                                        <div>
-                                            <div class="flex items-center gap-1.5 mb-0.5">
-                                                <span class="text-[9px] text-emerald-800 bg-emerald-100 font-black px-1.5 py-0.2 rounded uppercase tracking-wider">Wholesale</span>
-                                                <span class="text-[11px] text-gray-400 line-through">MRP: ₹<span x-text="Number(mrpPrice).toFixed(0)"></span></span>
-                                            </div>
-                                            <span class="text-xl font-black text-emerald-950">₹<span x-text="Number(wholesalePrice).toFixed(2)"></span></span>
-                                            <span class="text-[10px] text-gray-500 font-bold block">
-                                                Box: ₹<span x-text="(Number(wholesalePrice) * Number(selectedUnitsPerBox)).toFixed(2)"></span> (<span x-text="selectedUnitsPerBox"></span> pcs)
-                                            </span>
-                                        </div>
-                                    </template>
-
-                                    <!-- Retail MRP View -->
-                                    <template x-if="!isWholesaler">
-                                        <div>
-                                            <div class="flex items-center gap-1.5 mb-0.5">
-                                                <span class="text-[9px] text-amber-900 bg-amber-100 font-black px-1.5 py-0.2 rounded uppercase tracking-wider">MRP Rate</span>
-                                            </div>
-                                            <span class="text-xl font-black text-gray-950">₹<span x-text="Number(mrpPrice).toFixed(2)"></span></span>
-                                            <span class="text-[10px] text-gray-500 font-bold block">
-                                                Carton: ₹<span x-text="(Number(mrpPrice) * Number(selectedUnitsPerBox)).toFixed(2)"></span> (<span x-text="selectedUnitsPerBox"></span> pcs)
-                                            </span>
-                                        </div>
-                                    </template>
+                                    <span class="text-[9px] text-gray-400 font-bold uppercase block leading-none">MRP Price</span>
+                                    <span class="text-xl font-black text-green-950">₹<span x-text="Number(mrpPrice).toFixed(2)"></span></span>
+                                    <span class="text-[10px] text-gray-500 font-bold block mt-0.5">
+                                        Carton: ₹<span x-text="(Number(mrpPrice) * Number(selectedUnitsPerBox)).toFixed(2)"></span> (<span x-text="selectedUnitsPerBox"></span> pcs)
+                                    </span>
                                 </div>
                                 <div class="text-right">
                                     <span class="text-[10px] text-emerald-700 font-black bg-emerald-50 px-2 py-0.5 rounded-md block">
-                                        ● Factory Direct
+                                        ● In Stock
                                     </span>
                                     <span class="text-[9px] text-stone-500 font-bold block mt-1" x-show="selectedMinQty > 1">
                                         Min: <span x-text="selectedMinQty"></span> units
