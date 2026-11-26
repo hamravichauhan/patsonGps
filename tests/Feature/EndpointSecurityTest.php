@@ -199,4 +199,23 @@ class EndpointSecurityTest extends TestCase
         $response->assertRedirect(route('customer.account'));
         $this->assertEquals('9823777777', session('customer_phone'));
     }
+
+    public function test_shop_and_catalog_render_cleanly_without_type_errors(): void
+    {
+        ProductCatalog::create([
+            'product_name' => 'Kokum Agal',
+            'slug' => 'kokum-agal',
+            'category' => 'Kokum & Agal',
+            'size' => '500ml',
+            'price' => 50,
+            'is_active' => true,
+        ]);
+
+        $resShop = $this->get('/shop');
+        $resShop->assertStatus(200);
+        $resShop->assertSee('Kokum & Agal');
+
+        $resCatalog = $this->get('/catalog');
+        $resCatalog->assertStatus(200);
+    }
 }

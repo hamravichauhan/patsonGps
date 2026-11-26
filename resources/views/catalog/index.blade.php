@@ -142,9 +142,12 @@
                 </a>
 
                 @foreach($categories as $cat)
-                    <a href="{{ route('shop', array_merge(request()->except('category'), ['category' => $cat])) }}"
-                        class="snap-start shrink-0 px-4 py-2 rounded-2xl text-xs font-black transition-all border {{ request('category') === $cat ? 'bg-green-900 text-white border-green-900 shadow-sm' : 'bg-white text-gray-700 border-gray-200 hover:border-gray-300' }}">
-                        {{ $cat }}
+                    @php
+                        $catName = is_array($cat) ? ($cat['name'] ?? $cat['slug'] ?? reset($cat)) : (string) $cat;
+                    @endphp
+                    <a href="{{ route('shop', array_merge(request()->except('category'), ['category' => $catName])) }}"
+                        class="snap-start shrink-0 px-4 py-2 rounded-2xl text-xs font-black transition-all border {{ request('category') === $catName ? 'bg-green-900 text-white border-green-900 shadow-sm' : 'bg-white text-gray-700 border-gray-200 hover:border-gray-300' }}">
+                        {{ $catName }}
                     </a>
                 @endforeach
             </div>

@@ -85,13 +85,15 @@ class CatalogController extends Controller
             return $variants;
         });
 
-        $categories = \Illuminate\Support\Facades\Cache::remember('active_catalog_categories', 3600, function () {
-            return ProductCatalog::where('is_active', 1)
-                ->distinct()
-                ->pluck('category')
-                ->filter()
-                ->values();
-        });
+        \Illuminate\Support\Facades\Cache::forget('active_catalog_categories');
+
+        $categories = ProductCatalog::where('is_active', 1)
+            ->distinct()
+            ->pluck('category')
+            ->filter()
+            ->map(fn($c) => is_array($c) ? ($c['name'] ?? $c['slug'] ?? reset($c)) : (string) $c)
+            ->unique()
+            ->values();
 
         $adminPhone = Setting::get('whatsapp_admin_number', config('services.whatsapp.admin_number', '917758943614'));
 
