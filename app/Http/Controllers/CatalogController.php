@@ -28,6 +28,11 @@ class CatalogController extends Controller
 
         $gallery = [];
         $imagePath = public_path('images/products');
+        if (!File::isDirectory($imagePath) && File::isDirectory(public_path('images/Products'))) {
+            $imagePath = public_path('images/Products');
+        } elseif (!File::isDirectory($imagePath) && File::isDirectory(base_path('../../public_html/images/products'))) {
+            $imagePath = base_path('../../public_html/images/products');
+        }
 
         if (File::isDirectory($imagePath)) {
             // Cache disk files list for 1 hour to prevent constant filesystem disk I/O
@@ -46,7 +51,11 @@ class CatalogController extends Controller
         }
 
         // Ensure primary image is first
-        if (!in_array($primaryImg, $gallery) && file_exists(public_path('images/products/' . $primaryImg))) {
+        if (!in_array($primaryImg, $gallery) && (
+            file_exists(public_path('images/products/' . $primaryImg)) ||
+            file_exists(public_path('images/Products/' . $primaryImg)) ||
+            file_exists(base_path('../../public_html/images/products/' . $primaryImg))
+        )) {
             array_unshift($gallery, $primaryImg);
         }
 

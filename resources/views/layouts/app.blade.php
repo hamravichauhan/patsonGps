@@ -13,19 +13,24 @@
     $pageKeywords = html_entity_decode(trim($__env->yieldContent('meta_keywords')) ?: 'PatSons Foods Goa, Dev Can Fruit Products, Goan Kokum Agal, Cashew Jam Goa, Kokum Syrup, Pachak Appetizer, Bar Syrups Goa, Fruit Crushes Goa, Morjim Factory', ENT_QUOTES | ENT_HTML5, 'UTF-8');
     $adminPhone = \App\Models\Setting::get('whatsapp_admin_number', config('services.whatsapp.admin_number', '917758943614'));
 
-    // Check candidate logo paths across both standard Laravel public path and cPanel public_html
+    // Check candidate logo paths across both standard Laravel public path, uppercase Products and cPanel public_html
     $logoCandidates = [
-        'images/logo1.webp',
         'images/products/logo1.webp',
+        'images/products/LOGO.webp',
+        'images/products/lobo.png',
+        'images/logo1.webp',
         'images/logo.png',
         'images/logo.webp',
     ];
 
-    $resolvedLogoPath = 'images/logo1.webp';
+    $resolvedLogoPath = 'images/products/logo1.webp';
     foreach ($logoCandidates as $candidate) {
+        $baseName = basename($candidate);
         if (
             file_exists(public_path($candidate)) ||
+            file_exists(public_path('images/Products/' . $baseName)) ||
             file_exists(base_path('../../public_html/' . $candidate)) ||
+            file_exists(base_path('../public_html/' . $candidate)) ||
             (isset($_SERVER['DOCUMENT_ROOT']) && file_exists(rtrim($_SERVER['DOCUMENT_ROOT'], '/') . '/' . ltrim($candidate, '/')))
         ) {
             $resolvedLogoPath = $candidate;
@@ -205,7 +210,7 @@
     @stack('preload')
 
     <!-- Preload Flagship Hero Banner for Peak LCP (Largest Contentful Paint) -->
-    <link rel="preload" as="image" href="{{ asset('images/banner.webp') }}" type="image/webp" fetchpriority="high">
+    <link rel="preload" as="image" href="{{ asset('images/products/banner.webp') }}" type="image/webp" fetchpriority="high">
 
     <!-- Compiled High-Performance Tailwind CSS via Vite (with CDN fallback) -->
     @if(file_exists(public_path('build/manifest.json')))
@@ -327,6 +332,7 @@
                         class="relative flex items-center h-18 sm:h-20 w-48 sm:w-72 group z-30"
                         aria-label="PatSons Foods Goa Home">
                         <img src="{{ $logoUrl }}" alt="PatSons Goa Official Logo"
+                            onerror="this.onerror=null; this.src='{{ asset('images/products/logo1.webp') }}';"
                             class="absolute left-0 top-1/2 -translate-y-1/2 h-28 sm:h-36 w-auto max-w-none object-contain transition-transform duration-300 group-hover:scale-105 drop-shadow-lg pointer-events-auto">
                     </a>
                 </div>
@@ -467,7 +473,8 @@
                 <!-- Drawer Header -->
                 <div class="p-4 sm:p-5 border-b border-gray-100 flex items-center justify-between bg-green-950 text-white">
                     <div class="flex items-center gap-2.5">
-                        <img src="{{ $logoUrl }}" alt="Logo" class="h-8 w-auto object-contain brightness-0 invert">
+                        <img src="{{ $logoUrl }}" alt="Logo" class="h-8 w-auto object-contain brightness-0 invert"
+                            onerror="this.onerror=null; this.src='{{ asset('images/products/logo1.webp') }}';">
                         <div>
                             <h2 class="text-xs font-black uppercase tracking-wider">{{ __('Quotation Cart') }}</h2>
                             <span class="text-[10px] text-green-300 font-bold" x-text="cartTotalCount + ' item(s) selected'"></span>
@@ -673,7 +680,8 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 grid grid-cols-1 sm:grid-cols-3 gap-8 items-start">
             <div class="space-y-3">
                 <a href="{{ route('home') }}" class="inline-block bg-white p-2.5 rounded-2xl shadow-md">
-                    <img src="{{ $logoUrl }}" alt="PatSons Goa Official Logo" class="h-12 w-auto object-contain">
+                    <img src="{{ $logoUrl }}" alt="PatSons Goa Official Logo" class="h-12 w-auto object-contain"
+                        onerror="this.onerror=null; this.src='{{ asset('images/products/logo1.webp') }}';">
                 </a>
                 <p class="text-green-200/70 text-[11px] leading-relaxed">
                     Manufactured by Dev Can Fruit Products, Morjim, Pernem - Goa.<br>

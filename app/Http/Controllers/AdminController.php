@@ -276,6 +276,9 @@ class AdminController extends Controller
 
         $searchDirs = [
             public_path('images/products'),
+            public_path('images/Products'),
+            base_path('../../public_html/images/products'),
+            base_path('../../public_html/images'),
             public_path('images'),
             public_path('storage/products'),
             public_path('storage'),

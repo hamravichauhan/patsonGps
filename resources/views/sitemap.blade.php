@@ -10,7 +10,7 @@
         <changefreq>daily</changefreq>
         <priority>1.0</priority>
         <image:image>
-            <image:loc>{{ asset('images/banner.webp') }}</image:loc>
+            <image:loc>{{ asset('images/products/banner.webp') }}</image:loc>
             <image:title>PatSons Foods Goa - Authentic Goan Kokum Agal, Cashew Jams and Syrups</image:title>
             <image:caption>Dev Can Fruit Products factory banner in Morjim, Pernem - Goa</image:caption>
         </image:image>
@@ -29,7 +29,7 @@
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
         <image:image>
-            <image:loc>{{ asset('images/logo1.webp') }}</image:loc>
+            <image:loc>{{ asset('images/products/logo1.webp') }}</image:loc>
             <image:title>Dev Can Fruit Products Morjim Factory Heritage</image:title>
             <image:caption>PatSons Foods manufacturing unit in Morjim, Goa since 1990</image:caption>
         </image:image>

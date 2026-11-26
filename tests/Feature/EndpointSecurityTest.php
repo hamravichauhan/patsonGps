@@ -218,4 +218,25 @@ class EndpointSecurityTest extends TestCase
         $resCatalog = $this->get('/catalog');
         $resCatalog->assertStatus(200);
     }
+
+    public function test_product_catalog_image_url_resolves_reliably_with_safe_fallbacks(): void
+    {
+        $productWithImage = new ProductCatalog([
+            'product_name' => 'Amala Squash',
+            'image' => 'amala-squash.webp'
+        ]);
+        $this->assertStringContainsString('images/products/amala-squash.webp', $productWithImage->image_url);
+
+        $productWithNull = new ProductCatalog([
+            'product_name' => 'Unknown Product',
+            'image' => null
+        ]);
+        $this->assertStringContainsString('images/products/default-product.webp', $productWithNull->image_url);
+
+        $productWithDefault = new ProductCatalog([
+            'product_name' => 'Default Product',
+            'image' => 'default-product.webp'
+        ]);
+        $this->assertStringContainsString('images/products/default-product.webp', $productWithDefault->image_url);
+    }
 }

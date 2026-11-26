@@ -7,7 +7,7 @@
 
 @push('preload')
     <!-- Preload Hero LCP Image -->
-    <link rel="preload" as="image" href="{{ file_exists(public_path('images/banner.webp')) ? asset('images/banner.webp') : asset('images/products/default-product.webp') }}" type="image/webp" fetchpriority="high">
+    <link rel="preload" as="image" href="{{ asset('images/products/banner.webp') }}" type="image/webp" fetchpriority="high">
 @endpush
 
 @push('schema')
@@ -84,11 +84,12 @@
                 class="relative overflow-hidden rounded-3xl shadow-xl border border-stone-200 bg-stone-900 min-h-[380px] sm:min-h-[460px] lg:min-h-[520px] flex items-center justify-start">
 
                 <!-- Full High-Res Brand Banner Background -->
-                <img src="{{ file_exists(public_path('images/banner.webp')) ? asset('images/banner.webp') : (file_exists(public_path('images/Products/banner.webp')) ? asset('images/Products/banner.webp') : asset('images/products/default-product.webp')) }}"
+                <img src="{{ asset('images/products/banner.webp') }}"
                     alt="PatSons Foods Goa - Authentic Goan Kokum Agal, Cashew Jams and Fruit Syrups"
                     width="1600" height="700"
                     fetchpriority="high"
                     decoding="async"
+                    onerror="this.onerror=null; this.src='{{ asset('images/products/default-product.webp') }}';"
                     class="absolute inset-0 w-full h-full object-cover object-center scale-110 transition-transform duration-700 pointer-events-none select-none z-0">
 
                 <!-- Subtle Dark Tint for Text Readability -->

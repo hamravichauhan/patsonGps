@@ -262,7 +262,7 @@
                                         @if(!$isDefault && $imgSrc)
                                             <img src="{{ $imgSrc }}" alt="{{ $p->product_name }}"
                                                 class="max-h-full max-w-full object-contain filter drop-shadow-[0_4px_6px_rgba(0,0,0,0.12)] transition transform hover:scale-110"
-                                                onerror="this.onerror=null; this.src='{{ asset('images/default-product.webp') }}';"
+                                                onerror="this.onerror=null; this.src='{{ asset('images/products/default-product.webp') }}';"
                                                 loading="lazy">
                                             @if($totalGalleryCount > 0)
                                                 <span class="absolute bottom-1 right-1 bg-black/70 text-white text-[9px] px-1.5 py-0.2 rounded-md font-black">

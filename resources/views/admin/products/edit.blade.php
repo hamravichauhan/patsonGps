@@ -234,14 +234,14 @@
                                 $src = $img;
                             } elseif (file_exists(public_path('storage/' . $img))) {
                                 $src = asset('storage/' . $img);
-                            } elseif (file_exists(public_path('images/products/' . $img))) {
+                            } elseif (file_exists(public_path('images/products/' . $img)) || file_exists(public_path('images/Products/' . $img))) {
                                 $src = asset('images/products/' . $img);
                             } elseif (file_exists(public_path('images/' . $img))) {
                                 $src = asset('images/' . $img);
                             } elseif (file_exists(public_path($img))) {
                                 $src = asset($img);
                             } else {
-                                $src = asset('storage/' . $img);
+                                $src = asset('images/products/' . $img);
                             }
                         @endphp
 
@@ -250,7 +250,7 @@
                                 <img src="{{ $src }}" 
                                      alt="{{ $product->product_name }}" 
                                      class="w-full h-full object-cover"
-                                     onerror="this.onerror=null; this.src='{{ asset('images/default-product.webp') }}';">
+                                     onerror="this.onerror=null; this.src='{{ asset('images/products/default-product.webp') }}';">
 
                                 @if($isPrimary)
                                     <span class="absolute top-2 left-2 bg-green-900 text-white text-[9px] font-black px-2 py-0.5 rounded-md shadow-xs">

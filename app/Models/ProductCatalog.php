@@ -82,22 +82,35 @@ class ProductCatalog extends Model
         $raw = $this->image;
 
         if (empty($raw) || $raw === 'default-product.webp') {
-            return asset('images/default-product.webp');
+            return asset('images/products/default-product.webp');
         }
 
         if (Str::startsWith($raw, ['http://', 'https://'])) {
             return $raw;
         }
 
+        // 1. Direct storage upload check
         if (file_exists(public_path('storage/' . $raw))) {
             return asset('storage/' . $raw);
         }
 
-        if (file_exists(public_path('images/products/' . $raw))) {
+        // 2. Standard products directory (case-insensitive & cPanel-aware fallback)
+        if (
+            file_exists(public_path('images/products/' . $raw)) ||
+            file_exists(public_path('images/Products/' . $raw)) ||
+            file_exists(base_path('../../public_html/images/products/' . $raw)) ||
+            file_exists(base_path('../public_html/images/products/' . $raw)) ||
+            (isset($_SERVER['DOCUMENT_ROOT']) && file_exists(rtrim($_SERVER['DOCUMENT_ROOT'], '/') . '/images/products/' . $raw))
+        ) {
             return asset('images/products/' . $raw);
         }
 
-        if (file_exists(public_path('images/' . $raw))) {
+        // 3. Root images folder check
+        if (
+            file_exists(public_path('images/' . $raw)) ||
+            file_exists(base_path('../../public_html/images/' . $raw)) ||
+            (isset($_SERVER['DOCUMENT_ROOT']) && file_exists(rtrim($_SERVER['DOCUMENT_ROOT'], '/') . '/images/' . $raw))
+        ) {
             return asset('images/' . $raw);
         }
 
@@ -105,7 +118,8 @@ class ProductCatalog extends Model
             return asset($raw);
         }
 
-        return asset('storage/' . $raw);
+        // 4. Default live catalog fallback (all storefront images exist at /images/products/)
+        return asset('images/products/' . $raw);
     }
 
 
